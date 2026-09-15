@@ -117,8 +117,8 @@ export default function Hero({ onOpenQuote }) {
               {/* Main Visual Image Card */}
               <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[4/3] sm:aspect-[4/5] bg-slate-900">
                 <img
-                  src="/hero-repair-action.jpg"
-                  alt="Precision home repairs and furniture assembly with power tools in Edinburgh"
+                  src="/hero-repair-man.jpg"
+                  alt="Professional craftsman performing quality home repairs in Edinburgh"
                   className="w-full h-full object-cover object-center"
                 />
                 
