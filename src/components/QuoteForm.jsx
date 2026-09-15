@@ -85,7 +85,7 @@ export default function QuoteForm({ preselectedService }) {
     window.open(waUrl, "_blank");
   };
 
-  const handleSubmitOnline = (e) => {
+  const handleSubmitOnline = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.phone) {
       setErrorMsg("Please fill in your name and phone number so we can get back to you.");
@@ -95,20 +95,40 @@ export default function QuoteForm({ preselectedService }) {
     setIsSubmitting(true);
     setErrorMsg("");
 
-    // Simulate fast submission
-    setTimeout(() => {
+    const selectedServiceName = SERVICES.find(s => s.id === formData.serviceId)?.title || "Handyman Service";
+
+    try {
+      const payload = {
+        name: formData.name,
+        phone: formData.phone,
+        postcode: formData.postcode || "Edinburgh Area",
+        service: selectedServiceName,
+        urgency: formData.urgency,
+        details: formData.details || "No additional details provided",
+        photosCount: uploadedPhotos.length,
+        createdAt: new Date().toISOString()
+      };
+
+      await fetch('/api/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.warn("Quote API notice:", err);
+    } finally {
       setIsSubmitting(false);
       setSubmitted(true);
       try {
         confetti({
-          particleCount: 80,
+          particleCount: 90,
           spread: 70,
           origin: { y: 0.6 }
         });
       } catch (err) {
         // Confetti fallback
       }
-    }, 800);
+    }
   };
 
   return (
@@ -132,10 +152,10 @@ export default function QuoteForm({ preselectedService }) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="max-w-3xl mx-auto">
           
-          {/* Left Column: Interactive Form */}
-          <div className="lg:col-span-8 bg-slate-800/90 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-slate-700 shadow-2xl text-left">
+          {/* Main Interactive Form */}
+          <div className="bg-slate-800/90 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-slate-700 shadow-2xl text-left">
             {submitted ? (
               <div className="py-12 text-center space-y-4">
                 <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto">
@@ -353,73 +373,24 @@ export default function QuoteForm({ preselectedService }) {
                   </button>
                 </div>
 
+                {/* Reassurance Trust Row */}
+                <div className="pt-4 border-t border-slate-700/60 grid grid-cols-1 sm:grid-cols-3 gap-3 text-center sm:text-left text-xs text-slate-300">
+                  <div className="flex items-center justify-center sm:justify-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>Free No-Obligation Quotes</span>
+                  </div>
+                  <div className="flex items-center justify-center sm:justify-start gap-2">
+                    <Clock className="w-4 h-4 text-blue-400 shrink-0" />
+                    <span>Fast 15-30 Min Response</span>
+                  </div>
+                  <div className="flex items-center justify-center sm:justify-start gap-2">
+                    <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>Tenement & Flat Pack Experts</span>
+                  </div>
+                </div>
+
               </form>
             )}
-          </div>
-
-          {/* Right Column: Direct Contact & Reassurance Card */}
-          <div className="lg:col-span-4 space-y-6 text-left">
-            
-            {/* Direct WhatsApp Callout Card */}
-            <div className="bg-gradient-to-br from-emerald-950/70 to-slate-900 border border-emerald-800/60 rounded-3xl p-6 sm:p-7 shadow-xl">
-              <div className="flex items-center gap-3.5 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center shrink-0">
-                  <MessageSquare className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-base font-bold text-white">Prefer to Chat Directly?</h4>
-                  <p className="text-xs text-emerald-300">Live WhatsApp Line</p>
-                </div>
-              </div>
-
-              <p className="text-xs text-slate-300 leading-relaxed mb-5">
-                Have a quick question or want an instant quote from photos? Ekrem is usually online on WhatsApp:
-              </p>
-
-              <a
-                href={BUSINESS_INFO.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center px-5 py-3 rounded-xl font-bold text-xs text-white bg-emerald-600 hover:bg-emerald-500 transition-colors shadow-md"
-              >
-                <MessageSquare className="w-4 h-4 mr-1.5" />
-                <span>Message +44 7760 696723</span>
-              </a>
-            </div>
-
-            {/* Reassurance Checklist */}
-            <div className="bg-slate-800/80 border border-slate-700 rounded-3xl p-6 sm:p-7 space-y-4">
-              <h4 className="text-sm font-bold text-white uppercase tracking-wider">
-                The Handyeco Promise
-              </h4>
-
-              <div className="space-y-3 text-xs text-slate-300">
-                <div className="flex items-start gap-2.5">
-                  <ShieldCheck className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-white font-semibold block">£1M Public Liability Cover</span>
-                    <span>Fully insured against any accidental property damage.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <Clock className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-white font-semibold block">No Turn-Down for Small Jobs</span>
-                    <span>Odd jobs and small repair lists are always welcomed.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <MapPin className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-white font-semibold block">Tenement Specialists</span>
-                    <span>Equipped for stone, masonry, and lath-and-plaster walls.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
           </div>
 
         </div>

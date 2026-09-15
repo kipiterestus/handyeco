@@ -41,11 +41,11 @@ export default function Services({ onSelectService }) {
     : SERVICES.filter(s => s.id === selectedCategory);
 
   return (
-    <section id="services" className="py-12 sm:py-16 md:py-20 bg-slate-50 relative">
+    <section id="services" className="pt-10 sm:pt-16 md:pt-20 pb-6 sm:pb-8 bg-slate-50 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-10">
           <div className="inline-flex items-center gap-1.5 px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full bg-blue-100/80 text-blue-800 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2 sm:mb-3">
             <Sparkles className="w-3.5 h-3.5 text-blue-600" />
             <span>Scottish Handyman Solutions</span>
@@ -57,13 +57,13 @@ export default function Services({ onSelectService }) {
             From single-room repairs to full flat refreshes. Professional tools, clean workmanship, and £65 minimum call-out.
           </p>
 
-          {/* Filter Pills with Horizontal Swipe on Mobile */}
-          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 pt-4 sm:pt-6 sm:flex-wrap sm:justify-center scrollbar-none">
+          {/* Desktop-Only Filter Pills (Hidden on Mobile to keep page clean & avoid scroll friction) */}
+          <div className="hidden sm:flex items-center gap-2 flex-wrap justify-center pt-5">
             {filterTabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setSelectedCategory(tab.id)}
-                className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   selectedCategory === tab.id
                     ? "bg-slate-900 text-white shadow-xs"
                     : "bg-white text-slate-600 hover:bg-slate-200/70 border border-slate-200"

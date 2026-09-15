@@ -29,10 +29,6 @@ export default function Footer() {
               <span className="text-white font-bold">5.0 Star</span>
               <span className="text-slate-500">&bull; 48 Google Reviews</span>
             </div>
-            <div className="pt-1 flex items-center gap-2 text-slate-400 text-[11px]">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>£1,000,000 Public Liability Insurance</span>
-            </div>
           </div>
 
           {/* Col 2: Services */}

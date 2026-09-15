@@ -22,22 +22,24 @@ export default function Hero({ onOpenQuote }) {
           {/* Left Column: Copy, Badges & CTAs */}
           <div className="lg:col-span-7 space-y-4 sm:space-y-6 text-left">
             
-            {/* Trust Badges Bar */}
-            <div className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 pr-3 sm:pr-4 rounded-full bg-white border border-slate-200/80 shadow-2xs text-[11px] sm:text-xs text-slate-700">
-              <span className="flex items-center gap-1 bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-emerald-200 text-[10px] sm:text-xs">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                <span>Live Google Rating</span>
-              </span>
-              <div className="flex items-center text-amber-500 font-bold">
-                <div className="flex mr-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                  ))}
+            {/* Trust Badges Bar - Centered on Mobile */}
+            <div className="flex justify-center sm:justify-start">
+              <div className="inline-flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 pr-3 sm:pr-4 rounded-full bg-white border border-slate-200/80 shadow-2xs text-[11px] sm:text-xs text-slate-700">
+                <span className="flex items-center gap-1 bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-emerald-200 text-[10px] sm:text-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                  <span>Live Google Rating</span>
+                </span>
+                <div className="flex items-center text-amber-500 font-bold">
+                  <div className="flex mr-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  <span>5.0 / 5.0</span>
                 </div>
-                <span>5.0 / 5.0</span>
+                <span className="hidden xs:inline text-slate-300">|</span>
+                <span className="font-medium text-slate-600 hidden xs:inline">Edinburgh & Surrounds</span>
               </div>
-              <span className="hidden xs:inline text-slate-300">|</span>
-              <span className="font-medium text-slate-600 hidden xs:inline">Edinburgh & Surrounds</span>
             </div>
 
             {/* Main Headline */}
@@ -58,7 +60,7 @@ export default function Hero({ onOpenQuote }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs sm:text-sm text-slate-700 font-medium">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Fully Insured (£1M Public Liability)</span>
+                <span>Punctual, Clean & Spotless Tidy</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -107,14 +109,14 @@ export default function Hero({ onOpenQuote }) {
             <div className="relative mx-auto max-w-md lg:max-w-none">
               
               {/* Main Visual Image Card */}
-              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[4/3] sm:aspect-[4/5] bg-slate-100">
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[4/3] sm:aspect-[4/5] bg-slate-900">
                 <img
-                  src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1000&auto=format&fit=crop&q=80"
-                  alt="Professional Handyman at work in Edinburgh"
-                  className="w-full h-full object-cover object-center"
+                  src="/hero-repair-opt.jpg"
+                  alt="Professional Handyman assembling furniture with cordless drill in Edinburgh"
+                  className="w-full h-full object-cover object-top"
                 />
                 
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/20" />
 
                 <div className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 text-white text-left">
                   <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-blue-300 mb-0.5">
@@ -127,21 +129,6 @@ export default function Hero({ onOpenQuote }) {
                   <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5">
                     From Morningside flats to New Town tenements.
                   </p>
-                </div>
-              </div>
-
-              {/* Floating Shield Insurance Badge */}
-              <div className="absolute bottom-2 left-2 sm:-bottom-4 sm:-left-4 bg-slate-900 text-white p-2 sm:p-3.5 rounded-xl sm:rounded-2xl shadow-xl border border-slate-800 flex items-center gap-2 sm:gap-2.5 text-left max-w-[calc(100%-1rem)]">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center shrink-0 border border-blue-500/30">
-                  <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
-                </div>
-                <div>
-                  <div className="text-[10px] sm:text-xs font-extrabold text-white uppercase tracking-wider">
-                    Fully Insured
-                  </div>
-                  <div className="text-[10px] sm:text-xs text-slate-400 font-medium">
-                    £1M Public Liability Cover
-                  </div>
                 </div>
               </div>
 
