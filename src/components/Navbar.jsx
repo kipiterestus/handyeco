@@ -68,7 +68,7 @@ export default function Navbar() {
             <img 
               src="/logo-transparent.png" 
               alt="Handyeco - Edinburgh Handyman Services" 
-              className="h-10 sm:h-11 md:h-12 w-auto max-w-[220px] sm:max-w-none object-contain transition-transform duration-200 group-hover:scale-105"
+              className="h-10 sm:h-11 md:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
             />
           </a>
 

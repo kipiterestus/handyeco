@@ -16,32 +16,17 @@
   },
   {
     "id": "tv-wall-mounting",
-    "title": "TV & Heavy Wall Mounting",
+    "title": "TV, Mirrors & Wall Mounting",
     "category": "mounting",
     "iconName": "Tv",
     "badge": "Laser-Level Precision",
-    "description": "Secure wall mounting into historic Edinburgh sandstone, brick masonry, or modern stud partitions. Concealed wiring and soundbar alignment.",
+    "description": "Secure mounting into historic Edinburgh sandstone tenements or stud partitions. TVs up to 85\", heavy ornate mirrors, floating oak shelves, and curtain tracks.",
     "popular": true,
     "bullets": [
-      "Laser-level precision alignment at optimal eye height",
-      "Heavy-duty Fischer fixings for historic Edinburgh tenements",
-      "Discreet paintable cable trunking or in-wall chasing",
-      "Mounting for all TV sizes from 32\" up to 85\" OLED"
-    ]
-  },
-  {
-    "id": "shelving-curtains",
-    "title": "Shelving, Mirrors & Curtain Poles",
-    "category": "mounting",
-    "iconName": "Maximize2",
-    "badge": "Stone & Plaster Fixing",
-    "description": "Solid wall anchoring for heavy bathroom mirrors, gallery art walls, solid oak floating shelves, curtain poles, and window blinds in Edinburgh homes.",
-    "popular": false,
-    "bullets": [
-      "Solid oak floating shelves tested for heavy loads",
-      "Roman blinds, blackout roller blinds & curtain tracks",
-      "High tenement ceilings & awkward alcove fits handled",
-      "Specialist anchors for hollow drywall or crumbly plaster"
+      "TVs from 32\" up to 85\" OLED with laser-level precision",
+      "Heavy Victorian mirrors, gallery walls & solid oak shelves",
+      "Specialist heavy-duty anchors for stone & plaster walls",
+      "Discreet paintable cable trunking & blind/curtain fittings"
     ]
   },
   {

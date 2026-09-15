@@ -35,12 +35,11 @@ export default function Services({ onSelectService }) {
 
   const filterTabs = [
     { id: "all", label: "All Services" },
-    { id: "furniture-assembly", label: "Furniture Assembly" },
-    { id: "wall-mounting", label: "TV & Mounting" },
-    { id: "painting-decorating", label: "Painting" },
-    { id: "kitchen-bathroom", label: "Kitchen & Bath" },
-    { id: "home-maintenance", label: "Odd Jobs" },
-    { id: "garden-outdoor", label: "Outdoor" },
+    { id: "assembly", label: "Furniture Assembly" },
+    { id: "mounting", label: "TV & Wall Mounting" },
+    { id: "repairs", label: "Silicone & Repairs" },
+    { id: "painting", label: "Painting & Woodwork" },
+    { id: "kitchen", label: "Kitchen Vinyl Wrap" }
   ];
 
   const filteredServices = selectedCategory === "all"
