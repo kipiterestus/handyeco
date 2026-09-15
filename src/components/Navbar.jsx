@@ -27,31 +27,22 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
       {/* Top Announcement Strip */}
       <div className="bg-slate-900 text-slate-300 text-[11px] sm:text-xs py-1.5 px-3 sm:px-4 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto flex items-center justify-center sm:justify-between gap-2">
           
           <div className="flex items-center gap-2 truncate">
             <span className="inline-flex items-center text-emerald-400 font-bold shrink-0">
               <span className="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
               Available for Booking
             </span>
-            <span className="hidden sm:inline-flex text-slate-500">|</span>
-            <span className="hidden sm:inline-flex items-center text-slate-400 truncate">
+            <span className="text-slate-500">|</span>
+            <span className="inline-flex items-center text-slate-400 truncate">
               <MapPin className="w-3.5 h-3.5 mr-1 text-blue-400 shrink-0" />
               Edinburgh & Lothians
             </span>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            <a 
-              href={BUSINESS_INFO.googleProfileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center text-amber-400 hover:text-amber-300 transition-colors font-bold"
-            >
-              <Star className="w-3.5 h-3.5 fill-amber-400 mr-1" />
-              <span>5.0 Star</span>
-              <span className="hidden xs:inline text-slate-400 ml-1 font-normal">on Google</span>
-            </a>
+          <div className="hidden sm:flex items-center gap-2 text-slate-400 text-xs font-medium">
+            <span>Minimum call-out fee £65 (Edinburgh Area)</span>
           </div>
 
         </div>

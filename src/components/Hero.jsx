@@ -22,12 +22,15 @@ export default function Hero({ onOpenQuote }) {
           {/* Left Column: Copy, Badges & CTAs */}
           <div className="lg:col-span-7 space-y-4 sm:space-y-6 text-left">
             
-            {/* Trust Badges Bar - Centered on Mobile */}
+            {/* Trust Badges Bar - Centered on Mobile, Clickable anchor linking to #reviews */}
             <div className="flex justify-center sm:justify-start">
-              <div className="inline-flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 pr-3 sm:pr-4 rounded-full bg-white border border-slate-200/80 shadow-2xs text-[11px] sm:text-xs text-slate-700">
+              <a
+                href="#reviews"
+                className="inline-flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 pr-3 sm:pr-4 rounded-full bg-white hover:bg-blue-50/50 border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all text-[11px] sm:text-xs text-slate-700 cursor-pointer group"
+              >
                 <span className="flex items-center gap-1 bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-emerald-200 text-[10px] sm:text-xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                  <span>Live Google Rating</span>
+                  <span>Google & MyBuilder</span>
                 </span>
                 <div className="flex items-center text-amber-500 font-bold">
                   <div className="flex mr-1">
@@ -37,9 +40,12 @@ export default function Hero({ onOpenQuote }) {
                   </div>
                   <span>5.0 / 5.0</span>
                 </div>
-                <span className="hidden xs:inline text-slate-300">|</span>
-                <span className="font-medium text-slate-600 hidden xs:inline">Edinburgh & Surrounds</span>
-              </div>
+                <span className="text-slate-300">|</span>
+                <span className="font-bold text-blue-600 group-hover:text-blue-800 flex items-center gap-0.5">
+                  <span>Verified Reviews</span>
+                  <span>&darr;</span>
+                </span>
+              </a>
             </div>
 
             {/* Main Headline */}

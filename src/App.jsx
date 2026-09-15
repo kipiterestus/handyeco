@@ -45,8 +45,8 @@ export default function App() {
         {/* 4. Quality Home Repairs & Assembly Done Right (Clean cards with Book Quote & WhatsApp only) */}
         <Services onSelectService={(srv) => scrollToQuote(srv)} />
 
-        {/* 5. Real Customer Reviews (Real names, clean typography, genuine Google job photos, no avatars) */}
-        <GoogleReviews onOpenLightbox={(item) => setLightboxItem(item)} />
+        {/* 5. Verified Customer Reviews (Google & MyBuilder, Real names, pure text, no photos) */}
+        <GoogleReviews />
 
         {/* 6. Recent Completed Work & Client Uploads (Rotating Carousel & Grid Modes) */}
         <PhotoGallery onOpenLightbox={(item) => setLightboxItem(item)} />
