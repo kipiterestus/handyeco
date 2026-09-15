@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Star, MapPin } from 'lucide-react';
+import { Menu, X, Star, MapPin, Phone, MessageSquare } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/businessData';
 
 export default function Navbar() {
@@ -26,54 +26,56 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
       {/* Top Announcement Strip */}
-      <div className="bg-slate-900 text-slate-300 text-xs py-1.5 px-4 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
-          <div className="flex items-center space-x-4">
-            <span className="inline-flex items-center text-emerald-400 font-medium">
+      <div className="bg-slate-900 text-slate-300 text-[11px] sm:text-xs py-1.5 px-3 sm:px-4 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          
+          <div className="flex items-center gap-2 truncate">
+            <span className="inline-flex items-center text-emerald-400 font-bold shrink-0">
               <span className="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
               Available for Booking
             </span>
-            <span className="hidden sm:inline-flex items-center text-slate-400">
-              <MapPin className="w-3.5 h-3.5 mr-1 text-blue-400" />
-              Serving Edinburgh, Midlothian & East Lothian
+            <span className="hidden sm:inline-flex text-slate-500">|</span>
+            <span className="hidden sm:inline-flex items-center text-slate-400 truncate">
+              <MapPin className="w-3.5 h-3.5 mr-1 text-blue-400 shrink-0" />
+              Edinburgh & Lothians
             </span>
           </div>
 
-          <div className="flex items-center space-x-4 text-xs">
+          <div className="flex items-center gap-2 shrink-0">
             <a 
               href={BUSINESS_INFO.googleProfileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center text-amber-400 hover:text-amber-300 transition-colors"
+              className="flex items-center text-amber-400 hover:text-amber-300 transition-colors font-bold"
             >
               <Star className="w-3.5 h-3.5 fill-amber-400 mr-1" />
-              <span className="font-semibold text-white">5.0 Star</span>
-              <span className="text-slate-400 ml-1">on Google Reviews</span>
+              <span>5.0 Star</span>
+              <span className="hidden xs:inline text-slate-400 ml-1 font-normal">on Google</span>
             </a>
           </div>
+
         </div>
       </div>
 
       {/* Main Navigation Bar */}
       <nav className={`transition-all duration-300 ${
         isScrolled 
-          ? "bg-white/95 backdrop-blur-md shadow-sm py-3 border-b border-slate-200/80" 
-          : "bg-white/90 backdrop-blur-sm py-4 border-b border-slate-100"
+          ? "bg-white/95 backdrop-blur-md shadow-sm py-2.5 border-b border-slate-200/80" 
+          : "bg-white/95 backdrop-blur-sm py-3 sm:py-3.5 border-b border-slate-100"
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Logo */}
-          <a href="#" className="flex items-center gap-3 group">
-            <div className="bg-slate-950 px-2.5 py-1 rounded-2xl border border-slate-800/80 shadow-xs flex items-center transition-transform duration-200 group-hover:scale-105">
-              <img 
-                src="/logo-dark.png" 
-                alt="Handyeco - Edinburgh Handyman Services" 
-                className="h-9 sm:h-10 w-auto object-contain"
-              />
-            </div>
+          
+          {/* Clean Logo without black background */}
+          <a href="#" className="flex items-center gap-2 group">
+            <img 
+              src="/logo-transparent.png" 
+              alt="Handyeco - Edinburgh Handyman Services" 
+              className="h-8 xs:h-9 sm:h-11 md:h-12 w-auto max-w-[170px] xs:max-w-[210px] sm:max-w-none object-contain transition-transform duration-200 group-hover:scale-105"
+            />
           </a>
 
           {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center space-x-8 text-sm font-semibold text-slate-700">
+          <div className="hidden md:flex items-center space-x-7 text-sm font-semibold text-slate-700">
             {navLinks.map((link) => (
               <a
                 key={link.href}
@@ -85,11 +87,11 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Mobile Hamburger Button */}
+          {/* Mobile Menu Toggle Button */}
           <div className="flex md:hidden items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -105,11 +107,24 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors text-left"
+                className="block px-3 py-3 rounded-xl text-base font-semibold text-slate-800 hover:bg-blue-50 hover:text-blue-600 transition-colors text-left"
               >
                 {link.label}
               </a>
             ))}
+            
+            <div className="pt-3 mt-2 border-t border-slate-100 flex flex-col gap-2">
+              <a
+                href={BUSINESS_INFO.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full inline-flex items-center justify-center px-4 py-3 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
+              >
+                <MessageSquare className="w-4 h-4 mr-2" />
+                <span>Chat on WhatsApp</span>
+              </a>
+            </div>
           </div>
         )}
       </nav>

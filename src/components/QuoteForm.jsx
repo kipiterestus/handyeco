@@ -179,7 +179,7 @@ export default function QuoteForm({ preselectedService }) {
                         type="button"
                         key={service.id}
                         onClick={() => setFormData({ ...formData, serviceId: service.id })}
-                        className={`p-3 rounded-xl text-xs font-semibold text-left transition-all border cursor-pointer ${
+                        className={`p-2.5 sm:p-3 rounded-xl text-xs font-semibold text-left transition-all border cursor-pointer ${
                           formData.serviceId === service.id
                             ? "bg-blue-600 text-white border-blue-500 shadow-md"
                             : "bg-slate-900/60 text-slate-300 border-slate-700 hover:bg-slate-700/60"
@@ -203,7 +203,7 @@ export default function QuoteForm({ preselectedService }) {
                       placeholder="e.g. David Robertson"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                   </div>
 
@@ -217,7 +217,7 @@ export default function QuoteForm({ preselectedService }) {
                       placeholder="e.g. 07700 900123"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                   </div>
                 </div>
@@ -233,7 +233,7 @@ export default function QuoteForm({ preselectedService }) {
                       placeholder="e.g. EH10 4BF (Morningside)"
                       value={formData.postcode}
                       onChange={(e) => setFormData({ ...formData, postcode: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                   </div>
 
@@ -244,7 +244,7 @@ export default function QuoteForm({ preselectedService }) {
                     <select
                       value={formData.urgency}
                       onChange={(e) => setFormData({ ...formData, urgency: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer"
+                      className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer"
                     >
                       <option value="flexible">Flexible (Within 1-2 weeks)</option>
                       <option value="this-week">This Week</option>
@@ -264,7 +264,7 @@ export default function QuoteForm({ preselectedService }) {
                     placeholder="Tell us what needs done (e.g. Assemble 1 IKEA wardrobe, mount 55-inch TV into stone wall, re-seal bath with silicone)..."
                     value={formData.details}
                     onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   ></textarea>
                 </div>
 

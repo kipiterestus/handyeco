@@ -9,7 +9,6 @@ import {
   Check, 
   ArrowRight, 
   MessageSquare,
-  Clock,
   Sparkles
 } from 'lucide-react';
 import { SERVICES } from '../data/servicesData';
@@ -42,31 +41,31 @@ export default function Services({ onSelectService }) {
     : SERVICES.filter(s => s.id === selectedCategory);
 
   return (
-    <section id="services" className="py-20 bg-slate-50 relative">
+    <section id="services" className="py-12 sm:py-16 md:py-20 bg-slate-50 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-100/80 text-blue-800 text-xs font-bold uppercase tracking-wider mb-3">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full bg-blue-100/80 text-blue-800 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2 sm:mb-3">
             <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-            <span>Professional Scottish Handyman Solutions</span>
+            <span>Scottish Handyman Solutions</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
             Quality Home Repairs & Assembly Done Right.
           </h2>
-          <p className="text-base text-slate-600 mt-3 max-w-2xl mx-auto">
-            From single-room repairs to full flat freshening. We bring all professional tooling, fixings, and high standards to every Edinburgh home.
+          <p className="text-xs sm:text-sm lg:text-base text-slate-600 mt-2 max-w-2xl mx-auto">
+            From single-room repairs to full flat refreshes. Professional tools, clean workmanship, and £65 minimum call-out.
           </p>
 
-          {/* Filter Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-8">
+          {/* Filter Pills with Horizontal Swipe on Mobile */}
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 pt-4 sm:pt-6 sm:flex-wrap sm:justify-center scrollbar-none">
             {filterTabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setSelectedCategory(tab.id)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   selectedCategory === tab.id
-                    ? "bg-slate-900 text-white shadow-sm"
+                    ? "bg-slate-900 text-white shadow-xs"
                     : "bg-white text-slate-600 hover:bg-slate-200/70 border border-slate-200"
                 }`}
               >
@@ -77,7 +76,7 @@ export default function Services({ onSelectService }) {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {filteredServices.map((service) => {
             const IconComponent = iconMap[service.iconName] || Hammer;
             const waServiceUrl = `https://wa.me/${BUSINESS_INFO.whatsappNumber}?text=${encodeURIComponent(
@@ -87,34 +86,34 @@ export default function Services({ onSelectService }) {
             return (
               <div
                 key={service.id}
-                className="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-blue-300 transition-all duration-300 flex flex-col justify-between group text-left"
+                className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-blue-300 transition-all duration-300 flex flex-col justify-between group text-left"
               >
                 <div>
                   {/* Card Top: Icon & Badge */}
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white shadow-sm">
-                      <IconComponent className="w-7 h-7" />
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:bg-blue-600 group-hover:text-white shadow-2xs">
+                      <IconComponent className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     {service.badge && (
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/80">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/80">
                         {service.badge}
                       </span>
                     )}
                   </div>
 
                   {/* Title & Short Description */}
-                  <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                     {service.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-2.5 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
                     {service.shortDesc}
                   </p>
 
                   {/* Feature Checklist */}
-                  <ul className="mt-5 space-y-2.5 text-xs text-slate-700">
+                  <ul className="mt-4 space-y-2 text-xs text-slate-700">
                     {service.features.map((feat, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -122,11 +121,11 @@ export default function Services({ onSelectService }) {
                 </div>
 
                 {/* Card Footer: Action Buttons */}
-                <div className="mt-6 pt-5 border-t border-slate-100">
-                  <div className="grid grid-cols-2 gap-2.5">
+                <div className="mt-5 pt-4 border-t border-slate-100">
+                  <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => onSelectService(service)}
-                      className="w-full inline-flex items-center justify-center px-3 py-3 rounded-xl text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-600 hover:text-white transition-all duration-200 cursor-pointer"
+                      className="w-full inline-flex items-center justify-center px-2.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-600 hover:text-white transition-all duration-200 cursor-pointer"
                     >
                       <span>Book Quote</span>
                       <ArrowRight className="w-3.5 h-3.5 ml-1" />
@@ -136,7 +135,7 @@ export default function Services({ onSelectService }) {
                       href={waServiceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center px-3 py-3 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-600 hover:text-white transition-all duration-200"
+                      className="w-full inline-flex items-center justify-center px-2.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-600 hover:text-white transition-all duration-200"
                     >
                       <MessageSquare className="w-3.5 h-3.5 mr-1" />
                       <span>WhatsApp</span>
@@ -149,23 +148,23 @@ export default function Services({ onSelectService }) {
         </div>
 
         {/* Custom Job Callout */}
-        <div className="mt-12 bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-lg text-left">
+        <div className="mt-8 sm:mt-12 bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 sm:gap-6 shadow-md text-left">
           <div className="space-y-1">
-            <h4 className="text-lg sm:text-xl font-bold">
-              Have a bespoke repair or multiple odd jobs on your list?
+            <h4 className="text-base sm:text-lg font-bold">
+              Have a bespoke repair or multiple odd jobs?
             </h4>
             <p className="text-xs sm:text-sm text-slate-300">
-              Send us a photo or short video on WhatsApp, and get an immediate fixed-price assessment.
+              Send us a photo or short video on WhatsApp for an immediate assessment.
             </p>
           </div>
           <a
             href={BUSINESS_INFO.whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl font-bold text-sm text-slate-900 bg-emerald-400 hover:bg-emerald-300 shadow-md transition-all active:scale-95 shrink-0"
+            className="inline-flex items-center justify-center px-5 py-3 rounded-xl font-bold text-xs sm:text-sm text-slate-900 bg-emerald-400 hover:bg-emerald-300 shadow-sm transition-all active:scale-95 shrink-0"
           >
-            <MessageSquare className="w-4 h-4 mr-2 text-slate-900" />
-            Send Video on WhatsApp
+            <MessageSquare className="w-4 h-4 mr-1.5 text-slate-900" />
+            <span>Send Video on WhatsApp</span>
           </a>
         </div>
 

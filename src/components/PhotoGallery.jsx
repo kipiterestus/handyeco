@@ -157,25 +157,26 @@ export default function PhotoGallery({ onOpenLightbox }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-70 group-hover:opacity-80 transition-opacity" />
 
                 {/* Top Badges */}
-                <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/95 text-slate-900 shadow-sm backdrop-blur-xs">
+                <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 flex items-center justify-between gap-2 z-10">
+                  <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-white/95 text-slate-900 shadow-sm backdrop-blur-xs truncate max-w-[140px] sm:max-w-none">
                     {currentItem.badge}
                   </span>
 
                   {currentItem.isBeforeAfter && (
                     <button
                       onClick={(e) => toggleBeforeAfter(currentItem.id, e)}
-                      className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-sm flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer shrink-0"
                     >
-                      <Layers className="w-3.5 h-3.5" />
-                      <span>{showBefore ? "Showing: BEFORE (Click for After)" : "Showing: AFTER (Click for Before)"}</span>
+                      <Layers className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                      <span className="hidden sm:inline">{showBefore ? "Showing: BEFORE (Click for After)" : "Showing: AFTER (Click for Before)"}</span>
+                      <span className="sm:hidden">{showBefore ? "Before (Tap)" : "After (Tap)"}</span>
                     </button>
                   )}
                 </div>
 
                 {/* Hover Click to enlarge icon */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                  <span className="p-3 rounded-2xl bg-white/95 text-slate-900 shadow-xl flex items-center gap-2 text-xs font-bold">
+                  <span className="p-2.5 sm:p-3 rounded-2xl bg-white/95 text-slate-900 shadow-xl flex items-center gap-2 text-xs font-bold">
                     <Maximize2 className="w-4 h-4 text-blue-600" />
                     <span>Click for Fullscreen Zoom</span>
                   </span>
@@ -184,17 +185,17 @@ export default function PhotoGallery({ onOpenLightbox }) {
                 {/* Navigation arrows directly over image */}
                 <button
                   onClick={(e) => { e.stopPropagation(); prevSlide(); }}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-slate-900 flex items-center justify-center shadow-lg transition-all cursor-pointer"
+                  className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/85 hover:bg-white text-slate-900 flex items-center justify-center shadow-lg transition-all cursor-pointer"
                   aria-label="Previous image"
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); nextSlide(); }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-slate-900 flex items-center justify-center shadow-lg transition-all cursor-pointer"
+                  className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/85 hover:bg-white text-slate-900 flex items-center justify-center shadow-lg transition-all cursor-pointer"
                   aria-label="Next image"
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
 
                 {/* Bottom Image Info */}
