@@ -27,7 +27,11 @@ export default function ServiceAreas() {
                   Where We Work in Scotland
                 </h3>
                 <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5">
-                  Full coverage across Edinburgh & Lothians &bull; <span className="font-semibold text-slate-800">Minimum call-out fee £65</span>
+                  Full coverage across Edinburgh & Lothians
+                </p>
+                <p className="text-[11px] sm:text-xs font-bold text-slate-800 mt-0.5 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                  <span>Minimum call-out fee £65 (Edinburgh Area)</span>
                 </p>
               </div>
             </div>

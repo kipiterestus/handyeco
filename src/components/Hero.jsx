@@ -106,7 +106,7 @@ export default function Hero({ onOpenQuote }) {
             {/* Quick response disclaimer */}
             <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500 pt-0.5">
               <Clock className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span>Average response time under 15 minutes on WhatsApp.</span>
+              <span>Average response time: 15–30 mins on WhatsApp.</span>
             </div>
           </div>
 
@@ -117,18 +117,14 @@ export default function Hero({ onOpenQuote }) {
               {/* Main Visual Image Card */}
               <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[4/3] sm:aspect-[4/5] bg-slate-900">
                 <img
-                  src="/hero-repair-opt.jpg"
-                  alt="Professional Handyman assembling furniture with cordless drill in Edinburgh"
+                  src="/hero-handyman-opt.jpg"
+                  alt="Professional Handyman ready for repairs and assembly in Edinburgh"
                   className="w-full h-full object-cover object-top"
                 />
                 
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/20" />
 
                 <div className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 text-white text-left">
-                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-blue-300 mb-0.5">
-                    <Sparkles className="w-3 h-3 text-blue-400" />
-                    <span>Certified Craftsmanship</span>
-                  </div>
                   <h3 className="text-base sm:text-xl font-bold leading-snug">
                     Over 500+ Edinburgh Homes Maintained
                   </h3>

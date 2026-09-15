@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Star, MapPin, Phone, MessageSquare } from 'lucide-react';
+import { Menu, X, Star, MapPin, Phone, MessageSquare, Clock } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/businessData';
 
 export default function Navbar() {
@@ -41,7 +41,12 @@ export default function Navbar() {
             </span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-slate-400 text-xs font-medium">
+          <div className="hidden sm:flex items-center gap-3 text-slate-400 text-xs font-medium">
+            <span className="inline-flex items-center text-emerald-400 font-semibold gap-1">
+              <Clock className="w-3.5 h-3.5 text-emerald-400" />
+              Avg Response: 15–30 mins
+            </span>
+            <span className="text-slate-600">&bull;</span>
             <span>Minimum call-out fee £65 (Edinburgh Area)</span>
           </div>
 
