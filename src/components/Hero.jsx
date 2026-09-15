@@ -8,9 +8,14 @@ import {
   ArrowRight, 
   Clock 
 } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 import { BUSINESS_INFO } from '../data/businessData';
 
 export default function Hero({ onOpenQuote }) {
+  const { content } = useContent();
+  const hero = content.hero || {};
+  const config = content.siteConfig || {};
+
   return (
     <section className="relative pt-24 pb-12 sm:pt-32 sm:pb-16 md:pt-36 md:pb-20 overflow-hidden bg-gradient-to-b from-blue-50/60 via-slate-50 to-white">
       {/* Background Soft Ambient Light */}
@@ -30,7 +35,7 @@ export default function Hero({ onOpenQuote }) {
               >
                 <span className="flex items-center gap-1 bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-emerald-200 text-[10px] sm:text-xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                  <span>Google & MyBuilder</span>
+                  <span>{hero.ratingPlatform || 'Google & MyBuilder'}</span>
                 </span>
                 <div className="flex items-center text-amber-500 font-bold">
                   <div className="flex mr-1">
@@ -38,7 +43,7 @@ export default function Hero({ onOpenQuote }) {
                       <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <span>5.0 / 5.0</span>
+                  <span>{hero.ratingScore || '5.0 / 5.0'}</span>
                 </div>
                 <span className="text-slate-300">|</span>
                 <span className="font-bold text-blue-600 group-hover:text-blue-800 flex items-center gap-0.5">
@@ -50,36 +55,31 @@ export default function Hero({ onOpenQuote }) {
 
             {/* Main Headline */}
             <h1 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.18] sm:leading-[1.15]">
-              Edinburgh's Trusted Handyman for{" "}
+              {hero.headlineStart || "Edinburgh's Trusted Handyman for"}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-600">
-                Repairs, Assembly
+                {hero.headlineHighlight || "Repairs, Assembly"}
               </span>{" "}
-              & Home Renovations.
+              {hero.headlineEnd || "& Home Renovations."}
             </h1>
 
             {/* Description */}
             <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-2xl font-normal">
-              Specialist in flat-pack furniture assembly, TV wall mounting into Edinburgh stone walls, interior painting, and mould-free bathroom silicone sealing. Fast, reliable, and exceptionally tidy workmanship.
+              {hero.description || "Specialist in flat-pack furniture assembly, TV wall mounting into Edinburgh stone walls, interior painting, and mould-free bathroom silicone sealing. Fast, reliable, and exceptionally tidy workmanship."}
             </p>
 
             {/* Key Bullet Checklist */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs sm:text-sm text-slate-700 font-medium">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Punctual, Clean & Spotless Tidy</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Zero Hidden Fees &bull; £65 Minimum Call-Out</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Tenement Specialists (Stone & Plaster)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Prompt WhatsApp Photo Estimates</span>
-              </div>
+              {(hero.bullets || [
+                'Punctual, Clean & Spotless Tidy',
+                'Zero Hidden Fees • £65 Minimum Call-Out',
+                'Tenement Specialists (Stone & Plaster)',
+                'Prompt WhatsApp Photo Estimates'
+              ]).map((bullet, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{bullet}</span>
+                </div>
+              ))}
             </div>
 
             {/* Conversion CTA Group */}
@@ -93,7 +93,7 @@ export default function Hero({ onOpenQuote }) {
               </button>
 
               <a
-                href={BUSINESS_INFO.whatsappUrl}
+                href={config.whatsappUrl || BUSINESS_INFO.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-3.5 sm:px-6 sm:py-4 rounded-xl font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm shadow-emerald-600/20 active:scale-[0.98] transition-all text-sm sm:text-base group"
@@ -106,7 +106,7 @@ export default function Hero({ onOpenQuote }) {
             {/* Quick response disclaimer */}
             <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500 pt-0.5">
               <Clock className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span>Average response time: 15–30 mins on WhatsApp.</span>
+              <span>{config.responseTimeText || 'Average response time: 15–30 mins on WhatsApp.'}</span>
             </div>
           </div>
 
@@ -117,7 +117,7 @@ export default function Hero({ onOpenQuote }) {
               {/* Main Visual Image Card */}
               <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[4/3] sm:aspect-[4/5] bg-slate-900">
                 <img
-                  src="/hero-handyman-edinburgh.jpg"
+                  src={hero.heroImage || '/hero-handyman-edinburgh.jpg'}
                   alt="Edinburgh Handyman assembling furniture with cordless drill in a home apartment"
                   className="w-full h-full object-cover object-top"
                 />
@@ -126,10 +126,10 @@ export default function Hero({ onOpenQuote }) {
 
                 <div className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 text-white text-left">
                   <h3 className="text-base sm:text-xl font-bold leading-snug">
-                    Over 500+ Edinburgh Homes Maintained
+                    {hero.completedCount || 'Over 500+ Edinburgh Homes Maintained'}
                   </h3>
                   <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5">
-                    From Morningside flats to New Town tenements.
+                    {hero.completedSubtext || 'From Morningside flats to New Town tenements.'}
                   </p>
                 </div>
               </div>

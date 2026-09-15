@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ServiceAreas from './components/ServiceAreas';
@@ -11,10 +11,19 @@ import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import MobileStickyBar from './components/MobileStickyBar';
 import LightboxModal from './components/LightboxModal';
+import AdminLayout from './admin/AdminLayout';
+import { ContentProvider } from './context/ContentContext';
 
 export default function App() {
   const [selectedService, setSelectedService] = useState(null);
   const [lightboxItem, setLightboxItem] = useState(null);
+  const [currentPath, setCurrentPath] = useState(() => window.location.pathname);
+
+  useEffect(() => {
+    const handlePopState = () => setCurrentPath(window.location.pathname);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const scrollToQuote = (service = null) => {
     if (service) {
@@ -27,45 +36,51 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white font-sans">
-      {/* Top Sticky Navigation */}
-      <Navbar />
+    <ContentProvider>
+      {currentPath.startsWith('/admin') ? (
+        <AdminLayout />
+      ) : (
+        <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white font-sans">
+          {/* Top Sticky Navigation */}
+          <Navbar />
 
-      {/* Main Content Sections */}
-      <main className="flex-1">
-        {/* 1. Hero Section with 5.0 Google Rating & Dual CTAs */}
-        <Hero onOpenQuote={() => scrollToQuote()} />
+          {/* Main Content Sections */}
+          <main className="flex-1">
+            {/* 1. Hero Section with 5.0 Google Rating & Dual CTAs */}
+            <Hero onOpenQuote={() => scrollToQuote()} />
 
-        {/* 2. Where We Work in Scotland (Compact & Minimal with £65 min call-out) */}
-        <ServiceAreas />
+            {/* 2. Where We Work in Scotland */}
+            <ServiceAreas />
 
-        {/* 3. Simple 3-Step Process (Connected seamlessly via left-side arrow from Where We Work) */}
-        <HowItWorks onOpenQuote={() => scrollToQuote()} />
+            {/* 3. Simple 3-Step Process */}
+            <HowItWorks onOpenQuote={() => scrollToQuote()} />
 
-        {/* 4. Quality Home Repairs & Assembly Done Right (Clean cards with Book Quote & WhatsApp only) */}
-        <Services onSelectService={(srv) => scrollToQuote(srv)} />
+            {/* 4. Quality Home Repairs & Assembly Done Right */}
+            <Services onSelectService={(srv) => scrollToQuote(srv)} />
 
-        {/* 5. Verified Customer Reviews (Google & MyBuilder, Real names, pure text, no photos) */}
-        <GoogleReviews />
+            {/* 5. Verified Customer Reviews (Google & MyBuilder) */}
+            <GoogleReviews />
 
-        {/* 6. Recent Completed Work & Client Uploads (Rotating Carousel & Grid Modes) */}
-        <PhotoGallery onOpenLightbox={(item) => setLightboxItem(item)} />
+            {/* 6. Recent Completed Work (Minimalist Apple-style Photo Gallery) */}
+            <PhotoGallery onOpenLightbox={(item) => setLightboxItem(item)} />
 
-        {/* 7. Interactive Free Quote Request Form */}
-        <QuoteForm preselectedService={selectedService} />
+            {/* 7. Interactive Free Quote Request Form */}
+            <QuoteForm preselectedService={selectedService} />
 
-        {/* 8. Frequently Asked Questions (with updated £65 callout fee) */}
-        <FAQ />
-      </main>
+            {/* 8. Frequently Asked Questions */}
+            <FAQ />
+          </main>
 
-      {/* Footer */}
-      <Footer />
+          {/* Footer */}
+          <Footer />
 
-      {/* Mobile Sticky Quick Action Bar */}
-      <MobileStickyBar onOpenQuote={() => scrollToQuote()} />
+          {/* Mobile Sticky Quick Action Bar */}
+          <MobileStickyBar onOpenQuote={() => scrollToQuote()} />
 
-      {/* Fullscreen Photo Lightbox Modal */}
-      <LightboxModal item={lightboxItem} onClose={() => setLightboxItem(null)} />
-    </div>
+          {/* Fullscreen Photo Lightbox Modal */}
+          <LightboxModal item={lightboxItem} onClose={() => setLightboxItem(null)} />
+        </div>
+      )}
+    </ContentProvider>
   );
 }

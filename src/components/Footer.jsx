@@ -1,8 +1,12 @@
 import React from 'react';
 import { Phone, Mail, MapPin, Star, ShieldCheck, Clock, ExternalLink, MessageSquare } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/businessData';
+import { useContent } from '../context/ContentContext';
 
 export default function Footer() {
+  const { content } = useContent();
+  const siteConfig = content.siteConfig || BUSINESS_INFO;
+
   return (
     <footer className="bg-slate-950 text-slate-400 text-xs border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-28 sm:pb-12 text-left">
@@ -18,7 +22,7 @@ export default function Footer() {
               />
             </a>
             <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
-              Handyeco provides trusted, 5-star rated handyman, assembly, mounting, painting, and maintenance services across Edinburgh and surrounding Lothians.
+              {siteConfig.businessName || "Handyeco"} provides trusted, 5-star rated handyman, assembly, mounting, painting, and maintenance services across Edinburgh and surrounding Lothians.
             </p>
             <div className="flex items-center gap-2 pt-2">
               <div className="flex text-amber-400">
@@ -27,7 +31,7 @@ export default function Footer() {
                 ))}
               </div>
               <span className="text-white font-bold">5.0 Star</span>
-              <span className="text-slate-500">&bull; 48 Google Reviews</span>
+              <span className="text-slate-500">&bull; Verified Google & MyBuilder</span>
             </div>
           </div>
 
@@ -71,31 +75,31 @@ export default function Footer() {
             <ul className="space-y-3 text-xs">
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-blue-400 shrink-0" />
-                <a href={"tel:" + BUSINESS_INFO.phone} className="hover:text-white text-slate-300 font-semibold">
-                  {BUSINESS_INFO.displayPhone}
+                <a href={"tel:" + (siteConfig.phone || BUSINESS_INFO.phone)} className="hover:text-white text-slate-300 font-semibold">
+                  {siteConfig.displayPhone || siteConfig.phone || BUSINESS_INFO.displayPhone}
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <MessageSquare className="w-4 h-4 text-emerald-400 shrink-0" />
-                <a href={BUSINESS_INFO.whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white text-slate-300">
-                  WhatsApp: +44 7760 696723
+                <a href={siteConfig.whatsappUrl || BUSINESS_INFO.whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white text-slate-300">
+                  WhatsApp: {siteConfig.whatsappNumber || "+44 7760 696723"}
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-slate-400 shrink-0" />
-                <a href={"mailto:" + BUSINESS_INFO.email} className="hover:text-white text-slate-300">
-                  {BUSINESS_INFO.email}
+                <a href={"mailto:" + (siteConfig.email || BUSINESS_INFO.email)} className="hover:text-white text-slate-300">
+                  {siteConfig.email || BUSINESS_INFO.email}
                 </a>
               </li>
               <li className="flex items-start gap-2 pt-1 text-slate-400">
                 <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <span>Mon - Sat: 8:00 AM - 6:00 PM</span>
+                <span>{siteConfig.workingHours || "Mon - Sat: 8:00 AM - 6:00 PM"}</span>
               </li>
             </ul>
 
             <div className="pt-4 flex flex-col gap-2.5">
               <a
-                href={BUSINESS_INFO.googleProfileUrl}
+                href={siteConfig.googleProfileUrl || BUSINESS_INFO.googleProfileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold transition-colors"
@@ -105,7 +109,7 @@ export default function Footer() {
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
               <a
-                href={BUSINESS_INFO.myBuilderUrl}
+                href={siteConfig.myBuilderUrl || BUSINESS_INFO.myBuilderUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 font-bold transition-colors"

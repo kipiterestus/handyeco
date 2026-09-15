@@ -1,9 +1,21 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-import fs from 'fs'
-import path from 'path'
-import { sendTelegramNotification } from './server/telegram.js'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import fs from 'fs';
+import path from 'path';
+import { 
+  getAllContent, 
+  updateSection, 
+  saveBase64Image, 
+  getQuotes, 
+  saveQuoteRecord, 
+  updateQuoteStatus, 
+  verifyAdminPassword, 
+  createAdminToken, 
+  isValidToken, 
+  revokeToken 
+} from './server/store.js';
+import { sendTelegramNotification } from './server/telegram.js';
 
 function readEnv() {
   const envPath = path.resolve(process.cwd(), '.env');
@@ -21,45 +33,138 @@ function readEnv() {
   return env;
 }
 
-const telegramApiPlugin = () => ({
-  name: 'telegram-api-plugin',
+function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => {
+      try {
+        resolve(body ? JSON.parse(body) : {});
+      } catch (err) {
+        reject(err);
+      }
+    });
+    req.on('error', reject);
+  });
+}
+
+const backendApiPlugin = () => ({
+  name: 'backend-api-plugin',
   configureServer(server) {
     server.middlewares.use(async (req, res, next) => {
-      if (req.url === '/api/quote' && req.method === 'POST') {
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', async () => {
-          try {
-            const quote = JSON.parse(body || '{}');
-            console.log('\n[Vite API] 📩 Yeni teklif alındı:', quote.name, quote.phone, quote.service);
+      // Only intercept /api/*
+      if (!req.url?.startsWith('/api/')) return next();
 
-            // Log locally to server/quotes.json
-            const quotesPath = path.resolve(process.cwd(), 'server/quotes.json');
-            let quotes = [];
-            try {
-              if (fs.existsSync(quotesPath)) quotes = JSON.parse(fs.readFileSync(quotesPath, 'utf8') || '[]');
-            } catch (e) {}
-            const entry = { id: 'quote_' + Date.now(), receivedAt: new Date().toISOString(), ...quote };
-            quotes.unshift(entry);
-            fs.writeFileSync(quotesPath, JSON.stringify(quotes, null, 2), 'utf8');
+      const url = new URL(req.url, 'http://localhost');
+      const pathname = url.pathname;
+      const method = req.method;
 
-            const env = readEnv();
-            const token = process.env.TELEGRAM_BOT_TOKEN || env.TELEGRAM_BOT_TOKEN;
-            const chatId = process.env.TELEGRAM_CHAT_ID || env.TELEGRAM_CHAT_ID;
-
-            const tgRes = await sendTelegramNotification(quote, token, chatId);
-
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ success: true, quoteId: entry.id, telegramDelivered: tgRes.delivered }));
-          } catch (err) {
-            console.error('[Vite API] Hata:', err);
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ success: true, warning: err.message }));
-          }
+      const sendJson = (status, obj) => {
+        res.writeHead(status, {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
         });
-        return;
+        res.end(JSON.stringify(obj));
+      };
+
+      try {
+        // 1. Health check
+        if (pathname === '/api/health' && method === 'GET') {
+          const env = readEnv();
+          return sendJson(200, {
+            status: 'ok',
+            service: 'Handyeco Full Stack Backend API',
+            telegramConfigured: Boolean(process.env.TELEGRAM_BOT_TOKEN || env.TELEGRAM_BOT_TOKEN)
+          });
+        }
+
+        // 2. Public Content Fetch
+        if (pathname === '/api/content' && method === 'GET') {
+          const content = getAllContent();
+          return sendJson(200, { success: true, content });
+        }
+
+        // 3. Customer Quote Submission
+        if (pathname === '/api/quote' && method === 'POST') {
+          const quote = await parseBody(req);
+          console.log('\n[API] 📩 New quote submission:', quote.name, quote.phone, quote.service);
+          const saved = saveQuoteRecord(quote);
+          const env = readEnv();
+          const token = process.env.TELEGRAM_BOT_TOKEN || env.TELEGRAM_BOT_TOKEN;
+          const chatId = process.env.TELEGRAM_CHAT_ID || env.TELEGRAM_CHAT_ID;
+          const tgRes = await sendTelegramNotification(quote, token, chatId);
+          return sendJson(200, { success: true, quoteId: saved.id, telegramDelivered: tgRes.delivered });
+        }
+
+        // 4. Admin Auth Login
+        if (pathname === '/api/auth/login' && method === 'POST') {
+          const { password } = await parseBody(req);
+          if (verifyAdminPassword(password)) {
+            const token = createAdminToken();
+            console.log('[Auth] Admin logged in.');
+            return sendJson(200, { success: true, token });
+          }
+          return sendJson(401, { success: false, error: 'Invalid admin password' });
+        }
+
+        // 5. Auth Verify
+        if (pathname === '/api/auth/verify' && method === 'GET') {
+          const auth = req.headers.authorization;
+          const token = auth?.startsWith('Bearer ') ? auth.substring(7) : null;
+          return sendJson(200, { valid: isValidToken(token) });
+        }
+
+        // 6. Auth Logout
+        if (pathname === '/api/auth/logout' && method === 'POST') {
+          const auth = req.headers.authorization;
+          const token = auth?.startsWith('Bearer ') ? auth.substring(7) : null;
+          revokeToken(token);
+          return sendJson(200, { success: true });
+        }
+
+        // Protected routes auth guard check
+        const auth = req.headers.authorization;
+        const token = auth?.startsWith('Bearer ') ? auth.substring(7) : null;
+        const isAuth = isValidToken(token);
+
+        // 7. Update Section Content
+        if (pathname.startsWith('/api/content/') && method === 'PUT') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const section = pathname.replace('/api/content/', '');
+          const body = await parseBody(req);
+          const updated = updateSection(section, body);
+          return sendJson(200, { success: true, section, data: updated });
+        }
+
+        // 8. Image Upload
+        if (pathname === '/api/upload' && method === 'POST') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const { dataUrl, filename } = await parseBody(req);
+          const publicUrl = await saveBase64Image(dataUrl, filename);
+          return sendJson(200, { success: true, url: publicUrl });
+        }
+
+        // 9. Quotes List
+        if (pathname === '/api/quotes' && method === 'GET') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const quotes = getQuotes();
+          return sendJson(200, { success: true, quotes });
+        }
+
+        // 10. Update Quote Status
+        if (pathname.startsWith('/api/quotes/') && method === 'PATCH') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const id = pathname.replace('/api/quotes/', '');
+          const updates = await parseBody(req);
+          const updated = updateQuoteStatus(id, updates);
+          return sendJson(200, { success: true, quote: updated });
+        }
+
+        next();
+      } catch (err) {
+        console.error('[API Error]:', err);
+        return sendJson(500, { success: false, error: err.message });
       }
-      next();
     });
   }
 });
@@ -69,6 +174,6 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    telegramApiPlugin(),
+    backendApiPlugin(),
   ],
-})
+});

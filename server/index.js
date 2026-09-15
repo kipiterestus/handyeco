@@ -1,8 +1,19 @@
 import express from 'express';
 import cors from 'cors';
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { 
+  getAllContent, 
+  updateSection, 
+  saveBase64Image, 
+  getQuotes, 
+  saveQuoteRecord, 
+  updateQuoteStatus, 
+  verifyAdminPassword, 
+  createAdminToken, 
+  isValidToken, 
+  revokeToken 
+} from './store.js';
 import { sendTelegramNotification } from './telegram.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,87 +23,155 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
-const QUOTES_FILE = path.join(__dirname, 'quotes.json');
+// Serve uploaded images statically
+app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
 
-// Ensure quotes storage file exists
-function getSavedQuotes() {
-  try {
-    if (fs.existsSync(QUOTES_FILE)) {
-      const data = fs.readFileSync(QUOTES_FILE, 'utf8');
-      return JSON.parse(data || '[]');
-    }
-  } catch (e) {
-    console.error('Error reading quotes file:', e);
+// Auth middleware guard for protected routes
+function requireAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
+  if (!isValidToken(token)) {
+    return res.status(401).json({ success: false, error: 'Unauthorized. Please log in.' });
   }
-  return [];
+  next();
 }
 
-function saveQuote(quote) {
-  try {
-    const list = getSavedQuotes();
-    const entry = {
-      id: 'quote_' + Date.now(),
-      receivedAt: new Date().toISOString(),
-      ...quote
-    };
-    list.unshift(entry);
-    fs.writeFileSync(QUOTES_FILE, JSON.stringify(list, null, 2), 'utf8');
-    return entry;
-  } catch (e) {
-    console.error('Error writing quotes file:', e);
-    return quote;
-  }
-}
+// --- PUBLIC API ROUTES ---
 
-// Health check endpoint
+// 1. Health check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
-    service: 'Handyeco Quote Notification API',
-    telegramConfigured: Boolean(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID)
+    service: 'Handyeco Full Stack Backend API',
+    telegramConfigured: Boolean(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID),
+    timestamp: new Date().toISOString()
   });
 });
 
-// List received quotes
-app.get('/api/quotes', (req, res) => {
-  const quotes = getSavedQuotes();
-  res.json({ success: true, count: quotes.length, quotes });
+// 2. Fetch full public site content
+app.get('/api/content', (req, res) => {
+  try {
+    const content = getAllContent();
+    res.json({ success: true, content });
+  } catch (err) {
+    console.error('[API] Error getting content:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
-// Quote submission endpoint
+// 3. Customer quote submission with Telegram dispatch
 app.post('/api/quote', async (req, res) => {
   try {
     const quote = req.body;
-    console.log('\n[API] 📩 Yeni teklif talebi alındı:', quote.name, quote.phone, quote.service);
+    console.log('\n[API] 📩 New quote submission received:', quote.name, quote.phone, quote.service);
 
-    // 1. Always persist quote locally so no customer data is lost
-    const saved = saveQuote(quote);
+    // Save quote record locally
+    const saved = saveQuoteRecord(quote);
 
-    // 2. Dispatch Telegram notification
+    // Send Telegram alert
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
-
     const telegramResult = await sendTelegramNotification(quote, botToken, chatId);
 
     res.status(200).json({
       success: true,
-      message: 'Quote received and processed successfully',
+      message: 'Quote received and saved',
       quoteId: saved.id,
       telegramDelivered: telegramResult.delivered
     });
   } catch (error) {
-    console.error('[API] Teklif işlenirken hata:', error);
-    // Return 200 with error note so frontend doesn't show a harsh failure to the customer
+    console.error('[API] Error processing quote:', error);
     res.status(200).json({
       success: true,
-      warning: 'Quote recorded locally but notification dispatch had an issue: ' + error.message
+      warning: 'Quote recorded with fallback: ' + error.message
     });
   }
 });
 
+// --- AUTHENTICATION ROUTES ---
+
+app.post('/api/auth/login', (req, res) => {
+  const { password } = req.body;
+  if (verifyAdminPassword(password)) {
+    const token = createAdminToken();
+    console.log('[Auth] Admin logged in successfully.');
+    return res.json({ success: true, token });
+  }
+  console.warn('[Auth] Failed admin login attempt.');
+  return res.status(401).json({ success: false, error: 'Invalid admin password.' });
+});
+
+app.get('/api/auth/verify', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
+  res.json({ valid: isValidToken(token) });
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
+  revokeToken(token);
+  res.json({ success: true });
+});
+
+// --- PROTECTED ADMIN API ROUTES ---
+
+// Update any content section
+app.put('/api/content/:section', requireAuth, (req, res) => {
+  try {
+    const { section } = req.params;
+    const data = req.body;
+    const updated = updateSection(section, data);
+    console.log(`[Store] Section '${section}' updated by admin.`);
+    res.json({ success: true, section, data: updated });
+  } catch (err) {
+    console.error('[API] Update error:', err);
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// Image upload and automatic Sharp optimization
+app.post('/api/upload', requireAuth, async (req, res) => {
+  try {
+    const { dataUrl, filename } = req.body;
+    if (!dataUrl) {
+      return res.status(400).json({ success: false, error: 'dataUrl is required' });
+    }
+    const publicUrl = await saveBase64Image(dataUrl, filename);
+    console.log(`[Upload] Image saved and optimized: ${publicUrl}`);
+    res.json({ success: true, url: publicUrl });
+  } catch (err) {
+    console.error('[API] Upload error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Get all quote leads
+app.get('/api/quotes', requireAuth, (req, res) => {
+  try {
+    const quotes = getQuotes();
+    res.json({ success: true, quotes });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Update quote lead status / notes
+app.patch('/api/quotes/:id', requireAuth, (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    const updated = updateQuoteStatus(id, updates);
+    res.json({ success: true, quote: updated });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
 app.listen(PORT, () => {
-  console.log(`\n🚀 Handyeco API Server çalışıyor: http://localhost:${PORT}`);
-  console.log(`📱 Telegram Bot Durumu: ${process.env.TELEGRAM_BOT_TOKEN ? '✅ Aktif' : '⚠️ Yapılandırılmadı (.env dosyasını kontrol edin)'}`);
+  console.log(`\n🚀 Handyeco API Server active at: http://localhost:${PORT}`);
+  console.log(`📱 Telegram Bot: ${process.env.TELEGRAM_BOT_TOKEN ? '✅ Configured' : '⚠️ Pending credentials in .env'}`);
 });

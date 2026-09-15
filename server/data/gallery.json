@@ -1,0 +1,64 @@
+[
+  {
+    "id": "gal-1",
+    "title": "IKEA PAX 3-Door Wardrobe Assembly",
+    "category": "assembly",
+    "location": "Morningside, Edinburgh (EH10)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=1000&auto=format&fit=crop&q=80",
+    "badge": "Flat-Pack Pro"
+  },
+  {
+    "id": "gal-2",
+    "title": "75-inch OLED TV Wall Mount & Concealed Cables",
+    "category": "mounting",
+    "location": "New Town, Edinburgh (EH3)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=1000&auto=format&fit=crop&q=80",
+    "badge": "Stone Wall Mount"
+  },
+  {
+    "id": "gal-3",
+    "title": "Bathroom Silicone Mould Removal & Re-Sealing",
+    "category": "repairs",
+    "location": "Leith, Edinburgh (EH6)",
+    "date": "September 2026",
+    "isBeforeAfter": true,
+    "beforeImage": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&auto=format&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1620626011761-996317b8d101?w=1000&auto=format&fit=crop&q=80",
+    "badge": "Mould-Free Seal"
+  },
+  {
+    "id": "gal-4",
+    "title": "Living Room Feature Wall & Skirting Painting",
+    "category": "painting",
+    "location": "Stockbridge, Edinburgh (EH4)",
+    "date": "August 2026",
+    "isBeforeAfter": false,
+    "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&auto=format&fit=crop&q=80",
+    "badge": "Flawless Finish"
+  },
+  {
+    "id": "gal-5",
+    "title": "Kitchen Cabinet Modern Architectural Vinyl Wrap",
+    "category": "kitchen",
+    "location": "Musselburgh, East Lothian (EH21)",
+    "date": "August 2026",
+    "isBeforeAfter": true,
+    "beforeImage": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=80",
+    "image": "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=1000&auto=format&fit=crop&q=80",
+    "badge": "Kitchen Wrap"
+  },
+  {
+    "id": "gal-6",
+    "title": "Solid Oak Floating Shelves & Tenement Alcove",
+    "category": "mounting",
+    "location": "Bruntsfield, Edinburgh (EH10)",
+    "date": "July 2026",
+    "isBeforeAfter": false,
+    "image": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=1000&auto=format&fit=crop&q=80",
+    "badge": "Heavy-Duty Alcove"
+  }
+]

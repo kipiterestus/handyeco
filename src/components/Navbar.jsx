@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Star, MapPin, Phone, MessageSquare, Clock } from 'lucide-react';
-import { BUSINESS_INFO } from '../data/businessData';
+import { useContent } from '../context/ContentContext';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { content } = useContent();
+  const config = content.siteConfig || {};
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,22 +34,22 @@ export default function Navbar() {
           <div className="flex items-center gap-2 truncate">
             <span className="inline-flex items-center text-emerald-400 font-bold shrink-0">
               <span className="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
-              Available for Booking
+              {config.availabilityText || 'Available for Booking'}
             </span>
             <span className="text-slate-500">|</span>
             <span className="inline-flex items-center text-slate-400 truncate">
               <MapPin className="w-3.5 h-3.5 mr-1 text-blue-400 shrink-0" />
-              Edinburgh & Lothians
+              {config.areaCoverage || 'Edinburgh & Lothians'}
             </span>
           </div>
 
           <div className="hidden sm:flex items-center gap-3 text-slate-400 text-xs font-medium">
             <span className="inline-flex items-center text-emerald-400 font-semibold gap-1">
               <Clock className="w-3.5 h-3.5 text-emerald-400" />
-              Avg Response: 15–30 mins
+              Avg Response: {config.responseTime || '15–30 mins'}
             </span>
             <span className="text-slate-600">&bull;</span>
-            <span>Minimum call-out fee £65 (Edinburgh Area)</span>
+            <span>{config.callOutText || 'Minimum call-out fee £65 (Edinburgh Area)'}</span>
           </div>
 
         </div>

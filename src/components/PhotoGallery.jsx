@@ -7,9 +7,15 @@ import {
   Sparkles,
   Repeat
 } from 'lucide-react';
-import { GALLERY_ITEMS } from '../data/galleryData';
+import { GALLERY_ITEMS as FALLBACK_GALLERY } from '../data/galleryData';
+import { useContent } from '../context/ContentContext';
 
 export default function PhotoGallery({ onOpenLightbox }) {
+  const { content } = useContent();
+  const galleryItems = content.gallery && content.gallery.length > 0 
+    ? content.gallery 
+    : FALLBACK_GALLERY;
+
   const [activeTab, setActiveTab] = useState("all");
   const [beforeAfterStates, setBeforeAfterStates] = useState({});
 
@@ -23,8 +29,8 @@ export default function PhotoGallery({ onOpenLightbox }) {
   ];
 
   const filteredItems = activeTab === "all"
-    ? GALLERY_ITEMS
-    : GALLERY_ITEMS.filter(item => item.category === activeTab);
+    ? galleryItems
+    : galleryItems.filter(item => item.category === activeTab);
 
   const toggleBeforeAfter = (id, e) => {
     e.stopPropagation();

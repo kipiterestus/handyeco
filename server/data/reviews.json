@@ -1,0 +1,68 @@
+[
+  {
+    "id": "rev-1",
+    "author": "Callum Robertson",
+    "location": "New Town, Edinburgh (EH3)",
+    "rating": 5,
+    "relativeTime": "1 week ago",
+    "service": "TV Wall Mounting (75\" into Stone)",
+    "platform": "google",
+    "likes": 12,
+    "text": "Ekrem did a fantastic job mounting our heavy 75-inch TV onto our historic stone tenement wall. He brought heavy-duty anchors, laser-levelled it perfectly, and left the room completely spotless. Extremely polite and professional."
+  },
+  {
+    "id": "rev-2",
+    "author": "Sarah MacLeod",
+    "location": "Morningside, Edinburgh (EH10)",
+    "rating": 5,
+    "relativeTime": "2 weeks ago",
+    "service": "IKEA PAX 3-Door Wardrobe Assembly",
+    "platform": "mybuilder",
+    "likes": 19,
+    "text": "Highly recommend Handyeco! Assembled a massive 3-door sliding IKEA wardrobe with interior drawers in just under 3 hours. Everything is rock solid, perfectly aligned, and securely bracketed to the wall. Will hire again."
+  },
+  {
+    "id": "rev-3",
+    "author": "David & Fiona Ross",
+    "location": "Leith, Edinburgh (EH6)",
+    "rating": 5,
+    "relativeTime": "3 weeks ago",
+    "service": "Bathroom Mould Silicone Re-Sealing",
+    "platform": "google",
+    "likes": 8,
+    "text": "Our bath sealant had bad mould and was leaking water into the floor below. Ekrem removed all the old silicone, sanitised the joint, and laid down a pristine white silicone bead. Super neat lines and completely watertight."
+  },
+  {
+    "id": "rev-4",
+    "author": "Heather Paterson",
+    "location": "Stockbridge, Edinburgh (EH4)",
+    "rating": 5,
+    "relativeTime": "1 month ago",
+    "service": "Living Room Painting & Skirting Finish",
+    "platform": "google",
+    "likes": 14,
+    "text": "Punctual, tidy, and great attention to detail. Covered every inch of carpet with clean dust sheets and prepped the walls thoroughly before two coats of paint. The finish is flawless. Very fair price for Edinburgh."
+  },
+  {
+    "id": "rev-5",
+    "author": "Ross Nicholson",
+    "location": "Marchmont, Edinburgh (EH9)",
+    "rating": 5,
+    "relativeTime": "1 month ago",
+    "service": "Tenement Internal Doors Trimming",
+    "platform": "mybuilder",
+    "likes": 11,
+    "text": "After fitting thick new carpets our heavy tenement doors wouldn't shut properly. He arrived right on time, took the doors off, planed the bottoms smoothly outside, and re-hung them. Smooth swing and zero drag. Superb craftsman."
+  },
+  {
+    "id": "rev-6",
+    "author": "Gillian Wright",
+    "location": "Musselburgh, East Lothian (EH21)",
+    "rating": 5,
+    "relativeTime": "2 months ago",
+    "service": "Kitchen Cabinet Vinyl Wrapping",
+    "platform": "mybuilder",
+    "likes": 16,
+    "text": "Completely transformed our dated beech kitchen cupboards with matte charcoal wrap. Saved us thousands compared to buying new units. The finish looks factory-made with zero air bubbles."
+  }
+]

@@ -1,0 +1,107 @@
+[
+  {
+    "id": "flatpack-assembly",
+    "title": "Flat-Pack Furniture Assembly",
+    "category": "assembly",
+    "iconName": "Wrench",
+    "badge": "IKEA & Wayfair Pro",
+    "description": "Expert assembly of all flat-pack furniture. From multi-door IKEA PAX wardrobes with sliding doors to complex ottoman beds, dining tables, and office desks.",
+    "popular": true,
+    "bullets": [
+      "IKEA PAX, Hemnes, Brimnes & Songesand specialists",
+      "Heavy wardrobes safely secured and anchored to walls",
+      "All packaging and cardboard neatly bundled or removed",
+      "Fixed transparent quote per item before work starts"
+    ]
+  },
+  {
+    "id": "tv-wall-mounting",
+    "title": "TV & Heavy Wall Mounting",
+    "category": "mounting",
+    "iconName": "Tv",
+    "badge": "Laser-Level Precision",
+    "description": "Secure wall mounting into historic Edinburgh sandstone, brick masonry, or modern stud partitions. Concealed wiring and soundbar alignment.",
+    "popular": true,
+    "bullets": [
+      "Laser-level precision alignment at optimal eye height",
+      "Heavy-duty Fischer fixings for historic Edinburgh tenements",
+      "Discreet paintable cable trunking or in-wall chasing",
+      "Mounting for all TV sizes from 32\" up to 85\" OLED"
+    ]
+  },
+  {
+    "id": "shelving-curtains",
+    "title": "Shelving, Mirrors & Curtain Poles",
+    "category": "mounting",
+    "iconName": "Maximize2",
+    "badge": "Stone & Plaster Fixing",
+    "description": "Solid wall anchoring for heavy bathroom mirrors, gallery art walls, solid oak floating shelves, curtain poles, and window blinds in Edinburgh homes.",
+    "popular": false,
+    "bullets": [
+      "Solid oak floating shelves tested for heavy loads",
+      "Roman blinds, blackout roller blinds & curtain tracks",
+      "High tenement ceilings & awkward alcove fits handled",
+      "Specialist anchors for hollow drywall or crumbly plaster"
+    ]
+  },
+  {
+    "id": "bathroom-silicone",
+    "title": "Mould-Free Bathroom Silicone & Sealing",
+    "category": "repairs",
+    "iconName": "Sparkles",
+    "badge": "100% Waterproof",
+    "description": "Professional stripping of blackened, mouldy, or leaking silicone around baths, shower enclosures, sinks, and kitchen worktops. Pristine new silicone applied.",
+    "popular": true,
+    "bullets": [
+      "Complete mechanical stripping of degraded old sealant",
+      "Surface sterilisation with anti-fungal treatment",
+      "High-grade sanitary grade anti-mould silicone",
+      "Flawless smooth bead tooling with clean tape edges"
+    ]
+  },
+  {
+    "id": "painting-decorating",
+    "title": "Painting & Decorating",
+    "category": "painting",
+    "iconName": "Paintbrush",
+    "badge": "Flawless Finish",
+    "description": "Interior freshening, feature accent walls, water stain remediation, door and skirting woodwork painting, and high-quality paint finishes.",
+    "popular": false,
+    "bullets": [
+      "Crack filling, plaster smoothing & surface preparation",
+      "Skirting boards, architraves & tenement doors glossing",
+      "Dust-sheet protection for all furniture and carpets",
+      "Farrow & Ball, Dulux Heritage & Johnstone finishes"
+    ]
+  },
+  {
+    "id": "kitchen-wrap",
+    "title": "Kitchen Cabinet Vinyl Wrap",
+    "category": "kitchen",
+    "iconName": "Layers",
+    "badge": "Renovation Alternative",
+    "description": "Modernise dated kitchen cupboard doors and drawer fronts with architectural-grade, heat-resistant textured vinyl wrap at a fraction of kitchen replacement cost.",
+    "popular": false,
+    "bullets": [
+      "Matte, gloss, and natural woodgrain textures available",
+      "Heat, moisture & scratch-resistant architectural vinyl",
+      "Seamless edge wrapping with bubble-free precision",
+      "Transform whole kitchen aesthetic in just 1–2 days"
+    ]
+  },
+  {
+    "id": "general-repairs",
+    "title": "General Tenement Repairs & Odd Jobs",
+    "category": "repairs",
+    "iconName": "Hammer",
+    "badge": "Odd Jobs Specialist",
+    "description": "Small home maintenance jobs that require reliable tools and experience: sticky doors trimmed over new carpet, loose handles, toilet seat replacement, and latch repairs.",
+    "popular": false,
+    "bullets": [
+      "Internal doors trimmed & planed to clear thick carpet",
+      "Door handles, mortice latches & cabinet hinges adjusted",
+      "Smoke detector, key safe & doorbell installation",
+      "Tackle your multi-item \"to-do list\" in one efficient booking"
+    ]
+  }
+]

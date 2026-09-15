@@ -1,0 +1,22 @@
+[
+  {
+    "zone": "Central & City",
+    "postcodes": "EH1 - EH3, EH7 - EH8",
+    "areas": "Old Town, New Town, West End, Broughton"
+  },
+  {
+    "zone": "North & Coast",
+    "postcodes": "EH4 - EH6, EH15",
+    "areas": "Leith, Stockbridge, Trinity, Portobello"
+  },
+  {
+    "zone": "South & West",
+    "postcodes": "EH9 - EH14",
+    "areas": "Morningside, Bruntsfield, Corstorphine, Balerno"
+  },
+  {
+    "zone": "Lothians",
+    "postcodes": "EH21 - EH30, EH54",
+    "areas": "Musselburgh, Dalkeith, Queensferry, Livingston"
+  }
+]

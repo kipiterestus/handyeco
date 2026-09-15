@@ -13,16 +13,21 @@ import {
   FileImage
 } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/businessData';
-import { SERVICES } from '../data/servicesData';
+import { SERVICES as FALLBACK_SERVICES } from '../data/servicesData';
+import { useContent } from '../context/ContentContext';
 import confetti from 'canvas-confetti';
 
 export default function QuoteForm({ preselectedService }) {
+  const { content } = useContent();
+  const servicesList = content.services && content.services.length > 0 ? content.services : FALLBACK_SERVICES;
+  const siteConfig = content.siteConfig || BUSINESS_INFO;
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     postcode: "",
     urgency: "flexible",
-    serviceId: preselectedService ? preselectedService.id : "furniture-assembly",
+    serviceId: preselectedService ? preselectedService.id : (servicesList[0]?.id || "furniture-assembly"),
     details: "",
   });
 
@@ -67,10 +72,10 @@ export default function QuoteForm({ preselectedService }) {
       return;
     }
 
-    const selectedServiceName = SERVICES.find(s => s.id === formData.serviceId)?.title || "Handyman Service";
+    const selectedServiceName = servicesList.find(s => s.id === formData.serviceId)?.title || "Handyman Service";
     
     const message = [
-      `*NEW QUOTE REQUEST - HANDYECO*`,
+      `*NEW QUOTE REQUEST - ${siteConfig.businessName || "HANDYECO"}*`,
       `-----------------------------`,
       `*Customer Name:* ${formData.name}`,
       `*Phone Number:* ${formData.phone}`,
@@ -81,7 +86,8 @@ export default function QuoteForm({ preselectedService }) {
       uploadedPhotos.length > 0 ? `*(Attached ${uploadedPhotos.length} photo(s) ready to send)*` : ""
     ].filter(Boolean).join("\n");
 
-    const waUrl = `https://wa.me/${BUSINESS_INFO.whatsappNumber}?text=${encodeURIComponent(message)}`;
+    const waNumber = (siteConfig.whatsappNumber || siteConfig.phone || BUSINESS_INFO.whatsappNumber).replace(/\D/g, '');
+    const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
     window.open(waUrl, "_blank");
   };
 
@@ -95,7 +101,7 @@ export default function QuoteForm({ preselectedService }) {
     setIsSubmitting(true);
     setErrorMsg("");
 
-    const selectedServiceName = SERVICES.find(s => s.id === formData.serviceId)?.title || "Handyman Service";
+    const selectedServiceName = servicesList.find(s => s.id === formData.serviceId)?.title || "Handyman Service";
 
     try {
       const payload = {
@@ -165,7 +171,7 @@ export default function QuoteForm({ preselectedService }) {
                   Quote Request Received!
                 </h3>
                 <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
-                  Thank you, <span className="text-white font-semibold">{formData.name}</span>. Ekrem will review your job details and contact you via phone/WhatsApp within 15-30 minutes.
+                  Thank you, <span className="text-white font-semibold">{formData.name}</span>. Ekrem will review your job details and contact you via phone/WhatsApp within {siteConfig.responseTime || "15-30 minutes"}.
                 </p>
                 <div className="pt-4 flex flex-wrap justify-center gap-3">
                   <button
@@ -175,7 +181,7 @@ export default function QuoteForm({ preselectedService }) {
                     Submit Another Request
                   </button>
                   <a
-                    href={BUSINESS_INFO.whatsappUrl}
+                    href={siteConfig.whatsappUrl || BUSINESS_INFO.whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors inline-flex items-center gap-1.5"
@@ -194,7 +200,7 @@ export default function QuoteForm({ preselectedService }) {
                     1. Select Service Type
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {SERVICES.map(service => (
+                    {servicesList.map(service => (
                       <button
                         type="button"
                         key={service.id}

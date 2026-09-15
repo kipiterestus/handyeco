@@ -9,28 +9,33 @@ import {
   Calendar,
   Award
 } from 'lucide-react';
-import { REVIEWS, REVIEWS_STATS } from '../data/reviewsData';
+import { REVIEWS as FALLBACK_REVIEWS, REVIEWS_STATS } from '../data/reviewsData';
 import { BUSINESS_INFO } from '../data/businessData';
+import { useContent } from '../context/ContentContext';
 
 export default function GoogleReviews() {
+  const { content } = useContent();
+  const reviewsList = content.reviews && content.reviews.length > 0 ? content.reviews : FALLBACK_REVIEWS;
+  const siteConfig = content.siteConfig || BUSINESS_INFO;
+
   const [selectedPlatform, setSelectedPlatform] = useState("all"); // 'all' | 'google' | 'mybuilder'
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [likes, setLikes] = useState(() => {
     const initial = {};
-    REVIEWS.forEach(r => { initial[r.id] = r.likes; });
+    reviewsList.forEach(r => { initial[r.id] = r.likes || 0; });
     return initial;
   });
   const [likedReviews, setLikedReviews] = useState({});
 
   // Filter reviews
-  const filteredReviews = REVIEWS.filter(rev => {
+  const filteredReviews = reviewsList.filter(rev => {
     const matchesPlatform = selectedPlatform === "all" || rev.platform === selectedPlatform;
     const matchesCategory = selectedFilter === "all" || rev.category === selectedFilter;
     const matchesSearch = searchQuery === "" || 
       rev.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
       rev.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      rev.location.toLowerCase().includes(searchQuery.toLowerCase());
+      (rev.location && rev.location.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesPlatform && matchesCategory && matchesSearch;
   });
 
@@ -109,7 +114,7 @@ export default function GoogleReviews() {
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto shrink-0">
               <a
-                href={BUSINESS_INFO.googleProfileUrl}
+                href={siteConfig.googleProfileUrl || BUSINESS_INFO.googleProfileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-xs transition-all active:scale-95 whitespace-nowrap"
@@ -119,7 +124,7 @@ export default function GoogleReviews() {
               </a>
 
               <a
-                href={BUSINESS_INFO.myBuilderUrl}
+                href={siteConfig.myBuilderUrl || BUSINESS_INFO.myBuilderUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-900 bg-amber-400 hover:bg-amber-300 shadow-xs transition-all active:scale-95 whitespace-nowrap"

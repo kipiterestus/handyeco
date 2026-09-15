@@ -1,5 +1,19 @@
 [
   {
+    "id": "quote_1789514956605",
+    "createdAt": "2026-09-15T23:29:16.605Z",
+    "status": "contacted",
+    "notes": "",
+    "name": "Malcolm Ross",
+    "phone": "07700 900555",
+    "postcode": "EH3 6RB",
+    "service": "TV & Wall Mounting",
+    "urgency": "this-week",
+    "details": "Need 65 inch OLED mounted onto New Town tenement sandstone wall with cable conduit.",
+    "photosCount": 2,
+    "updatedAt": "2026-09-15T23:29:16.608Z"
+  },
+  {
     "id": "quote_1789512092580",
     "receivedAt": "2026-09-15T22:41:32.580Z",
     "name": "Test Customer (Ekrem)",

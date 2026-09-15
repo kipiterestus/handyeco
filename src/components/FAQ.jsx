@@ -1,36 +1,41 @@
 import React, { useState } from 'react';
 import { ChevronDown, HelpCircle, MessageSquare } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/businessData';
+import { useContent } from '../context/ContentContext';
+
+const DEFAULT_FAQS = [
+  {
+    q: "What is your call-out fee in Edinburgh?",
+    a: "Our standard minimum call-out fee is £65 across the Edinburgh area. This covers travel, on-site assessment, and initial work. For larger projects (such as multiple flat-pack assemblies, full room painting, or extensive maintenance), we provide clear, fixed-price quotes agreed upfront with zero surprise extras."
+  },
+  {
+    q: "Can you mount TVs and heavy mirrors onto Edinburgh tenement walls?",
+    a: "Yes, absolutely. Edinburgh tenement flats usually have either solid stone masonry or delicate lath-and-plaster over stud partitions. We carry specialized heavy-duty fixings (Corefix, GripIt, rawlbolts, and hollow wall anchors) designed specifically to hold 65-inch+ TVs and heavy Victorian mirrors safely and securely."
+  },
+  {
+    q: "Do I need to supply screws, brackets, or silicone?",
+    a: "We carry a fully stocked van with professional trade-grade fixings, wall plugs, masonry screws, and anti-mould sanitary silicone. For TV wall mounting, you can supply your preferred bracket or we can provide one upon request. For painting, clients usually supply their chosen paint shade, or we can pick it up for you."
+  },
+  {
+    q: "Are you fully insured in case of accidental damage?",
+    a: "Yes. Handyeco holds £1,000,000 Public Liability Insurance. We treat every client's home with the highest degree of respect, lay clean dust sheets, and wear protective overshoes on carpets."
+  },
+  {
+    q: "How quickly can you assemble my flat-pack furniture?",
+    a: "Most flat-pack jobs (e.g. IKEA PAX wardrobes, beds, dining tables) are completed in 1.5 to 3 hours. We are often able to offer same-day or next-day appointments, including Saturday slots for working professionals."
+  },
+  {
+    q: "How do I get an instant estimate?",
+    a: "The fastest way is to send a photo or quick video of what needs done via WhatsApp to 07760 696723. Ekrem typically replies within 15 minutes with an accurate fixed estimate."
+  }
+];
 
 export default function FAQ() {
+  const { content } = useContent();
   const [openIndex, setOpenIndex] = useState(0);
 
-  const faqs = [
-    {
-      q: "What is your call-out fee in Edinburgh?",
-      a: "Our standard minimum call-out fee is £65 across the Edinburgh area. This covers travel, on-site assessment, and initial work. For larger projects (such as multiple flat-pack assemblies, full room painting, or extensive maintenance), we provide clear, fixed-price quotes agreed upfront with zero surprise extras."
-    },
-    {
-      q: "Can you mount TVs and heavy mirrors onto Edinburgh tenement walls?",
-      a: "Yes, absolutely. Edinburgh tenement flats usually have either solid stone masonry or delicate lath-and-plaster over stud partitions. We carry specialized heavy-duty fixings (Corefix, GripIt, rawlbolts, and hollow wall anchors) designed specifically to hold 65-inch+ TVs and heavy Victorian mirrors safely and securely."
-    },
-    {
-      q: "Do I need to supply screws, brackets, or silicone?",
-      a: "We carry a fully stocked van with professional trade-grade fixings, wall plugs, masonry screws, and anti-mould sanitary silicone. For TV wall mounting, you can supply your preferred bracket or we can provide one upon request. For painting, clients usually supply their chosen paint shade, or we can pick it up for you."
-    },
-    {
-      q: "Are you fully insured in case of accidental damage?",
-      a: "Yes. Handyeco holds £1,000,000 Public Liability Insurance. We treat every client's home with the highest degree of respect, lay clean dust sheets, and wear protective overshoes on carpets."
-    },
-    {
-      q: "How quickly can you assemble my flat-pack furniture?",
-      a: "Most flat-pack jobs (e.g. IKEA PAX wardrobes, beds, dining tables) are completed in 1.5 to 3 hours. We are often able to offer same-day or next-day appointments, including Saturday slots for working professionals."
-    },
-    {
-      q: "How do I get an instant estimate?",
-      a: "The fastest way is to send a photo or quick video of what needs done via WhatsApp to 07760 696723. Ekrem typically replies within 15 minutes with an accurate fixed estimate."
-    }
-  ];
+  const faqs = content.faq && content.faq.length > 0 ? content.faq : DEFAULT_FAQS;
+  const siteConfig = content.siteConfig || BUSINESS_INFO;
 
   return (
     <section id="faq" className="py-20 bg-slate-50 border-t border-slate-200/80 relative">
@@ -83,7 +88,7 @@ export default function FAQ() {
         <div className="mt-10 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
           <span>Have a question not listed here?</span>
           <a
-            href={BUSINESS_INFO.whatsappUrl}
+            href={siteConfig.whatsappUrl || BUSINESS_INFO.whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="font-bold text-emerald-600 hover:underline inline-flex items-center gap-1"

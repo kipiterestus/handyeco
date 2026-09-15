@@ -1,13 +1,16 @@
 import React from 'react';
 import { MapPin, CheckCircle, ArrowDown } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 export default function ServiceAreas() {
-  const areaGroups = [
+  const { content } = useContent();
+  const areaGroups = content.areas && content.areas.length > 0 ? content.areas : [
     { zone: "Central & City", postcodes: "EH1 - EH3, EH7 - EH8", areas: "Old Town, New Town, West End, Broughton" },
     { zone: "North & Coast", postcodes: "EH4 - EH6, EH15", areas: "Leith, Stockbridge, Trinity, Portobello" },
     { zone: "South & West", postcodes: "EH9 - EH14", areas: "Morningside, Bruntsfield, Corstorphine, Balerno" },
     { zone: "Lothians", postcodes: "EH21 - EH30, EH54", areas: "Musselburgh, Dalkeith, Queensferry, Livingston" },
   ];
+  const callOutText = content.siteConfig?.callOutText || "Minimum call-out fee £65 (Edinburgh Area)";
 
   return (
     <section id="areas" className="pt-6 pb-2 sm:pt-8 sm:pb-3 bg-white border-b border-slate-100 relative">
@@ -31,7 +34,7 @@ export default function ServiceAreas() {
                 </p>
                 <p className="text-[11px] sm:text-xs font-bold text-slate-800 mt-0.5 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-                  <span>Minimum call-out fee £65 (Edinburgh Area)</span>
+                  <span>{callOutText}</span>
                 </p>
               </div>
             </div>

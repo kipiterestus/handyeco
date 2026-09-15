@@ -11,8 +11,9 @@ import {
   MessageSquare,
   Sparkles
 } from 'lucide-react';
-import { SERVICES } from '../data/servicesData';
+import { SERVICES as FALLBACK_SERVICES } from '../data/servicesData';
 import { BUSINESS_INFO } from '../data/businessData';
+import { useContent } from '../context/ContentContext';
 
 const iconMap = {
   PackageCheck,
@@ -24,7 +25,13 @@ const iconMap = {
 };
 
 export default function Services({ onSelectService }) {
+  const { content } = useContent();
   const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const servicesList = content.services && content.services.length > 0 
+    ? content.services 
+    : FALLBACK_SERVICES;
+  const siteConfig = content.siteConfig || BUSINESS_INFO;
 
   const filterTabs = [
     { id: "all", label: "All Services" },
@@ -37,8 +44,8 @@ export default function Services({ onSelectService }) {
   ];
 
   const filteredServices = selectedCategory === "all"
-    ? SERVICES
-    : SERVICES.filter(s => s.id === selectedCategory);
+    ? servicesList
+    : servicesList.filter(s => s.id === selectedCategory || s.category === selectedCategory);
 
   return (
     <section id="services" className="pt-10 sm:pt-16 md:pt-20 pb-6 sm:pb-8 bg-slate-50 relative">
@@ -79,7 +86,8 @@ export default function Services({ onSelectService }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {filteredServices.map((service) => {
             const IconComponent = iconMap[service.iconName] || Hammer;
-            const waServiceUrl = `https://wa.me/${BUSINESS_INFO.whatsappNumber}?text=${encodeURIComponent(
+            const waNumber = (siteConfig.whatsappNumber || siteConfig.phone || "").replace(/\D/g, '');
+            const waServiceUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(
               `Hi Ekrem, I'd like a quick quote for ${service.title} in Edinburgh.`
             )}`;
 
@@ -158,7 +166,7 @@ export default function Services({ onSelectService }) {
             </p>
           </div>
           <a
-            href={BUSINESS_INFO.whatsappUrl}
+            href={siteConfig.whatsappUrl || `https://wa.me/${(siteConfig.whatsappNumber || "").replace(/\D/g, '')}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center px-5 py-3 rounded-xl font-bold text-xs sm:text-sm text-slate-900 bg-emerald-400 hover:bg-emerald-300 shadow-sm transition-all active:scale-95 shrink-0"
