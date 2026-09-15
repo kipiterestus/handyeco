@@ -61,7 +61,7 @@ export default function Navbar() {
             <img 
               src="/logo-transparent.png" 
               alt="Handyeco - Edinburgh Handyman Services" 
-              className="h-8 xs:h-9 sm:h-11 md:h-12 w-auto max-w-[170px] xs:max-w-[210px] sm:max-w-none object-contain transition-transform duration-200 group-hover:scale-105"
+              className="h-10 sm:h-11 md:h-12 w-auto max-w-[220px] sm:max-w-none object-contain transition-transform duration-200 group-hover:scale-105"
             />
           </a>
 
@@ -103,19 +103,6 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
-            
-            <div className="pt-3 mt-2 border-t border-slate-100 flex flex-col gap-2">
-              <a
-                href={BUSINESS_INFO.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full inline-flex items-center justify-center px-4 py-3 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
-              >
-                <MessageSquare className="w-4 h-4 mr-2" />
-                <span>Chat on WhatsApp</span>
-              </a>
-            </div>
           </div>
         )}
       </nav>

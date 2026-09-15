@@ -93,23 +93,25 @@ export default function Footer() {
               </li>
             </ul>
 
-            <div className="pt-4 flex flex-col gap-2">
+            <div className="pt-4 flex flex-col gap-2.5">
               <a
                 href={BUSINESS_INFO.googleProfileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-blue-400 hover:text-blue-300 font-bold"
+                className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold transition-colors"
               >
-                <span>Google Profile Link</span>
+                <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
+                <span>Google Profile (5.0 ★)</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
               <a
                 href={BUSINESS_INFO.myBuilderUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-slate-400 hover:text-white"
+                className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 font-bold transition-colors"
               >
-                <span>MyBuilder Verified Profile</span>
+                <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                <span>MyBuilder Profile (100% ★)</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
@@ -122,7 +124,6 @@ export default function Footer() {
           <p>&copy; {new Date().getFullYear()} Handyeco - Edinburgh Handyman Services. All rights reserved.</p>
           <div className="flex items-center space-x-6">
             <span>Edinburgh, Scotland</span>
-            <span>Fully Insured (£1M)</span>
             <a href="#quote" className="hover:text-slate-300">Request Quote</a>
           </div>
         </div>
