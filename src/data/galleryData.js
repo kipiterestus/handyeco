@@ -1,0 +1,100 @@
+export const GALLERY_ITEMS = [
+  {
+    id: "gal-1",
+    title: "IKEA PAX 3-Door Wardrobe Assembly",
+    category: "assembly",
+    location: "Morningside, Edinburgh",
+    uploadedBy: "Customer: Sarah M.",
+    date: "September 2026",
+    isBeforeAfter: false,
+    image: "https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=1000&auto=format&fit=crop&q=80",
+    badge: "Verified Client Upload",
+    description: "Full flat-pack assembly including interior mesh drawers, pull-out shoe racks, soft-close hinges, and safe wall anchoring."
+  },
+  {
+    id: "gal-2",
+    title: "75-inch OLED TV Wall Mount & Cable Concealment",
+    category: "mounting",
+    location: "New Town, Edinburgh",
+    uploadedBy: "Customer: Callum B.",
+    date: "September 2026",
+    isBeforeAfter: false,
+    image: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=1000&auto=format&fit=crop&q=80",
+    badge: "Precision Laser Level",
+    description: "Heavy-duty ultra-slim bracket mounted into historic Edinburgh stone masonry with discreet paintable cable trunking."
+  },
+  {
+    id: "gal-3",
+    title: "Bathroom Silicone Mould Removal & Re-Sealing",
+    category: "repairs",
+    location: "Leith, Edinburgh",
+    uploadedBy: "Customer: David R.",
+    date: "September 2026",
+    isBeforeAfter: true,
+    beforeImage: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1620626011761-996317b8d101?w=1000&auto=format&fit=crop&q=80",
+    badge: "Before & After",
+    description: "Old black mould sealant stripped, surface sanitised, and new industrial anti-fungal silicone applied with pristine tooling."
+  },
+  {
+    id: "gal-4",
+    title: "Living Room Accent Wall & Skirting Painting",
+    category: "painting",
+    location: "Stockbridge, Edinburgh",
+    uploadedBy: "Customer: Heather P.",
+    date: "August 2026",
+    isBeforeAfter: false,
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&auto=format&fit=crop&q=80",
+    badge: "Flawless Finish",
+    description: "Pre-paint crack filling, sanding, two coats of Farrow & Ball paint, and high-gloss white finish on baseboards and radiator."
+  },
+  {
+    id: "gal-5",
+    title: "Kitchen Cabinet Modern Vinyl Wrap",
+    category: "kitchen",
+    location: "Musselburgh, East Lothian",
+    uploadedBy: "Customer: Gillian W.",
+    date: "August 2026",
+    isBeforeAfter: true,
+    beforeImage: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=1000&auto=format&fit=crop&q=80",
+    badge: "Kitchen Renovation",
+    description: "High-grade heat-resistant architectural vinyl wrap applied to tired beech cabinets, transforming into a contemporary matte finish."
+  },
+  {
+    id: "gal-6",
+    title: "Storm-Damaged Garden Fence Repair & New Gate",
+    category: "outdoor",
+    location: "Balerno, Edinburgh",
+    uploadedBy: "Customer: Fraser K.",
+    date: "August 2026",
+    isBeforeAfter: false,
+    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1000&auto=format&fit=crop&q=80",
+    badge: "Weatherproof Outdoor",
+    description: "Reinforced 4x4 treated timber posts with post-crete, replaced snapped horizontal cross-rails, and hung a heavy-duty latched gate."
+  },
+  {
+    id: "gal-7",
+    title: "Solid Oak Floating Shelves & Tenement Alcove",
+    category: "mounting",
+    location: "Bruntsfield, Edinburgh",
+    uploadedBy: "Customer: Fiona & Iain",
+    date: "July 2026",
+    isBeforeAfter: false,
+    image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=1000&auto=format&fit=crop&q=80",
+    badge: "Heavy Duty Concealed Brackets",
+    description: "Custom fitted heavy oak shelves into historic tenement alcove, tested to comfortably hold 30kg+ of books and decor."
+  },
+  {
+    id: "gal-8",
+    title: "Tenement Internal Door Trimming Over Thick Carpet",
+    category: "repairs",
+    location: "Marchmont, Edinburgh",
+    uploadedBy: "Customer: Ross N.",
+    date: "July 2026",
+    isBeforeAfter: false,
+    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1000&auto=format&fit=crop&q=80",
+    badge: "Odd Jobs & Repairs",
+    description: "Doors unhung, planed precisely with electric planer, edges smoothed and re-hung with zero floor drag."
+  }
+];

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 70" width="320" height="70" fill="none">
+  <!-- Brand Icon Badge -->
+  <rect x="5" y="5" width="60" height="60" rx="16" fill="url(#brandGrad)" />
+  
+  <!-- Subtle inner border -->
+  <rect x="5.5" y="5.5" width="59" height="59" rx="15.5" stroke="rgba(255,255,255,0.2)" />
+  
+  <!-- Roof / Apex Shape -->
+  <path d="M22 34L35 21L48 34" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Stylized Tool / Hammer & Spark -->
+  <path d="M35 24V47" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" />
+  <path d="M28 41H42" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
+  <circle cx="35" cy="47" r="2.5" fill="#38BDF8" />
+
+  <!-- Typography -->
+  <text x="78" y="40" font-family="'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif" font-size="28" font-weight="800" fill="#0F172A" letter-spacing="-0.5">
+    Handy<tspan fill="#2563EB">eco</tspan>
+  </text>
+  
+  <text x="80" y="57" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="10.5" font-weight="600" fill="#64748B" letter-spacing="1.2">
+    EDINBURGH HANDYMAN SERVICES
+  </text>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="brandGrad" x1="5" y1="5" x2="65" y2="65" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1E3A8A" />
+      <stop offset="100%" stop-color="#2563EB" />
+    </linearGradient>
+  </defs>
+</svg>

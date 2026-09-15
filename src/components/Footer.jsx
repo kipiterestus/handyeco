@@ -1,0 +1,136 @@
+import React from 'react';
+import { Phone, Mail, MapPin, Star, ShieldCheck, Clock, ExternalLink, MessageSquare } from 'lucide-react';
+import { BUSINESS_INFO } from '../data/businessData';
+
+export default function Footer() {
+  return (
+    <footer className="bg-slate-950 text-slate-400 text-xs border-t border-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 text-left">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+          
+          {/* Col 1: Brand & Bio */}
+          <div className="lg:col-span-2 space-y-4">
+            <a href="#" className="inline-block">
+              <img 
+                src="/logo.svg" 
+                alt="Handyeco" 
+                className="h-10 w-auto brightness-0 invert" 
+              />
+            </a>
+            <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
+              Handyeco provides trusted, 5-star rated handyman, assembly, mounting, painting, and maintenance services across Edinburgh and surrounding Lothians.
+            </p>
+            <div className="flex items-center gap-2 pt-2">
+              <div className="flex text-amber-400">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-amber-400" />
+                ))}
+              </div>
+              <span className="text-white font-bold">5.0 Star</span>
+              <span className="text-slate-500">&bull; 48 Google Reviews</span>
+            </div>
+            <div className="pt-1 flex items-center gap-2 text-slate-400 text-[11px]">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>£1,000,000 Public Liability Insurance</span>
+            </div>
+          </div>
+
+          {/* Col 2: Services */}
+          <div>
+            <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4">
+              Services
+            </h4>
+            <ul className="space-y-2.5 text-xs">
+              <li><a href="#services" className="hover:text-white transition-colors">Flat-Pack Assembly</a></li>
+              <li><a href="#services" className="hover:text-white transition-colors">TV & Wall Mounting</a></li>
+              <li><a href="#services" className="hover:text-white transition-colors">Painting & Decorating</a></li>
+              <li><a href="#services" className="hover:text-white transition-colors">Bathroom Silicone Sealing</a></li>
+              <li><a href="#services" className="hover:text-white transition-colors">Kitchen Vinyl Wrapping</a></li>
+              <li><a href="#services" className="hover:text-white transition-colors">General Tenement Repairs</a></li>
+              <li><a href="#services" className="hover:text-white transition-colors">Garden Gate & Fencing</a></li>
+            </ul>
+          </div>
+
+          {/* Col 3: Areas Covered */}
+          <div>
+            <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4">
+              Edinburgh Areas
+            </h4>
+            <ul className="space-y-2.5 text-xs">
+              <li><span className="text-slate-300">Morningside & Bruntsfield (EH10)</span></li>
+              <li><span className="text-slate-300">Leith & Newhaven (EH6)</span></li>
+              <li><span className="text-slate-300">Stockbridge & New Town (EH3/EH4)</span></li>
+              <li><span className="text-slate-300">Old Town & Southside (EH1/EH8)</span></li>
+              <li><span className="text-slate-300">Portobello & Joppa (EH15)</span></li>
+              <li><span className="text-slate-300">Musselburgh & East Lothian (EH21)</span></li>
+              <li><span className="text-slate-300">Balerno & Midlothian (EH14/EH22)</span></li>
+            </ul>
+          </div>
+
+          {/* Col 4: Contact & Hours */}
+          <div>
+            <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4">
+              Get in Touch
+            </h4>
+            <ul className="space-y-3 text-xs">
+              <li className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-blue-400 shrink-0" />
+                <a href={"tel:" + BUSINESS_INFO.phone} className="hover:text-white text-slate-300 font-semibold">
+                  {BUSINESS_INFO.displayPhone}
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-emerald-400 shrink-0" />
+                <a href={BUSINESS_INFO.whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white text-slate-300">
+                  WhatsApp: +44 7760 696723
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-slate-400 shrink-0" />
+                <a href={"mailto:" + BUSINESS_INFO.email} className="hover:text-white text-slate-300">
+                  {BUSINESS_INFO.email}
+                </a>
+              </li>
+              <li className="flex items-start gap-2 pt-1 text-slate-400">
+                <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <span>Mon - Sat: 8:00 AM - 6:00 PM</span>
+              </li>
+            </ul>
+
+            <div className="pt-4 flex flex-col gap-2">
+              <a
+                href={BUSINESS_INFO.googleProfileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-blue-400 hover:text-blue-300 font-bold"
+              >
+                <span>Google Profile Link</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+              <a
+                href={BUSINESS_INFO.myBuilderUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-slate-400 hover:text-white"
+              >
+                <span>MyBuilder Verified Profile</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Bottom copyright */}
+        <div className="mt-12 pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-[11px]">
+          <p>&copy; {new Date().getFullYear()} Handyeco - Edinburgh Handyman Services. All rights reserved.</p>
+          <div className="flex items-center space-x-6">
+            <span>Edinburgh, Scotland</span>
+            <span>Fully Insured (£1M)</span>
+            <a href="#quote" className="hover:text-slate-300">Request Quote</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
