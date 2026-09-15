@@ -17,6 +17,7 @@ import {
 } from './store.js';
 import { sendTelegramNotification } from './telegram.js';
 import { syncReviews } from './reviewsSync.js';
+import { SECURITY_HEADERS, loginRateLimiter, quoteRateLimiter } from './security.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,9 +25,18 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Standard OWASP Security Headers middleware
+app.use((req, res, next) => {
+  for (const [header, val] of Object.entries(SECURITY_HEADERS)) {
+    res.setHeader(header, val);
+  }
+  next();
+});
+
 app.use(cors());
-app.use(express.json({ limit: '25mb' }));
-app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+// 10MB limit protects against memory exhaustion attacks while allowing base64 photos
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve uploaded images statically
 app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
@@ -64,13 +74,22 @@ app.get('/api/content', (req, res) => {
   }
 });
 
-// 3. Customer quote submission with Telegram dispatch
+// 3. Customer quote submission with Telegram dispatch & Rate Limiting
 app.post('/api/quote', async (req, res) => {
+  const clientIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
+  const rateLimit = quoteRateLimiter.check(clientIp);
+  if (!rateLimit.allowed) {
+    return res.status(429).json({
+      success: false,
+      error: `Too many submissions from this connection. Please wait ${rateLimit.waitSeconds} seconds before trying again.`
+    });
+  }
+
   try {
     const quote = req.body;
     console.log('\n[API] 📩 New quote submission received:', quote.name, quote.phone, quote.service);
 
-    // Save quote record locally
+    // Save quote record locally (with sanitization)
     const saved = saveQuoteRecord(quote);
 
     // Send Telegram alert
@@ -87,9 +106,9 @@ app.post('/api/quote', async (req, res) => {
     });
   } catch (error) {
     console.error('[API] Error processing quote:', error);
-    res.status(200).json({
-      success: true,
-      warning: 'Quote recorded with fallback: ' + error.message
+    res.status(400).json({
+      success: false,
+      error: error.message
     });
   }
 });
@@ -97,8 +116,18 @@ app.post('/api/quote', async (req, res) => {
 // --- AUTHENTICATION ROUTES ---
 
 app.post('/api/auth/login', (req, res) => {
+  const clientIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
+  const rateLimit = loginRateLimiter.check(clientIp);
+  if (!rateLimit.allowed) {
+    return res.status(429).json({
+      success: false,
+      error: `Too many failed login attempts. Please wait ${rateLimit.waitSeconds} seconds before trying again.`
+    });
+  }
+
   const { password } = req.body;
   if (verifyAdminPassword(password)) {
+    loginRateLimiter.reset(clientIp);
     const token = createAdminToken();
     console.log('[Auth] Admin logged in successfully.');
     return res.json({ success: true, token });
@@ -106,6 +135,7 @@ app.post('/api/auth/login', (req, res) => {
   console.warn('[Auth] Failed admin login attempt.');
   return res.status(401).json({ success: false, error: 'Invalid admin password.' });
 });
+
 
 app.get('/api/auth/verify', (req, res) => {
   const authHeader = req.headers.authorization;
@@ -170,6 +200,11 @@ app.patch('/api/quotes/:id', requireAuth, (req, res) => {
     const updated = updateQuoteStatus(id, updates);
     res.json({ success: true, quote: updated });
   } catch (err) {
+    console.error('[API] Update quote error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Test Telegram notification
 app.post('/api/telegram/test', requireAuth, async (req, res) => {
   try {

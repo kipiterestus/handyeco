@@ -18,6 +18,7 @@ import {
 } from './server/store.js';
 import { sendTelegramNotification } from './server/telegram.js';
 import { syncReviews } from './server/reviewsSync.js';
+import { SECURITY_HEADERS, loginRateLimiter, quoteRateLimiter } from './server/security.js';
 
 function readEnv() {
   const envPath = path.resolve(process.cwd(), '.env');
@@ -35,10 +36,19 @@ function readEnv() {
   return env;
 }
 
-function parseBody(req) {
+function parseBody(req, limitBytes = 10 * 1024 * 1024) {
   return new Promise((resolve, reject) => {
     let body = '';
-    req.on('data', chunk => { body += chunk; });
+    let bytesReceived = 0;
+    req.on('data', chunk => {
+      bytesReceived += chunk.length;
+      if (bytesReceived > limitBytes) {
+        req.destroy();
+        reject(new Error('Payload Too Large: Max 10MB allowed'));
+        return;
+      }
+      body += chunk;
+    });
     req.on('end', () => {
       try {
         resolve(body ? JSON.parse(body) : {});
@@ -60,11 +70,13 @@ const backendApiPlugin = () => ({
       const url = new URL(req.url, 'http://localhost');
       const pathname = url.pathname;
       const method = req.method;
+      const clientIp = req.socket?.remoteAddress || '127.0.0.1';
 
       const sendJson = (status, obj) => {
         res.writeHead(status, {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
+          ...SECURITY_HEADERS
         });
         res.end(JSON.stringify(obj));
       };
@@ -86,8 +98,16 @@ const backendApiPlugin = () => ({
           return sendJson(200, { success: true, content });
         }
 
-        // 3. Customer Quote Submission
+        // 3. Customer Quote Submission with Rate Limiting
         if (pathname === '/api/quote' && method === 'POST') {
+          const limit = quoteRateLimiter.check(clientIp);
+          if (!limit.allowed) {
+            return sendJson(429, { 
+              success: false, 
+              error: `Too many quote submissions. Please wait ${limit.waitSeconds} seconds.` 
+            });
+          }
+
           const quote = await parseBody(req);
           console.log('\n[API] 📩 New quote submission:', quote.name, quote.phone, quote.service);
           const saved = saveQuoteRecord(quote);
@@ -99,10 +119,19 @@ const backendApiPlugin = () => ({
           return sendJson(200, { success: true, quoteId: saved.id, telegramDelivered: tgRes.delivered });
         }
 
-        // 4. Admin Auth Login
+        // 4. Admin Auth Login with Rate Limiting
         if (pathname === '/api/auth/login' && method === 'POST') {
+          const limit = loginRateLimiter.check(clientIp);
+          if (!limit.allowed) {
+            return sendJson(429, { 
+              success: false, 
+              error: `Too many failed login attempts. Please wait ${limit.waitSeconds} seconds.` 
+            });
+          }
+
           const { password } = await parseBody(req);
           if (verifyAdminPassword(password)) {
+            loginRateLimiter.reset(clientIp);
             const token = createAdminToken();
             console.log('[Auth] Admin logged in.');
             return sendJson(200, { success: true, token });

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import sharp from 'sharp';
+import { timingSafeCompare, TokenManager, sanitizeQuotePayload } from './security.js';
 
 const dataDir = path.join(process.cwd(), 'server', 'data');
 const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
@@ -101,13 +102,14 @@ export function getQuotes() {
 }
 
 export function saveQuoteRecord(quoteData) {
+  const sanitized = sanitizeQuotePayload(quoteData);
   const quotes = getQuotes();
   const newQuote = {
     id: 'quote_' + Date.now(),
     createdAt: new Date().toISOString(),
     status: 'new', // new | contacted | booked | archived
     notes: '',
-    ...quoteData
+    ...sanitized
   };
   quotes.unshift(newQuote);
   fs.writeFileSync(quotesFile, JSON.stringify(quotes, null, 2), 'utf-8');
@@ -123,27 +125,24 @@ export function updateQuoteStatus(id, updates) {
   return quotes[index];
 }
 
-// Authentication handling
-// Default admin password can be overridden in .env with ADMIN_PASSWORD
+// Authentication handling with Timing-Safe comparison and 24-hour Token TTL
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'handyeco2026!';
-const activeTokens = new Set();
+const tokenManager = new TokenManager(24 * 60 * 60 * 1000);
 
 export function verifyAdminPassword(password) {
-  return password === ADMIN_PASSWORD;
+  return timingSafeCompare(password, ADMIN_PASSWORD);
 }
 
 export function createAdminToken() {
-  const token = crypto.randomBytes(32).toString('hex');
-  activeTokens.add(token);
-  return token;
+  return tokenManager.create();
 }
 
 export function isValidToken(token) {
-  if (!token) return false;
-  return activeTokens.has(token);
+  return tokenManager.validate(token);
 }
 
 export function revokeToken(token) {
-  if (token) activeTokens.delete(token);
+  tokenManager.revoke(token);
   return true;
 }
+
