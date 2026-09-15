@@ -12,9 +12,9 @@ export default function Footer() {
           <div className="lg:col-span-2 space-y-4">
             <a href="#" className="inline-block">
               <img 
-                src="/logo.svg" 
+                src="/logo-dark.png" 
                 alt="Handyeco" 
-                className="h-10 w-auto brightness-0 invert" 
+                className="h-12 w-auto object-contain" 
               />
             </a>
             <p className="text-slate-400 text-xs leading-relaxed max-w-sm">

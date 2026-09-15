@@ -24,7 +24,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="fixed top-[42px] left-0 right-0 z-50 transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
       {/* Top Announcement Strip */}
       <div className="bg-slate-900 text-slate-300 text-xs py-1.5 px-4 border-b border-slate-800">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
@@ -63,11 +63,13 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Logo */}
           <a href="#" className="flex items-center gap-3 group">
-            <img 
-              src="/logo.svg" 
-              alt="Handyeco - Edinburgh Handyman Services" 
-              className="h-10 sm:h-11 w-auto transition-transform duration-200 group-hover:scale-105"
-            />
+            <div className="bg-slate-950 px-2.5 py-1 rounded-2xl border border-slate-800/80 shadow-xs flex items-center transition-transform duration-200 group-hover:scale-105">
+              <img 
+                src="/logo-dark.png" 
+                alt="Handyeco - Edinburgh Handyman Services" 
+                className="h-9 sm:h-10 w-auto object-contain"
+              />
+            </div>
           </a>
 
           {/* Desktop Nav Links */}
