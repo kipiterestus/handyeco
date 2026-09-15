@@ -117,9 +117,9 @@ export default function Hero({ onOpenQuote }) {
               {/* Main Visual Image Card */}
               <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[4/3] sm:aspect-[4/5] bg-slate-900">
                 <img
-                  src="/hero-repair-man.jpg"
-                  alt="Professional craftsman performing quality home repairs in Edinburgh"
-                  className="w-full h-full object-cover object-center"
+                  src="/hero-handyman-edinburgh.jpg"
+                  alt="Edinburgh Handyman assembling furniture with cordless drill in a home apartment"
+                  className="w-full h-full object-cover object-top"
                 />
                 
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/20" />
