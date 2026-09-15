@@ -91,7 +91,7 @@ export default function Concept3_LiquidGlass({ onOpenQuote }) {
       <section className="pt-16 pb-12 max-w-5xl mx-auto px-4 sm:px-6 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full backdrop-blur-xl bg-white/80 border border-white shadow-2xs text-xs font-semibold text-slate-700 mb-6">
           <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-          <span>Minimum call-out fee £65 &bull; Edinburgh Area</span>
+          <span>Free quotes upfront &bull; Minimum job £65 (Edinburgh Area)</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 max-w-3xl mx-auto leading-[1.12]">
@@ -199,7 +199,7 @@ export default function Concept3_LiquidGlass({ onOpenQuote }) {
               <h3 className="text-lg font-bold text-slate-900">Where We Work in Scotland</h3>
             </div>
             <p className="text-xs text-slate-600 mb-6">
-              Complete coverage across Edinburgh and Lothians. Standard minimum call-out fee £65 (Edinburgh Area).
+              Complete coverage across Edinburgh and Lothians. Free quotes & £65 minimum job booking.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="p-4 rounded-2xl bg-white/80 border border-white shadow-2xs">
@@ -235,7 +235,7 @@ export default function Concept3_LiquidGlass({ onOpenQuote }) {
             Request an Estimate in 60 Seconds
           </h3>
           <p className="text-xs text-slate-500 mt-1 mb-6">
-            Minimum call-out fee £65 (Edinburgh Area). Fast response on WhatsApp.
+            Free quotes upfront & £65 minimum job booking (Edinburgh Area). Fast response on WhatsApp.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <a

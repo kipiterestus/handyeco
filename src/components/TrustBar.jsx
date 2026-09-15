@@ -1,8 +1,12 @@
 import React from 'react';
 import { Star, ShieldCheck, Sparkles, Clock, PoundSterling, Check } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/businessData';
+import { useContent } from '../context/ContentContext';
 
 export default function TrustBar() {
+  const { content } = useContent();
+  const siteConfig = content.siteConfig || BUSINESS_INFO;
+
   const trustPoints = [
     {
       icon: Star,
@@ -10,14 +14,14 @@ export default function TrustBar() {
       bgColor: "bg-amber-50",
       title: "5.0 / 5.0 Rated",
       subtitle: "Verified Google & MyBuilder Reviews",
-      link: BUSINESS_INFO.googleProfileUrl
+      link: siteConfig.googleProfileUrl || BUSINESS_INFO.googleProfileUrl
     },
     {
       icon: PoundSterling,
       iconColor: "text-blue-600",
       bgColor: "bg-blue-50",
-      title: "Minimum call-out fee 65£",
-      subtitle: "Edinburgh Area",
+      title: "Free Quotes • Min Job £65",
+      subtitle: "Zero call-out fee (Edinburgh Area)",
       link: null
     },
     {

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Save, CheckCircle, Plus, Trash2, Star, Award, ThumbsUp } from 'lucide-react';
+import { Save, CheckCircle, Plus, Trash2, Star, Award, ThumbsUp, RefreshCw, AlertCircle, Check } from 'lucide-react';
 
-export default function ReviewsManager({ data, onSave }) {
+export default function ReviewsManager({ data, onSave, token, onRefresh }) {
   const [reviews, setReviews] = useState(data || []);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState(null);
 
   const handleUpdate = (id, field, val) => {
     setReviews(prev => prev.map(rev => rev.id === id ? { ...rev, [field]: val } : rev));
@@ -30,6 +32,31 @@ export default function ReviewsManager({ data, onSave }) {
   const handleDeleteReview = (id) => {
     if (!window.confirm('Delete this customer review?')) return;
     setReviews(prev => prev.filter(rev => rev.id !== id));
+  };
+
+  const handleSyncReviews = async () => {
+    setSyncing(true);
+    setSyncStatus(null);
+    try {
+      const res = await fetch('/api/reviews/sync', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (data.reviews) setReviews(data.reviews);
+        setSyncStatus({ success: true, message: data.message });
+        if (onRefresh) onRefresh();
+      } else {
+        setSyncStatus({ success: false, message: data.message || 'Sync failed.' });
+      }
+    } catch (err) {
+      setSyncStatus({ success: false, message: 'Sync error: ' + err.message });
+    } finally {
+      setSyncing(false);
+    }
   };
 
   const handleSave = async (e) => {
@@ -70,6 +97,44 @@ export default function ReviewsManager({ data, onSave }) {
             <span>{saving ? 'Saving...' : saved ? 'Saved!' : 'Save Reviews'}</span>
           </button>
         </div>
+      </div>
+
+      {/* Google & MyBuilder Automated Sync Card */}
+      <div className="bg-gradient-to-r from-blue-950/40 via-slate-900 to-amber-950/40 border border-slate-800 rounded-3xl p-5 sm:p-6 space-y-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                Automated Google Maps & MyBuilder Review Sync
+              </h3>
+            </div>
+            <p className="text-xs text-slate-400">
+              New 5-star reviews posted by customers are automatically synced hourly, or click below to pull the latest reviews immediately.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            disabled={syncing}
+            onClick={handleSyncReviews}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all shadow-md shadow-blue-600/20 cursor-pointer disabled:opacity-50 shrink-0"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
+            <span>{syncing ? 'Syncing...' : 'Sync Reviews Now'}</span>
+          </button>
+        </div>
+
+        {syncStatus && (
+          <div className={`p-3 rounded-xl text-xs flex items-center gap-2 ${
+            syncStatus.success 
+              ? 'bg-emerald-950/80 border border-emerald-800 text-emerald-300' 
+              : 'bg-rose-950/80 border border-rose-800 text-rose-300'
+          }`}>
+            {syncStatus.success ? <Check className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
+            <span>{syncStatus.message}</span>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

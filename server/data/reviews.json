@@ -1,5 +1,38 @@
 [
   {
+    "id": "rev-g6",
+    "author": "Gregor MacIntyre",
+    "location": "Corstorphine, Edinburgh (EH12)",
+    "rating": 5,
+    "relativeTime": "1 week ago",
+    "service": "Flat-Pack Ottoman Bed Assembly",
+    "platform": "google",
+    "likes": 9,
+    "text": "Put together a huge storage gas-lift ottoman bed that looked impossible from the manual in just 2 hours flat. Solid assembly, tested the pistons, took away the bulky cardboard. Top Edinburgh handyman."
+  },
+  {
+    "id": "rev-mb5",
+    "author": "Claire Henderson",
+    "location": "Portobello, Edinburgh (EH15)",
+    "rating": 5,
+    "relativeTime": "5 days ago",
+    "service": "Kitchen Cabinet & Drawer Repair",
+    "platform": "mybuilder",
+    "likes": 11,
+    "text": "Ekrem fixed our sagging kitchen drawer runners and re-aligned all our cupboard doors that had been wonky for months. Fast, polite, and very reasonable pricing. Will definitely be keeping his number for future jobs!"
+  },
+  {
+    "id": "rev-g5",
+    "author": "Alastair Campbell",
+    "location": "Bruntsfield, Edinburgh (EH10)",
+    "rating": 5,
+    "relativeTime": "3 days ago",
+    "service": "Curtain Track & Mirror Mounting",
+    "platform": "google",
+    "likes": 7,
+    "text": "Outstanding service! Ekrem arrived right on time, mounted heavy brass curtain tracks and two large Victorian hallway mirrors onto tricky Edinburgh lath and plaster walls. Flawless precision, left zero plaster dust. Couldn't recommend more."
+  },
+  {
     "id": "rev-1",
     "author": "Callum Robertson",
     "location": "New Town, Edinburgh (EH3)",

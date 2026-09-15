@@ -60,6 +60,11 @@ export function updateSection(section, data) {
   return data;
 }
 
+// Get single section
+export function getSection(section) {
+  return readJson(`${section}.json`);
+}
+
 // Upload & optimize image from base64
 export async function saveBase64Image(dataUrl, customFilename = '') {
   const matches = dataUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);

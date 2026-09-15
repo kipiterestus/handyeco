@@ -127,7 +127,7 @@ export default function AdminLayout() {
 
   const navItems = [
     { id: 'leads', label: 'Inquiries & Quotes', icon: Inbox, badge: 'Live Leads' },
-    { id: 'business', label: 'Business & Call-Out', icon: Building2 },
+    { id: 'business', label: 'Business & Pricing', icon: Building2 },
     { id: 'hero', label: 'Hero & Headings', icon: Sparkles },
     { id: 'services', label: 'Services & Scope', icon: Wrench },
     { id: 'gallery', label: 'Photo Gallery', icon: Camera },
@@ -256,7 +256,7 @@ export default function AdminLayout() {
             {activeTab === 'hero' && <HeroEditor data={content.hero} onSave={handleSaveSection} token={token} />}
             {activeTab === 'services' && <ServicesEditor data={content.services} onSave={handleSaveSection} />}
             {activeTab === 'gallery' && <GalleryManager data={content.gallery} onSave={handleSaveSection} token={token} />}
-            {activeTab === 'reviews' && <ReviewsManager data={content.reviews} onSave={handleSaveSection} />}
+            {activeTab === 'reviews' && <ReviewsManager data={content.reviews} onSave={handleSaveSection} token={token} onRefresh={refreshContent} />}
             {activeTab === 'faq_areas' && <FaqAreasEditor areasData={content.areas} faqData={content.faq} onSave={handleSaveSection} />}
             {activeTab === 'seo' && <SeoEditor data={content.seo} onSave={handleSaveSection} />}
           </div>

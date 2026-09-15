@@ -61,7 +61,7 @@ export default function Services({ onSelectService }) {
             Quality Home Repairs & Assembly Done Right.
           </h2>
           <p className="text-xs sm:text-sm lg:text-base text-slate-600 mt-2 max-w-2xl mx-auto">
-            From single-room repairs to full flat refreshes. Professional tools, clean workmanship, and £65 minimum call-out.
+            From single-room repairs to full flat refreshes. Free upfront quotes, clean workmanship, and £65 minimum job booking.
           </p>
 
           {/* Desktop-Only Filter Pills (Hidden on Mobile to keep page clean & avoid scroll friction) */}
@@ -114,12 +114,12 @@ export default function Services({ onSelectService }) {
                     {service.title}
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
-                    {service.shortDesc}
+                    {service.shortDesc || service.description}
                   </p>
 
                   {/* Feature Checklist */}
                   <ul className="mt-4 space-y-2 text-xs text-slate-700">
-                    {service.features.map((feat, i) => (
+                    {(service.features || service.bullets || []).map((feat, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                         <span>{feat}</span>

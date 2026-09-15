@@ -173,7 +173,7 @@ export default function Concept1_AppleBento({ onOpenQuote }) {
                 £65
               </div>
               <p className="text-xs text-slate-500 mt-1 font-medium">
-                Minimum call-out fee across Edinburgh Area
+                Minimum job booking (Free quotes upfront)
               </p>
             </div>
             <div className="text-[11px] text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl font-semibold inline-block self-start">
@@ -215,7 +215,7 @@ export default function Concept1_AppleBento({ onOpenQuote }) {
                 </h3>
               </div>
               <span className="text-xs text-slate-500">
-                EH1 through EH54 covered with £65 minimum call-out
+                EH1 through EH54 covered with £65 minimum job booking
               </span>
             </div>
 
@@ -361,7 +361,7 @@ export default function Concept1_AppleBento({ onOpenQuote }) {
             Request Your Edinburgh Quote
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-1 mb-6">
-            Minimum call-out fee £65 (Edinburgh Area). Quick assessment on WhatsApp or form.
+            Free quotes & £65 minimum job booking (Edinburgh Area). Quick assessment on WhatsApp or form.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">

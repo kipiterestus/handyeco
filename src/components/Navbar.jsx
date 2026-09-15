@@ -49,7 +49,7 @@ export default function Navbar() {
               Avg Response: {config.responseTime || '15–30 mins'}
             </span>
             <span className="text-slate-600">&bull;</span>
-            <span>{config.callOutText || 'Minimum call-out fee £65 (Edinburgh Area)'}</span>
+            <span>{config.callOutText || 'Free Quotes • Minimum Job £65 (Edinburgh Area)'}</span>
           </div>
 
         </div>

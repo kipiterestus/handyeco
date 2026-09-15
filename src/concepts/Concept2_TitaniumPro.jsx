@@ -72,7 +72,7 @@ export default function Concept2_TitaniumPro({ onOpenQuote }) {
       <section className="pt-24 pb-16 max-w-5xl mx-auto px-4 sm:px-6 text-center relative z-10">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.06] border border-white/[0.12] text-xs font-medium text-slate-300 mb-6 backdrop-blur-md">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Edinburgh Area &bull; Minimum call-out fee £65</span>
+          <span>Edinburgh Area &bull; Free Quotes &bull; Min Job £65</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-[1.1]">
@@ -120,7 +120,7 @@ export default function Concept2_TitaniumPro({ onOpenQuote }) {
           <div className="p-6 rounded-[24px] bg-[#121214] border border-white/[0.08] text-left hover:border-white/[0.2] transition-colors">
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">Standard Rate</span>
             <div className="text-3xl font-black text-white mt-1">£65</div>
-            <p className="text-xs text-slate-400 mt-1">Minimum call-out fee (Edinburgh Area)</p>
+            <p className="text-xs text-slate-400 mt-1">Minimum job booking (Free quotes upfront)</p>
           </div>
 
           {/* Spec Card 3: Tenement Ready */}
@@ -219,7 +219,7 @@ export default function Concept2_TitaniumPro({ onOpenQuote }) {
             Request an Estimate in 60 Seconds
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 mt-1 mb-6">
-            Minimum call-out fee £65 (Edinburgh Area). Same-day response via WhatsApp.
+            Free quotes upfront & £65 minimum job booking (Edinburgh Area). Same-day response via WhatsApp.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">

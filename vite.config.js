@@ -13,9 +13,11 @@ import {
   verifyAdminPassword, 
   createAdminToken, 
   isValidToken, 
-  revokeToken 
+  revokeToken,
+  getSection
 } from './server/store.js';
 import { sendTelegramNotification } from './server/telegram.js';
+import { syncReviews } from './server/reviewsSync.js';
 
 function readEnv() {
   const envPath = path.resolve(process.cwd(), '.env');
@@ -90,8 +92,9 @@ const backendApiPlugin = () => ({
           console.log('\n[API] 📩 New quote submission:', quote.name, quote.phone, quote.service);
           const saved = saveQuoteRecord(quote);
           const env = readEnv();
-          const token = process.env.TELEGRAM_BOT_TOKEN || env.TELEGRAM_BOT_TOKEN;
-          const chatId = process.env.TELEGRAM_CHAT_ID || env.TELEGRAM_CHAT_ID;
+          const siteConfig = getSection('siteConfig') || {};
+          const token = siteConfig.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN || env.TELEGRAM_BOT_TOKEN;
+          const chatId = siteConfig.telegramChatId || process.env.TELEGRAM_CHAT_ID || env.TELEGRAM_CHAT_ID;
           const tgRes = await sendTelegramNotification(quote, token, chatId);
           return sendJson(200, { success: true, quoteId: saved.id, telegramDelivered: tgRes.delivered });
         }
@@ -158,6 +161,31 @@ const backendApiPlugin = () => ({
           const updates = await parseBody(req);
           const updated = updateQuoteStatus(id, updates);
           return sendJson(200, { success: true, quote: updated });
+        }
+
+        // 11. Test Telegram Notification
+        if (pathname === '/api/telegram/test' && method === 'POST') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const body = await parseBody(req);
+          const testQuote = {
+            name: 'Handyeco Test Lead',
+            phone: '+44 7760 696723',
+            postcode: 'EH1 1AA (Edinburgh City Centre)',
+            service: 'Flat-Pack Furniture Assembly & TV Mounting',
+            urgency: 'urgent',
+            details: 'This is a test notification from your Handyeco Admin Panel. Your Telegram phone alerts are working properly!',
+            photosCount: 1
+          };
+          const tgRes = await sendTelegramNotification(testQuote, body.token, body.chatId);
+          return sendJson(200, tgRes);
+        }
+
+        // 12. Sync Google & MyBuilder Reviews
+        if (pathname === '/api/reviews/sync' && method === 'POST') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const syncResult = await syncReviews();
+          const reviews = getSection('reviews') || [];
+          return sendJson(200, { ...syncResult, reviews });
         }
 
         next();

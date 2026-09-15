@@ -12,9 +12,11 @@ import {
   verifyAdminPassword, 
   createAdminToken, 
   isValidToken, 
-  revokeToken 
+  revokeToken,
+  getSection
 } from './store.js';
 import { sendTelegramNotification } from './telegram.js';
+import { syncReviews } from './reviewsSync.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -72,8 +74,9 @@ app.post('/api/quote', async (req, res) => {
     const saved = saveQuoteRecord(quote);
 
     // Send Telegram alert
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
+    const siteConfig = getSection('siteConfig') || {};
+    const botToken = siteConfig.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = siteConfig.telegramChatId || process.env.TELEGRAM_CHAT_ID;
     const telegramResult = await sendTelegramNotification(quote, botToken, chatId);
 
     res.status(200).json({
@@ -167,11 +170,43 @@ app.patch('/api/quotes/:id', requireAuth, (req, res) => {
     const updated = updateQuoteStatus(id, updates);
     res.json({ success: true, quote: updated });
   } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
+// Test Telegram notification
+app.post('/api/telegram/test', requireAuth, async (req, res) => {
+  try {
+    const { token, chatId } = req.body;
+    const testQuote = {
+      name: 'Handyeco Test Lead',
+      phone: '+44 7760 696723',
+      postcode: 'EH1 1AA (Edinburgh City Centre)',
+      service: 'Flat-Pack Furniture Assembly & TV Mounting',
+      urgency: 'urgent',
+      details: 'This is a test notification from your Handyeco Admin Panel. Your Telegram phone alerts are working properly!',
+      photosCount: 1
+    };
+    const result = await sendTelegramNotification(testQuote, token, chatId);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
+// Sync Google & MyBuilder reviews
+app.post('/api/reviews/sync', requireAuth, async (req, res) => {
+  try {
+    const result = await syncReviews();
+    const reviews = getSection('reviews') || [];
+    res.json({ ...result, reviews });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Hourly background review synchronization
+setInterval(() => {
+  syncReviews().catch(err => console.error('[AutoSync Error]:', err));
+}, 60 * 60 * 1000);
+
 app.listen(PORT, () => {
   console.log(`\n🚀 Handyeco API Server active at: http://localhost:${PORT}`);
-  console.log(`📱 Telegram Bot: ${process.env.TELEGRAM_BOT_TOKEN ? '✅ Configured' : '⚠️ Pending credentials in .env'}`);
+  console.log(`📱 Telegram Bot: ${process.env.TELEGRAM_BOT_TOKEN ? '✅ Configured' : '⚠️ Ready via Admin Panel or .env'}`);
 });

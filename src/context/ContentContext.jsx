@@ -16,9 +16,9 @@ const DEFAULT_CONTENT = {
     whatsappNumber: BUSINESS_INFO.whatsapp,
     whatsappUrl: BUSINESS_INFO.whatsappUrl,
     googleProfileUrl: BUSINESS_INFO.googleProfileUrl,
-    myBuilderUrl: BUSINESS_INFO.myBuilderUrl,
-    callOutFee: 65,
-    callOutText: 'Minimum call-out fee £65 (Edinburgh Area)',
+    callOutFee: 0,
+    minimumJobBooking: 65,
+    callOutText: 'Free Quotes • Minimum Job £65 (Edinburgh Area)',
     responseTime: '15–30 mins',
     responseTimeText: 'Average response time: 15–30 mins on WhatsApp.',
     availabilityText: 'Available for Booking',
@@ -35,7 +35,7 @@ const DEFAULT_CONTENT = {
     description: 'Specialist in flat-pack furniture assembly, TV wall mounting into Edinburgh stone walls, interior painting, and mould-free bathroom silicone sealing. Fast, reliable, and exceptionally tidy workmanship.',
     bullets: [
       'Punctual, Clean & Spotless Tidy',
-      'Zero Hidden Fees • £65 Minimum Call-Out',
+      'Free Quotes • Minimum Job £65',
       'Tenement Specialists (Stone & Plaster)',
       'Prompt WhatsApp Photo Estimates'
     ],

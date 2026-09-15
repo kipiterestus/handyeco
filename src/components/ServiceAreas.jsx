@@ -10,7 +10,7 @@ export default function ServiceAreas() {
     { zone: "South & West", postcodes: "EH9 - EH14", areas: "Morningside, Bruntsfield, Corstorphine, Balerno" },
     { zone: "Lothians", postcodes: "EH21 - EH30, EH54", areas: "Musselburgh, Dalkeith, Queensferry, Livingston" },
   ];
-  const callOutText = content.siteConfig?.callOutText || "Minimum call-out fee £65 (Edinburgh Area)";
+  const callOutText = content.siteConfig?.callOutText || "Free Quotes • Minimum Job £65 (Edinburgh Area)";
 
   return (
     <section id="areas" className="pt-6 pb-2 sm:pt-8 sm:pb-3 bg-white border-b border-slate-100 relative">
@@ -41,7 +41,7 @@ export default function ServiceAreas() {
 
             <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-xl border border-emerald-200/80 self-start sm:self-auto">
               <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Zero extra travel fee across EH zones</span>
+              <span>Free Quotes & Zero Call-Out Charges</span>
             </div>
           </div>
 
