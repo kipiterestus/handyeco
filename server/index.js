@@ -1,5 +1,5 @@
 import express from 'express';
-import cors from 'cors';
+import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { 
@@ -21,11 +21,16 @@ import {
   getSchedule,
   saveScheduleJob,
   updateScheduleJob,
-  deleteScheduleJob
+  deleteScheduleJob,
+  isTotpConfigured,
+  verifyTotpCode,
+  generateTotpSetup,
+  saveTotpSecret,
+  resetTotp
 } from './store.js';
 import { sendTelegramNotification } from './telegram.js';
 import { syncReviews } from './reviewsSync.js';
-import { SECURITY_HEADERS, loginRateLimiter, quoteRateLimiter } from './security.js';
+import { SECURITY_HEADERS, loginRateLimiter, quoteRateLimiter, corsMiddleware } from './security.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,13 +46,16 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors());
+// Restricted CORS (only allowed origins from .env ALLOWED_ORIGIN)
+app.use(corsMiddleware);
+
 // 10MB limit protects against memory exhaustion attacks while allowing base64 photos
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve uploaded images statically
 app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
+
 
 // Auth middleware guard for protected routes
 function requireAuth(req, res, next) {
@@ -123,7 +131,14 @@ app.post('/api/quote', async (req, res) => {
 
 // --- AUTHENTICATION ROUTES ---
 
-app.post('/api/auth/login', (req, res) => {
+// Step 1: Verify password → if 2FA set up, return needsTotp:true; else return token directly
+// Step 2 (if needsTotp): POST /api/auth/totp with the 6-digit code and a temporary passThroughToken
+// On success → return the real session token
+
+// Temporary pass-through store for confirmed-password sessions pending TOTP
+const pendingTotpSessions = new Map(); // tempToken -> { ip, expiresAt }
+
+app.post('/api/auth/login', async (req, res) => {
   const clientIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
   const rateLimit = loginRateLimiter.check(clientIp);
   if (!rateLimit.allowed) {
@@ -134,16 +149,90 @@ app.post('/api/auth/login', (req, res) => {
   }
 
   const { password } = req.body;
-  if (verifyAdminPassword(password)) {
-    loginRateLimiter.reset(clientIp);
-    const token = createAdminToken();
-    console.log('[Auth] Admin logged in successfully.');
-    return res.json({ success: true, token });
+  if (!verifyAdminPassword(password)) {
+    console.warn('[Auth] Failed admin login attempt from', clientIp);
+    return res.status(401).json({ success: false, error: 'Invalid admin password.' });
   }
-  console.warn('[Auth] Failed admin login attempt.');
-  return res.status(401).json({ success: false, error: 'Invalid admin password.' });
+
+  loginRateLimiter.reset(clientIp);
+
+  // Check whether 2FA is configured
+  if (!isTotpConfigured()) {
+    // 2FA not yet configured: generate setup QR and send to client
+    console.log('[Auth] Password OK. 2FA not configured. Sending QR setup...');
+    const setup = await generateTotpSetup();
+    // Issue a short-lived temp token so the TOTP confirm endpoint knows the password was verified
+    const tempToken = Buffer.from(crypto.randomBytes(24)).toString('hex');
+    pendingTotpSessions.set(tempToken, { ip: clientIp, expiresAt: Date.now() + 5 * 60 * 1000, setupSecret: setup.secretBase32 });
+    return res.json({
+      success: true,
+      needsTotpSetup: true,
+      tempToken,
+      qrDataUrl: setup.qrDataUrl,
+      secretBase32: setup.secretBase32,
+      message: 'Scan QR code with Google Authenticator then confirm with a 6-digit code.'
+    });
+  }
+
+  // 2FA configured: issue temp token requiring TOTP confirmation
+  const tempToken = Buffer.from(crypto.randomBytes(24)).toString('hex');
+  pendingTotpSessions.set(tempToken, { ip: clientIp, expiresAt: Date.now() + 5 * 60 * 1000 });
+  console.log('[Auth] Password OK. Awaiting TOTP verification...');
+  return res.json({ success: true, needsTotp: true, tempToken });
 });
 
+// Confirm 6-digit TOTP code (also used for initial QR setup confirmation)
+app.post('/api/auth/totp', async (req, res) => {
+  const clientIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
+  const rateLimit = loginRateLimiter.check(clientIp);
+  if (!rateLimit.allowed) {
+    return res.status(429).json({
+      success: false,
+      error: `Too many attempts. Please wait ${rateLimit.waitSeconds} seconds.`
+    });
+  }
+
+  const { tempToken, code, setupSecret } = req.body;
+  if (!tempToken || !code) {
+    return res.status(400).json({ success: false, error: 'tempToken and code are required.' });
+  }
+
+  const session = pendingTotpSessions.get(tempToken);
+  if (!session || session.ip !== clientIp || Date.now() > session.expiresAt) {
+    pendingTotpSessions.delete(tempToken);
+    return res.status(401).json({ success: false, error: 'Session expired. Please start login again.' });
+  }
+
+  // If this is first-time setup, we need to save the secret first then verify
+  if (session.setupSecret) {
+    // Save the secret before verifying (so verifyTotpCode can read it)
+    saveTotpSecret(session.setupSecret);
+  }
+
+  if (!verifyTotpCode(code)) {
+    // If setup failed, remove the saved secret so they have to restart
+    if (session.setupSecret) resetTotp();
+    return res.status(401).json({ success: false, error: 'Invalid or expired 2FA code. Please try again.' });
+  }
+
+  pendingTotpSessions.delete(tempToken);
+  loginRateLimiter.reset(clientIp);
+  const token = createAdminToken();
+  console.log('[Auth] Admin logged in with 2FA successfully.');
+  return res.json({ success: true, token });
+});
+
+// Reset 2FA (requires current session token - admin only)
+app.post('/api/auth/totp/reset', requireAuth, (req, res) => {
+  resetTotp();
+  console.log('[Auth] 2FA TOTP reset by authenticated admin.');
+  return res.json({ success: true, message: '2FA has been reset. You will be prompted to re-configure on next login.' });
+});
+
+// Check TOTP status
+app.get('/api/auth/totp/status', requireAuth, (req, res) => {
+  return res.json({ configured: isTotpConfigured() });
+});
 
 app.get('/api/auth/verify', (req, res) => {
   const authHeader = req.headers.authorization;
@@ -157,6 +246,15 @@ app.post('/api/auth/logout', (req, res) => {
   revokeToken(token);
   res.json({ success: true });
 });
+
+// Clean up expired pending TOTP sessions every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [token, session] of pendingTotpSessions.entries()) {
+    if (now > session.expiresAt) pendingTotpSessions.delete(token);
+  }
+}, 5 * 60 * 1000);
+
 
 // --- PROTECTED ADMIN API ROUTES ---
 

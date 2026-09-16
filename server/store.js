@@ -2,7 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import sharp from 'sharp';
-import { timingSafeCompare, TokenManager, sanitizeQuotePayload } from './security.js';
+import { timingSafeCompare, TokenManager, sanitizeQuotePayload, isTotpConfigured, verifyTotpCode, generateTotpSetup, saveTotpSecret, resetTotp } from './security.js';
+
+// Re-export TOTP helpers so server/index.js can import them from one place
+export { isTotpConfigured, verifyTotpCode, generateTotpSetup, saveTotpSecret, resetTotp };
 
 const dataDir = path.join(process.cwd(), 'server', 'data');
 const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
@@ -61,8 +64,13 @@ export function updateSection(section, data) {
   return data;
 }
 
-// Get single section
+// Get single section (allowlisted to prevent path traversal)
+const ALLOWED_SECTIONS = ['siteConfig', 'hero', 'services', 'gallery', 'reviews', 'areas', 'faq', 'seo'];
+
 export function getSection(section) {
+  if (!ALLOWED_SECTIONS.includes(section)) {
+    throw new Error(`Invalid section: ${section}`);
+  }
   return readJson(`${section}.json`);
 }
 
@@ -105,7 +113,7 @@ export function saveQuoteRecord(quoteData) {
   const sanitized = sanitizeQuotePayload(quoteData);
   const quotes = getQuotes();
   const newQuote = {
-    id: 'quote_' + Date.now(),
+    id: 'quote_' + crypto.randomUUID().replace(/-/g, ''),
     createdAt: new Date().toISOString(),
     status: 'new', // new | contacted | booked | archived
     notes: '',
@@ -116,11 +124,28 @@ export function saveQuoteRecord(quoteData) {
   return newQuote;
 }
 
+// Only allow safe fields to be updated — prevents mass assignment attacks
+const QUOTE_UPDATABLE_FIELDS = ['status', 'notes', 'adminNote', 'priceEstimate'];
+const QUOTE_ALLOWED_STATUSES = ['new', 'contacted', 'booked', 'completed', 'archived'];
+
 export function updateQuoteStatus(id, updates) {
   const quotes = getQuotes();
   const index = quotes.findIndex(q => q.id === id);
   if (index === -1) throw new Error('Quote not found');
-  quotes[index] = { ...quotes[index], ...updates, updatedAt: new Date().toISOString() };
+
+  // Whitelist only safe fields
+  const safe = {};
+  for (const field of QUOTE_UPDATABLE_FIELDS) {
+    if (updates[field] !== undefined) {
+      safe[field] = updates[field];
+    }
+  }
+  // Validate status value
+  if (safe.status && !QUOTE_ALLOWED_STATUSES.includes(safe.status)) {
+    throw new Error(`Invalid status: ${safe.status}`);
+  }
+
+  quotes[index] = { ...quotes[index], ...safe, updatedAt: new Date().toISOString() };
   fs.writeFileSync(quotesFile, JSON.stringify(quotes, null, 2), 'utf-8');
   return quotes[index];
 }
@@ -168,7 +193,7 @@ export function saveFinanceRecord(record) {
     : Math.round((revenue - materialCost - otherExpenses) * 100) / 100;
 
   const newRecord = {
-    id: record.id || 'fin-' + Date.now(),
+    id: record.id || 'fin-' + crypto.randomUUID().replace(/-/g, ''),
     type: record.type || 'job', // 'job' | 'overhead'
     category: record.category || (isOverhead ? 'other' : ''),
     leadId: record.leadId || null,
@@ -239,7 +264,7 @@ export function getSchedule() {
 export function saveScheduleJob(job) {
   const schedule = getSchedule();
   const newJob = {
-    id: job.id || 'job-' + Date.now(),
+    id: job.id || 'job-' + crypto.randomUUID().replace(/-/g, ''),
     leadId: job.leadId || null,
     customerName: job.customerName || 'Anonymous Customer',
     customerPhone: job.customerPhone || '',

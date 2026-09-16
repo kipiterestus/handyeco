@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# SECURITY: Environment variables & secrets - NEVER commit these
+.env
+.env.*
+!.env.example
+
+# SECURITY: Server data files contain financial and customer data
+server/data/finances.json
+server/data/schedule.json
+server/data/admin_config.json
+server/quotes.json
+

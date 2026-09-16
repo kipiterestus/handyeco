@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { 
   getAllContent, 
   updateSection, 
@@ -22,11 +23,26 @@ import {
   getSchedule,
   saveScheduleJob,
   updateScheduleJob,
-  deleteScheduleJob
+  deleteScheduleJob,
+  isTotpConfigured,
+  verifyTotpCode,
+  generateTotpSetup,
+  saveTotpSecret,
+  resetTotp
 } from './server/store.js';
 import { sendTelegramNotification } from './server/telegram.js';
 import { syncReviews } from './server/reviewsSync.js';
 import { SECURITY_HEADERS, loginRateLimiter, quoteRateLimiter } from './server/security.js';
+
+// Shared pending TOTP sessions (dev server only)
+const pendingTotpSessions = new Map();
+setInterval(() => {
+  const now = Date.now();
+  for (const [token, session] of pendingTotpSessions.entries()) {
+    if (now > session.expiresAt) pendingTotpSessions.delete(token);
+  }
+}, 5 * 60 * 1000);
+
 
 function readEnv() {
   const envPath = path.resolve(process.cwd(), '.env');
@@ -127,7 +143,7 @@ const backendApiPlugin = () => ({
           return sendJson(200, { success: true, quoteId: saved.id, telegramDelivered: tgRes.delivered });
         }
 
-        // 4. Admin Auth Login with Rate Limiting
+        // 4. Admin Auth Login with Rate Limiting & 2FA
         if (pathname === '/api/auth/login' && method === 'POST') {
           const limit = loginRateLimiter.check(clientIp);
           if (!limit.allowed) {
@@ -138,13 +154,70 @@ const backendApiPlugin = () => ({
           }
 
           const { password } = await parseBody(req);
-          if (verifyAdminPassword(password)) {
-            loginRateLimiter.reset(clientIp);
-            const token = createAdminToken();
-            console.log('[Auth] Admin logged in.');
-            return sendJson(200, { success: true, token });
+          if (!verifyAdminPassword(password)) {
+            return sendJson(401, { success: false, error: 'Invalid admin password' });
           }
-          return sendJson(401, { success: false, error: 'Invalid admin password' });
+
+          loginRateLimiter.reset(clientIp);
+
+          if (!isTotpConfigured()) {
+            const setup = await generateTotpSetup();
+            const tempToken = crypto.randomBytes(24).toString('hex');
+            pendingTotpSessions.set(tempToken, { ip: clientIp, expiresAt: Date.now() + 5 * 60 * 1000, setupSecret: setup.secretBase32 });
+            return sendJson(200, {
+              success: true, needsTotpSetup: true, tempToken,
+              qrDataUrl: setup.qrDataUrl, secretBase32: setup.secretBase32,
+              message: 'Scan QR code with Google Authenticator then confirm with a 6-digit code.'
+            });
+          }
+
+          const tempToken = crypto.randomBytes(24).toString('hex');
+          pendingTotpSessions.set(tempToken, { ip: clientIp, expiresAt: Date.now() + 5 * 60 * 1000 });
+          return sendJson(200, { success: true, needsTotp: true, tempToken });
+        }
+
+        // 4b. TOTP 2FA Confirm
+        if (pathname === '/api/auth/totp' && method === 'POST') {
+          const limit = loginRateLimiter.check(clientIp);
+          if (!limit.allowed) {
+            return sendJson(429, { success: false, error: `Too many attempts. Please wait ${limit.waitSeconds} seconds.` });
+          }
+          const { tempToken, code } = await parseBody(req);
+          if (!tempToken || !code) {
+            return sendJson(400, { success: false, error: 'tempToken and code are required.' });
+          }
+          const session = pendingTotpSessions.get(tempToken);
+          if (!session || session.ip !== clientIp || Date.now() > session.expiresAt) {
+            pendingTotpSessions.delete(tempToken);
+            return sendJson(401, { success: false, error: 'Session expired. Please start login again.' });
+          }
+          if (session.setupSecret) saveTotpSecret(session.setupSecret);
+          if (!verifyTotpCode(code)) {
+            if (session.setupSecret) resetTotp();
+            return sendJson(401, { success: false, error: 'Invalid or expired 2FA code. Please try again.' });
+          }
+          pendingTotpSessions.delete(tempToken);
+          loginRateLimiter.reset(clientIp);
+          const token = createAdminToken();
+          console.log('[Auth] Admin logged in with 2FA.');
+          return sendJson(200, { success: true, token });
+        }
+
+        // 4c. TOTP Reset
+        if (pathname === '/api/auth/totp/reset' && method === 'POST') {
+          const auth = req.headers.authorization;
+          const token = auth?.startsWith('Bearer ') ? auth.substring(7) : null;
+          if (!isValidToken(token)) return sendJson(401, { success: false, error: 'Unauthorized' });
+          resetTotp();
+          return sendJson(200, { success: true, message: '2FA has been reset.' });
+        }
+
+        // 4d. TOTP Status
+        if (pathname === '/api/auth/totp/status' && method === 'GET') {
+          const auth = req.headers.authorization;
+          const token = auth?.startsWith('Bearer ') ? auth.substring(7) : null;
+          if (!isValidToken(token)) return sendJson(401, { success: false, error: 'Unauthorized' });
+          return sendJson(200, { configured: isTotpConfigured() });
         }
 
         // 5. Auth Verify
