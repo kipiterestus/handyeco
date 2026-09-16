@@ -161,6 +161,18 @@ export default function QuoteForm({ preselectedService }) {
       a: "No, we bring a comprehensive kit of professional 18V cordless power tools, laser levels, and industrial-grade fixings (screws, wall plugs, masonry anchors). For flat-pack furniture, all assembly hardware is included in your boxes; if any screws are missing, we carry spares in our kit."
     },
     {
+      q: "Can you assemble IKEA PAX wardrobes and other flat-pack furniture?",
+      a: "Yes, we specialize in IKEA PAX systems, sliding doors, bed frames, dining sets, and flat-pack furniture from Argos, Next, Wayfair, and John Lewis. We bring all specialized power tools to build your items securely and perfectly aligned."
+    },
+    {
+      q: "What payment methods do you accept, and when do I pay?",
+      a: "You only pay after the job is completed and you have inspected our work to your complete satisfaction. We accept direct bank transfer, debit/credit cards, and cash upon completion with an immediate digital receipt provided."
+    },
+    {
+      q: "Can you handle multiple small odd jobs in a single visit?",
+      a: "Absolutely. Many Edinburgh clients book a 2-3 hour session where we tackle a punch-list of small repairs all at once: hanging curtain poles, adjusting sticky doors, resealing baths, hanging art, and building furniture in one convenient visit."
+    },
+    {
       q: "What areas around Edinburgh do you cover?",
       a: "We cover all of Edinburgh (EH1 through EH17) as well as the surrounding Lothians including Musselburgh (EH21), Dalkeith (EH22), South Queensferry (EH30), and Livingston (EH54) with zero extra travel surcharge within standard zones."
     }

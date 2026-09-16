@@ -13,8 +13,20 @@ const DEFAULT_FAQS = [
     a: "Yes, absolutely. Edinburgh tenement flats usually have either solid stone masonry or delicate lath-and-plaster over stud partitions. We carry specialized heavy-duty fixings (Corefix, GripIt, rawlbolts, and hollow wall anchors) designed specifically to hold 65-inch+ TVs and heavy Victorian mirrors safely and securely."
   },
   {
-    q: "Do I need to supply screws, brackets, or silicone?",
-    a: "We carry a fully stocked van with professional trade-grade fixings, wall plugs, masonry screws, and anti-mould sanitary silicone. For TV wall mounting, you can supply your preferred bracket or we can provide one upon request. For painting, clients usually supply their chosen paint shade, or we can pick it up for you."
+    q: "Do I need to supply tools or hardware fixings?",
+    a: "No, we bring a comprehensive kit of professional 18V cordless power tools, laser levels, and industrial-grade fixings (screws, wall plugs, masonry anchors). For flat-pack furniture, all assembly hardware is included in your boxes; if any screws are missing, we carry spares in our kit."
+  },
+  {
+    q: "Can you assemble IKEA PAX wardrobes and other flat-pack furniture?",
+    a: "Yes, we specialize in IKEA PAX systems, sliding doors, bed frames, dining sets, and flat-pack furniture from Argos, Next, Wayfair, and John Lewis. We bring all specialized power tools to build your items securely and perfectly aligned."
+  },
+  {
+    q: "What payment methods do you accept, and when do I pay?",
+    a: "You only pay after the job is completed and you have inspected our work to your complete satisfaction. We accept direct bank transfer, debit/credit cards, and cash upon completion with an immediate digital receipt provided."
+  },
+  {
+    q: "Can you handle multiple small odd jobs in a single visit?",
+    a: "Absolutely. Many Edinburgh clients book a 2-3 hour session where we tackle a punch-list of small repairs all at once: hanging curtain poles, adjusting sticky doors, resealing baths, hanging art, and building furniture in one convenient visit."
   },
   {
     q: "How quickly can you assemble my flat-pack furniture?",
