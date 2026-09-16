@@ -5,15 +5,16 @@
     "customerName": "Utku Dilemre",
     "customerPhone": "23124123",
     "postcode": "EH1",
-    "service": "General Handyman Job",
+    "service": "DOLAP YAPILDI MUTFAK YAPILDI BUZDOLABI ÇAMAŞIR MAKİNESİ TAMİRAT YAPILDI",
     "revenue": 280,
     "materialCost": 35,
     "otherExpenses": 0,
     "netProfit": 245,
-    "paymentStatus": "paid_card",
+    "paymentStatus": "paid_cash",
     "date": "2026-09-16",
     "notes": "",
-    "createdAt": "2026-09-16T10:01:56.717Z"
+    "createdAt": "2026-09-16T10:01:56.717Z",
+    "updatedAt": "2026-09-16T10:09:58.689Z"
   },
   {
     "id": "fin-1710580001",

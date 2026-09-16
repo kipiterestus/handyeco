@@ -157,23 +157,34 @@ export function getFinances() {
 
 export function saveFinanceRecord(record) {
   const finances = getFinances();
-  const revenue = Number(record.revenue) || 0;
-  const materialCost = Number(record.materialCost) || 0;
-  const otherExpenses = Number(record.otherExpenses) || 0;
-  const netProfit = Math.round((revenue - materialCost - otherExpenses) * 100) / 100;
+  const isOverhead = record.type === 'overhead';
+  const revenue = isOverhead ? 0 : (Number(record.revenue) || 0);
+  const materialCost = isOverhead ? 0 : (Number(record.materialCost) || 0);
+  const otherExpenses = isOverhead 
+    ? (Number(record.amount ?? record.otherExpenses) || 0) 
+    : (Number(record.otherExpenses) || 0);
+  const netProfit = isOverhead 
+    ? -otherExpenses 
+    : Math.round((revenue - materialCost - otherExpenses) * 100) / 100;
 
   const newRecord = {
     id: record.id || 'fin-' + Date.now(),
+    type: record.type || 'job', // 'job' | 'overhead'
+    category: record.category || (isOverhead ? 'other' : ''),
     leadId: record.leadId || null,
-    customerName: record.customerName || 'Anonymous Job',
+    customerName: isOverhead 
+      ? (record.title || record.customerName || 'Genel Şirket Masrafı') 
+      : (record.customerName || 'İsimsiz Müşteri'),
     customerPhone: record.customerPhone || '',
     postcode: record.postcode || 'Edinburgh',
-    service: record.service || 'Handyman Job',
+    service: isOverhead 
+      ? (record.categoryLabel || record.service || 'Şirket Gideri') 
+      : (record.service || 'Usta İşi'),
     revenue,
     materialCost,
     otherExpenses,
     netProfit,
-    paymentStatus: record.paymentStatus || 'paid', // paid | pending | invoiced
+    paymentStatus: record.paymentStatus || 'paid_card',
     date: record.date || new Date().toISOString().split('T')[0],
     notes: record.notes || '',
     createdAt: new Date().toISOString()
@@ -192,13 +203,18 @@ export function updateFinanceRecord(id, updates) {
   const existing = finances[index];
   const merged = { ...existing, ...updates };
   
-  const revenue = Number(merged.revenue) || 0;
-  const materialCost = Number(merged.materialCost) || 0;
-  const otherExpenses = Number(merged.otherExpenses) || 0;
+  const isOverhead = merged.type === 'overhead';
+  const revenue = isOverhead ? 0 : (Number(merged.revenue) || 0);
+  const materialCost = isOverhead ? 0 : (Number(merged.materialCost) || 0);
+  const otherExpenses = isOverhead 
+    ? (Number(merged.amount ?? merged.otherExpenses) || 0) 
+    : (Number(merged.otherExpenses) || 0);
   merged.revenue = revenue;
   merged.materialCost = materialCost;
   merged.otherExpenses = otherExpenses;
-  merged.netProfit = Math.round((revenue - materialCost - otherExpenses) * 100) / 100;
+  merged.netProfit = isOverhead 
+    ? -otherExpenses 
+    : Math.round((revenue - materialCost - otherExpenses) * 100) / 100;
   merged.updatedAt = new Date().toISOString();
 
   finances[index] = merged;

@@ -17,14 +17,27 @@ import {
   MapPin, 
   User, 
   FileSpreadsheet, 
-  X,
-  Calendar,
-  MessageSquare,
-  CreditCard,
-  Banknote,
-  Building,
-  ShieldAlert
+  X, 
+  Calendar, 
+  MessageSquare, 
+  CreditCard, 
+  Banknote, 
+  Building, 
+  ShieldAlert,
+  Receipt
 } from 'lucide-react';
+
+const OVERHEAD_CATEGORIES = [
+  { id: 'fuel', label: 'Araç Yakıtı & Ulaşım', icon: '⛽' },
+  { id: 'tools', label: 'Alet & Ekipman Alımı', icon: '🛠️' },
+  { id: 'maintenance', label: 'Araç Bakım, Tamir & MOT', icon: '🚐' },
+  { id: 'insurance', label: 'Sigorta & Ruhsatlar', icon: '🛡️' },
+  { id: 'ads', label: 'Reklam & Pazarlama (Google/Meta)', icon: '📢' },
+  { id: 'phone', label: 'Telefon & İnternet Faturası', icon: '📱' },
+  { id: 'ppe', label: 'İş Kıyafeti & İSG / Koruyucu', icon: '🦺' },
+  { id: 'software', label: 'Muhasebe, Yazılım & Lisans', icon: '📁' },
+  { id: 'other', label: 'Diğer Genel İşletme Gideri', icon: '☕' }
+];
 
 export default function AccountingManager({ token, initialLeadData = null, onClearInitialLead = null }) {
   const [finances, setFinances] = useState([]);
@@ -33,14 +46,26 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all'); // 'all' | 'paid_card' | 'paid_cash' | 'paid_bank' | 'pending'
   const [timeRange, setTimeRange] = useState('month'); // 'week' | 'month' | 'year' | 'all'
+  const [entryTypeFilter, setEntryTypeFilter] = useState('all'); // 'all' | 'job' | 'overhead'
   
-  // Modal state
+  // Job Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [duplicateWarning, setDuplicateWarning] = useState('');
 
-  // Form state
+  // Overhead Modal state
+  const [isOverheadModalOpen, setIsOverheadModalOpen] = useState(false);
+  const [overheadFormData, setOverheadFormData] = useState({
+    title: '',
+    category: 'fuel',
+    amount: '',
+    paymentStatus: 'paid_card',
+    date: new Date().toISOString().split('T')[0],
+    notes: ''
+  });
+
+  // Form state for Jobs
   const [formData, setFormData] = useState({
     leadId: null,
     customerName: '',
@@ -150,19 +175,26 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
     return true; // 'all'
   });
 
+  const jobFinances = periodFinances.filter(f => f.type !== 'overhead');
+  const overheadFinances = periodFinances.filter(f => f.type === 'overhead');
+
   // KPI Calculations based on selected period
-  const totalRevenue = periodFinances.reduce((acc, curr) => acc + (Number(curr.revenue) || 0), 0);
-  const totalMaterial = periodFinances.reduce((acc, curr) => acc + (Number(curr.materialCost) || 0), 0);
-  const totalOther = periodFinances.reduce((acc, curr) => acc + (Number(curr.otherExpenses) || 0), 0);
-  const totalExpenses = totalMaterial + totalOther;
+  const totalRevenue = jobFinances.reduce((acc, curr) => acc + (Number(curr.revenue) || 0), 0);
+  const totalMaterial = jobFinances.reduce((acc, curr) => acc + (Number(curr.materialCost) || 0), 0);
+  const totalOverhead = overheadFinances.reduce((acc, curr) => acc + (Number(curr.otherExpenses) || 0), 0);
+  const totalJobOther = jobFinances.reduce((acc, curr) => acc + (Number(curr.otherExpenses) || 0), 0);
+  const totalExpenses = totalMaterial + totalOverhead + totalJobOther;
   const netProfit = totalRevenue - totalExpenses;
   const profitMargin = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : 0;
-  const avgProfitPerJob = periodFinances.length > 0 ? (netProfit / periodFinances.length).toFixed(1) : 0;
+  const avgProfitPerJob = jobFinances.length > 0 ? (netProfit / jobFinances.length).toFixed(1) : 0;
 
   const periodLabel = timeRange === 'week' ? 'Haftalık' : timeRange === 'month' ? 'Aylık' : timeRange === 'year' ? 'Yıllık' : 'Toplam';
 
-  // 2. Further Filter by Payment Status & Search
+  // 2. Further Filter by Entry Type (All / Jobs / Overhead), Payment Status & Search
   const filteredFinances = periodFinances.filter(item => {
+    if (entryTypeFilter === 'job' && item.type === 'overhead') return false;
+    if (entryTypeFilter === 'overhead' && item.type !== 'overhead') return false;
+
     let matchesStatus = true;
     if (statusFilter === 'paid_card') {
       matchesStatus = item.paymentStatus === 'paid_card';
@@ -176,8 +208,10 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
 
     const matchesSearch = !search || 
       item.customerName?.toLowerCase().includes(search.toLowerCase()) ||
+      item.title?.toLowerCase().includes(search.toLowerCase()) ||
       item.customerPhone?.includes(search) ||
       item.service?.toLowerCase().includes(search.toLowerCase()) ||
+      item.category?.toLowerCase().includes(search.toLowerCase()) ||
       item.postcode?.toLowerCase().includes(search.toLowerCase()) ||
       item.notes?.toLowerCase().includes(search.toLowerCase());
 
@@ -203,27 +237,53 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
     setIsModalOpen(true);
   };
 
-  const handleEditRecord = (item) => {
-    setFormData({
-      leadId: item.leadId || null,
-      customerName: item.customerName || '',
-      customerPhone: item.customerPhone || '',
-      postcode: item.postcode || '',
-      service: item.service || '',
-      revenue: item.revenue ?? '',
-      materialCost: item.materialCost ?? '',
-      otherExpenses: item.otherExpenses ?? '',
-      paymentStatus: item.paymentStatus || 'paid_card',
-      date: item.date || new Date().toISOString().split('T')[0],
-      notes: item.notes || ''
+  const handleOpenAddOverheadModal = () => {
+    setOverheadFormData({
+      title: '',
+      category: 'fuel',
+      amount: '',
+      paymentStatus: 'paid_card',
+      date: new Date().toISOString().split('T')[0],
+      notes: ''
     });
-    setEditingId(item.id);
-    setDuplicateWarning('');
-    setIsModalOpen(true);
+    setEditingId(null);
+    setIsOverheadModalOpen(true);
+  };
+
+  const handleEditRecord = (item) => {
+    if (item.type === 'overhead') {
+      setOverheadFormData({
+        title: item.customerName || item.title || '',
+        category: item.category || 'other',
+        amount: item.otherExpenses ?? '',
+        paymentStatus: item.paymentStatus || 'paid_card',
+        date: item.date || new Date().toISOString().split('T')[0],
+        notes: item.notes || ''
+      });
+      setEditingId(item.id);
+      setIsOverheadModalOpen(true);
+    } else {
+      setFormData({
+        leadId: item.leadId || null,
+        customerName: item.customerName || '',
+        customerPhone: item.customerPhone || '',
+        postcode: item.postcode || '',
+        service: item.service || '',
+        revenue: item.revenue ?? '',
+        materialCost: item.materialCost ?? '',
+        otherExpenses: item.otherExpenses ?? '',
+        paymentStatus: item.paymentStatus || 'paid_card',
+        date: item.date || new Date().toISOString().split('T')[0],
+        notes: item.notes || ''
+      });
+      setEditingId(item.id);
+      setDuplicateWarning('');
+      setIsModalOpen(true);
+    }
   };
 
   const handleDeleteRecord = async (id) => {
-    if (!window.confirm('Bu gelir/gider kaydını silmek istediğinize emin misiniz?')) return;
+    if (!window.confirm('Bu finans kaydını silmek istediğinize emin misiniz?')) return;
     try {
       const res = await fetch(`/api/finances/${id}`, {
         method: 'DELETE',
@@ -234,6 +294,53 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
       }
     } catch (err) {
       alert('Silme işlemi başarısız: ' + err.message);
+    }
+  };
+
+  const handleSaveOverheadForm = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+
+    const catObj = OVERHEAD_CATEGORIES.find(c => c.id === overheadFormData.category);
+    const payload = {
+      type: 'overhead',
+      title: overheadFormData.title,
+      category: overheadFormData.category,
+      categoryLabel: catObj ? `${catObj.icon} ${catObj.label}` : 'Şirket Gideri',
+      amount: Number(overheadFormData.amount) || 0,
+      paymentStatus: overheadFormData.paymentStatus,
+      date: overheadFormData.date,
+      notes: overheadFormData.notes
+    };
+
+    try {
+      const url = editingId ? `/api/finances/${editingId}` : '/api/finances';
+      const method = editingId ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const resData = await res.json();
+      if (res.ok && resData.success) {
+        if (editingId) {
+          setFinances(prev => prev.map(f => f.id === editingId ? resData.record : f));
+        } else {
+          setFinances(prev => [resData.record, ...prev]);
+        }
+        setIsOverheadModalOpen(false);
+      } else {
+        alert(resData.error || 'Masraf kaydetme başarısız oldu');
+      }
+    } catch (err) {
+      alert('Hata: ' + err.message);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -396,7 +503,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 w-full sm:w-auto">
+        <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
           <button
             type="button"
             onClick={exportCSV}
@@ -408,23 +515,67 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
 
           <button
             type="button"
+            onClick={handleOpenAddOverheadModal}
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-white text-xs sm:text-sm font-bold shadow-lg shadow-rose-600/25 transition-all cursor-pointer"
+          >
+            <Receipt className="w-4 h-4" />
+            <span>+ Şirket Masrafı Ekle</span>
+          </button>
+
+          <button
+            type="button"
             onClick={handleOpenAddModal}
             className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>+ Yeni Kayıt Ekle</span>
+            <span>+ İş Geliri Ekle</span>
           </button>
         </div>
       </div>
 
-      {/* Zaman Aralığı Seçici: Haftalık / Aylık / Yıllık / Tümü */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#0b0e14] p-3 rounded-2xl border border-zinc-800">
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-emerald-400" />
-          <span className="text-xs font-bold text-zinc-200">Muhasebe Takip Dönemi:</span>
+      {/* Zaman Aralığı ve Kayıt Türü Seçici */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-[#0b0e14] p-3 rounded-2xl border border-zinc-800">
+        {/* Kayıt Türü Sekmeleri */}
+        <div className="flex items-center gap-1 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800 overflow-x-auto">
+          <button
+            type="button"
+            onClick={() => setEntryTypeFilter('all')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              entryTypeFilter === 'all'
+                ? 'bg-zinc-700 text-white shadow-sm'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            Tüm Kayıtlar ({periodFinances.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setEntryTypeFilter('job')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+              entryTypeFilter === 'job'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            <span>🛠️ Müşteri İşleri</span>
+            <span className="text-[10px] opacity-80">({jobFinances.length})</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setEntryTypeFilter('overhead')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+              entryTypeFilter === 'overhead'
+                ? 'bg-rose-600 text-white shadow-sm'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            <span>🏢 Şirket Masrafları</span>
+            <span className="text-[10px] opacity-80">({overheadFinances.length})</span>
+          </button>
         </div>
 
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto bg-zinc-900/90 p-1 rounded-xl border border-zinc-800">
+        {/* Dönem Filtresi: Hafta / Ay / Yıl / Tümü */}
+        <div className="flex items-center gap-1.5 overflow-x-auto bg-zinc-900/90 p-1 rounded-xl border border-zinc-800">
           <button
             type="button"
             onClick={() => setTimeRange('week')}
@@ -434,7 +585,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            📅 Bu Hafta (Haftalık)
+            📅 Bu Hafta
           </button>
 
           <button
@@ -446,7 +597,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            🗓️ Bu Ay (Aylık)
+            🗓️ Bu Ay
           </button>
 
           <button
@@ -458,7 +609,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            📊 Bu Yıl (Yıllık)
+            📊 Bu Yıl
           </button>
 
           <button
@@ -470,7 +621,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            🌐 Tüm Zamanlar
+            🌐 Tümü
           </button>
         </div>
       </div>
@@ -489,10 +640,10 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
           <div className="text-2xl sm:text-3xl font-black text-white mt-2">
             £{totalRevenue.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">{periodFinances.length} müşteri işi</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block">{jobFinances.length} müşteri işi</span>
         </div>
 
-        {/* Malzeme Gideri */}
+        {/* İş Malzemesi Gideri */}
         <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
             <span className="text-[11px] font-bold uppercase tracking-wider">{periodLabel} Malzeme</span>
@@ -503,7 +654,21 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
           <div className="text-2xl sm:text-3xl font-black text-rose-400 mt-2">
             -£{totalMaterial.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Dübel, aparat, sarf malzeme</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block">Dübel, vida, sarf malzeme</span>
+        </div>
+
+        {/* Genel Şirket Masrafları */}
+        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+          <div className="flex items-center justify-between text-zinc-400 mb-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider">{periodLabel} Şirket Masrafı</span>
+            <span className="p-1.5 rounded-lg bg-amber-950/60 text-amber-400 border border-amber-900/60">
+              <Receipt className="w-3.5 h-3.5" />
+            </span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-amber-400 mt-2">
+            -£{totalOverhead.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+          <span className="text-[10px] text-zinc-500 mt-1 block">{overheadFinances.length} gider (yakıt, sigorta vb.)</span>
         </div>
 
         {/* Net Kâr */}
@@ -517,35 +682,21 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
           <div className="text-2xl sm:text-3xl font-black text-emerald-400 mt-2">
             £{netProfit.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-emerald-500/80 font-semibold mt-1 block">Ciro - Masraflar</span>
+          <span className="text-[10px] text-emerald-500/80 font-semibold mt-1 block">Ciro - Tüm Masraflar</span>
         </div>
 
         {/* Kâr Marjı */}
-        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 shadow-sm">
+        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 shadow-sm col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
             <span className="text-[11px] font-bold uppercase tracking-wider">Kâr Marjı</span>
-            <span className="p-1.5 rounded-lg bg-amber-950/60 text-amber-400 border border-amber-900/60 font-black">
+            <span className="p-1.5 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-900/60 font-black text-xs">
               %
             </span>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-amber-400 mt-2">
+          <div className="text-2xl sm:text-3xl font-black text-indigo-300 mt-2">
             %{profitMargin}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Brüt kârlılık oranı</span>
-        </div>
-
-        {/* İş Başı Ortalama Kâr */}
-        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 shadow-sm col-span-2 lg:col-span-1">
-          <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">İş Başı Ort. Kâr</span>
-            <span className="p-1.5 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-900/60">
-              <Wrench className="w-3.5 h-3.5" />
-            </span>
-          </div>
-          <div className="text-2xl sm:text-3xl font-black text-indigo-300 mt-2">
-            £{avgProfitPerJob}
-          </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">{periodLabel.toLowerCase()} ortalama</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block">Net kârlılık oranı</span>
         </div>
 
       </div>
@@ -649,6 +800,84 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
             const material = Number(item.materialCost) || 0;
             const other = Number(item.otherExpenses) || 0;
             const net = revenue - material - other;
+
+            if (item.type === 'overhead') {
+              const catObj = OVERHEAD_CATEGORIES.find(c => c.id === item.category);
+              const overheadAmount = Number(item.otherExpenses || item.amount || 0);
+
+              return (
+                <div 
+                  key={item.id}
+                  className="bg-[#0b0e14] border border-rose-950/60 rounded-2xl p-4 sm:p-5 hover:border-rose-800/60 transition-all shadow-md flex flex-col justify-between space-y-3 group relative"
+                >
+                  {/* Üst Kısım: Başlık, Tarih ve İşlemler */}
+                  <div className="space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-rose-950/80 text-rose-300 border border-rose-800/80 tracking-wider">
+                            🏢 Şirket Masrafı
+                          </span>
+                        </div>
+                        <h4 className="text-base font-bold text-white truncate group-hover:text-rose-300 transition-colors">
+                          {item.customerName || item.title || 'Genel Gider'}
+                        </h4>
+                        <div className="flex items-center gap-2 text-[11px] text-zinc-400 mt-0.5">
+                          <Calendar className="w-3 h-3 text-zinc-500" />
+                          <span>{item.date}</span>
+                        </div>
+                      </div>
+
+                      {/* Düzenle / Sil */}
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleEditRecord(item)}
+                          className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+                          title="Düzenle"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteRecord(item.id)}
+                          className="p-1.5 text-zinc-500 hover:text-rose-400 rounded-lg hover:bg-rose-950/40 transition-colors cursor-pointer"
+                          title="Sil"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Rozetler: Kategori & Ödeme Durumu */}
+                    <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                      <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800">
+                        {catObj ? `${catObj.icon} ${catObj.label}` : (item.categoryLabel || 'Genel Masraf')}
+                      </span>
+                      {renderPaymentBadge(item.paymentStatus)}
+                    </div>
+                  </div>
+
+                  {/* Gider Tutar Kartı */}
+                  <div className="bg-rose-950/20 border border-rose-900/50 p-3 rounded-xl flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider block">Gider Tutarı</span>
+                      <span className="text-[11px] text-zinc-400">Şirket kârından düşüldü</span>
+                    </div>
+                    <span className="text-xl sm:text-2xl font-black text-rose-400">
+                      -£{overheadAmount.toFixed(2)}
+                    </span>
+                  </div>
+
+                  {/* Not Varsa */}
+                  {item.notes && (
+                    <p className="text-[11px] text-zinc-400 italic line-clamp-2 bg-zinc-900/40 p-2 rounded-lg border border-zinc-800/50">
+                      🧾 {item.notes}
+                    </p>
+                  )}
+                </div>
+              );
+            }
 
             return (
               <div 
@@ -957,6 +1186,142 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                   className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/25 cursor-pointer disabled:opacity-50"
                 >
                   {saving ? 'Kaydediliyor...' : editingId ? 'Değişiklikleri Güncelle' : 'Muhasebeye Kaydet'}
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ŞİRKET MASRAFI EKLE VEYA DÜZENLE */}
+      {isOverheadModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-[#0b0e14] border border-zinc-800 rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-rose-950 text-rose-400 border border-rose-800 flex items-center justify-center">
+                  <Receipt className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">
+                    {editingId ? 'Şirket Masrafını Düzenle' : 'Yeni Şirket Masrafı Ekle'}
+                  </h3>
+                  <p className="text-xs text-zinc-400">Araç yakıtı, ekipman, sigorta, reklam ve genel giderler</p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsOverheadModalOpen(false)}
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveOverheadForm} className="space-y-4">
+              {/* Masraf Kategorisi */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-zinc-300">Masraf Kategorisi *</label>
+                <select
+                  value={overheadFormData.category}
+                  onChange={e => setOverheadFormData({ ...overheadFormData, category: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-semibold focus:border-rose-500 outline-none cursor-pointer"
+                >
+                  {OVERHEAD_CATEGORIES.map(cat => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.icon} {cat.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Masraf Başlığı / Açıklaması */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-zinc-300">Masraf Başlığı / Açıklaması *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Örn: BP Shell Dizel Yakıt veya DeWalt Darbeli Matkap"
+                  value={overheadFormData.title}
+                  onChange={e => setOverheadFormData({ ...overheadFormData, title: e.target.value })}
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-rose-500 outline-none"
+                />
+              </div>
+
+              {/* Tutar ve Tarih */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-rose-400">Gider Tutarı (£) *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    placeholder="65.00"
+                    value={overheadFormData.amount}
+                    onChange={e => setOverheadFormData({ ...overheadFormData, amount: e.target.value })}
+                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-sm font-black focus:border-rose-500 outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-zinc-300">İşlem Tarihi *</label>
+                  <input
+                    type="date"
+                    required
+                    value={overheadFormData.date}
+                    onChange={e => setOverheadFormData({ ...overheadFormData, date: e.target.value })}
+                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-rose-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Ödeme Durumu */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-zinc-300 block">Ödeme Yöntemi / Durumu *</label>
+                <select
+                  value={overheadFormData.paymentStatus}
+                  onChange={e => setOverheadFormData({ ...overheadFormData, paymentStatus: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-bold focus:border-rose-500 outline-none cursor-pointer"
+                >
+                  <option value="paid_card">💳 POS / Kredi Kartı</option>
+                  <option value="paid_cash">💵 Nakit</option>
+                  <option value="paid_bank">🏦 Banka Havalesi</option>
+                  <option value="pending">⏳ Ödeme Bekliyor</option>
+                </select>
+              </div>
+
+              {/* Fiş / Fatura No & Ek Notlar */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-zinc-300">Fiş / Fatura No & Detay Notu</label>
+                <textarea
+                  rows={2}
+                  placeholder="Örn: Fiş No: 048291, Screwfix Edinburgh şubesinden alındı."
+                  value={overheadFormData.notes}
+                  onChange={e => setOverheadFormData({ ...overheadFormData, notes: e.target.value })}
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-rose-500 outline-none"
+                />
+              </div>
+
+              {/* Butonlar */}
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-800">
+                <button
+                  type="button"
+                  onClick={() => setIsOverheadModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 cursor-pointer"
+                >
+                  Vazgeç
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-md shadow-rose-600/25 cursor-pointer disabled:opacity-50"
+                >
+                  {saving ? 'Kaydediliyor...' : editingId ? 'Değişiklikleri Güncelle' : 'Masrafı Kaydet'}
                 </button>
               </div>
             </form>

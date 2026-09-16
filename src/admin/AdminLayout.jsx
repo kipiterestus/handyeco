@@ -167,21 +167,21 @@ export default function AdminLayout() {
 
   // 1. KATEGORİ: İŞ & OPERASYON YÖNETİMİ
   const operationsNav = [
-    { id: 'leads', label: 'Gelen Teklifler & Talepler', icon: Inbox, badge: 'Canlı Talepler' },
-    { id: 'schedule', label: 'İş Takip & Randevular', icon: Calendar, badge: 'Ajanda' },
-    { id: 'accounting', label: 'Gelir, Gider & Kâr', icon: PoundSterling, badge: 'Muhasebe' },
+    { id: 'leads', label: 'Gelen Teklifler & Talepler', icon: Inbox },
+    { id: 'schedule', label: 'İş Takip & Randevular', icon: Calendar },
+    { id: 'accounting', label: 'Gelir, Gider & Kâr', icon: PoundSterling },
   ];
 
   // 2. KATEGORİ: SİTE İÇERİK & AYARLAR (Telegram buraya alındı)
   const siteSettingsNav = [
-    { id: 'telegram', label: 'Telegram Bot Bildirimleri', icon: Send, badge: 'Uyarılar' },
+    { id: 'telegram', label: 'Telegram Bot Bildirimleri', icon: Send },
     { id: 'business', label: 'İşletme & Fiyatlandırma', icon: Building2 },
     { id: 'hero', label: 'Hero & Ana Başlıklar', icon: Sparkles },
     { id: 'services', label: 'Hizmetler & Kapsam', icon: Wrench },
     { id: 'gallery', label: 'Fotoğraf Galerisi', icon: Camera },
     { id: 'reviews', label: 'Müşteri Yorumları', icon: Star },
     { id: 'faq_areas', label: 'Bölgeler & SSS', icon: MapPin },
-    { id: 'seo', label: 'Edinburgh SEO Yönetimi', icon: Search, badge: '%100 SEO' },
+    { id: 'seo', label: 'Edinburgh SEO Yönetimi', icon: Search },
   ];
 
   return (
