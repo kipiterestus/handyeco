@@ -1,4 +1,4 @@
-﻿import crypto from 'crypto';
+import crypto from 'crypto';
 
 // 1. Timing-safe string comparison to prevent side-channel timing attacks
 export function timingSafeCompare(userInput, expectedSecret) {
@@ -87,6 +87,7 @@ export function sanitizeQuotePayload(payload) {
 
   const name = sanitizeInput(payload.name, 100);
   const phone = sanitizeInput(payload.phone, 30);
+  const email = sanitizeInput(payload.email, 100);
   const postcode = sanitizeInput(payload.postcode, 20);
   const service = sanitizeInput(payload.service, 100);
   const urgency = sanitizeInput(payload.urgency, 20);
@@ -102,6 +103,7 @@ export function sanitizeQuotePayload(payload) {
   return {
     name,
     phone,
+    email: email || '',
     postcode: postcode || 'Edinburgh Area',
     service: service || 'Handyman Service',
     urgency: ['flexible', 'this-week', 'urgent', 'weekend'].includes(urgency) ? urgency : 'flexible',

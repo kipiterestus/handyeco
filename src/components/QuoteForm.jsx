@@ -27,6 +27,7 @@ export default function QuoteForm({ preselectedService }) {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
+    email: "",
     postcode: "",
     urgency: "flexible",
     serviceId: preselectedService ? preselectedService.id : (servicesList[0]?.id || "furniture-assembly"),
@@ -81,6 +82,7 @@ export default function QuoteForm({ preselectedService }) {
       `-----------------------------`,
       `*Customer Name:* ${formData.name}`,
       `*Phone Number:* ${formData.phone}`,
+      formData.email ? `*Email:* ${formData.email}` : "",
       `*Edinburgh Postcode:* ${formData.postcode || "Edinburgh Area"}`,
       `*Requested Service:* ${selectedServiceName}`,
       `*Urgency:* ${formData.urgency.toUpperCase()}`,
@@ -109,6 +111,7 @@ export default function QuoteForm({ preselectedService }) {
       const payload = {
         name: formData.name,
         phone: formData.phone,
+        email: formData.email || "",
         postcode: formData.postcode || "Edinburgh Area",
         service: selectedServiceName,
         urgency: formData.urgency,
@@ -139,7 +142,7 @@ export default function QuoteForm({ preselectedService }) {
     }
   };
 
-  const [openFaqIndex, setOpenFaqIndex] = useState(0);
+  const [openFaqIndex, setOpenFaqIndex] = useState(-1);
   const faqs = content.faq && content.faq.length > 0 ? content.faq : [
     {
       q: "How does your pricing work? Is there a call-out fee?",
@@ -267,6 +270,22 @@ export default function QuoteForm({ preselectedService }) {
 
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="e.g. david@example.co.uk"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Phone & Postcode Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
                         Phone / WhatsApp *
                       </label>
                       <input
@@ -278,10 +297,7 @@ export default function QuoteForm({ preselectedService }) {
                         className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                       />
                     </div>
-                  </div>
 
-                  {/* Postcode & Urgency Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
                         Edinburgh Postcode
@@ -294,22 +310,23 @@ export default function QuoteForm({ preselectedService }) {
                         className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                       />
                     </div>
+                  </div>
 
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                        Preferred Timeline
-                      </label>
-                      <select
-                        value={formData.urgency}
-                        onChange={(e) => setFormData({ ...formData, urgency: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer"
-                      >
-                        <option value="flexible">Flexible (Within 1-2 weeks)</option>
-                        <option value="this-week">This Week</option>
-                        <option value="urgent">Urgent / 24-48 hours</option>
-                        <option value="weekend">Weekend Preferred</option>
-                      </select>
-                    </div>
+                  {/* Preferred Timeline */}
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                      Preferred Timeline
+                    </label>
+                    <select
+                      value={formData.urgency}
+                      onChange={(e) => setFormData({ ...formData, urgency: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer"
+                    >
+                      <option value="flexible">Flexible (Within 1-2 weeks)</option>
+                      <option value="this-week">This Week</option>
+                      <option value="urgent">Urgent / 24-48 hours</option>
+                      <option value="weekend">Weekend Preferred</option>
+                    </select>
                   </div>
 
                   {/* Job Description Textarea */}
@@ -416,8 +433,8 @@ export default function QuoteForm({ preselectedService }) {
                       <span>15-30 Min Response</span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span>£1M Insured</span>
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>Punctual &amp; Tidy</span>
                     </div>
                   </div>
 
@@ -470,23 +487,6 @@ export default function QuoteForm({ preselectedService }) {
                   </div>
                 );
               })}
-            </div>
-
-            {/* WhatsApp Quick Ask Helper Card */}
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-800/70 border border-slate-700/70 flex items-center justify-between gap-3 text-xs text-slate-300">
-              <div>
-                <p className="font-bold text-white text-xs sm:text-sm">Have an unusual job?</p>
-                <p className="text-[11px] sm:text-xs text-slate-400">Ask Ekrem directly for fast advice</p>
-              </div>
-              <a
-                href={siteConfig.whatsappUrl || BUSINESS_INFO.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs inline-flex items-center gap-1.5 shrink-0 transition-colors"
-              >
-                <MessageSquare className="w-3.5 h-3.5" />
-                <span>WhatsApp</span>
-              </a>
             </div>
 
           </div>

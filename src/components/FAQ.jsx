@@ -5,8 +5,8 @@ import { useContent } from '../context/ContentContext';
 
 const DEFAULT_FAQS = [
   {
-    q: "What is your call-out fee in Edinburgh?",
-    a: "Our standard minimum call-out fee is £65 across the Edinburgh area. This covers travel, on-site assessment, and initial work. For larger projects (such as multiple flat-pack assemblies, full room painting, or extensive maintenance), we provide clear, fixed-price quotes agreed upfront with zero surprise extras."
+    q: "How does your pricing work? Is there a call-out fee?",
+    a: "Quotes are 100% free with zero call-out fees. You can send us photos or a video on WhatsApp to receive a fixed upfront price before booking. Our minimum job booking size is £65 across the Edinburgh area, which covers smaller odd jobs or initial assembly/repairs with no surprise charges."
   },
   {
     q: "Can you mount TVs and heavy mirrors onto Edinburgh tenement walls?",
@@ -15,10 +15,6 @@ const DEFAULT_FAQS = [
   {
     q: "Do I need to supply screws, brackets, or silicone?",
     a: "We carry a fully stocked van with professional trade-grade fixings, wall plugs, masonry screws, and anti-mould sanitary silicone. For TV wall mounting, you can supply your preferred bracket or we can provide one upon request. For painting, clients usually supply their chosen paint shade, or we can pick it up for you."
-  },
-  {
-    q: "Are you fully insured in case of accidental damage?",
-    a: "Yes. Handyeco holds £1,000,000 Public Liability Insurance. We treat every client's home with the highest degree of respect, lay clean dust sheets, and wear protective overshoes on carpets."
   },
   {
     q: "How quickly can you assemble my flat-pack furniture?",
@@ -32,7 +28,7 @@ const DEFAULT_FAQS = [
 
 export default function FAQ() {
   const { content } = useContent();
-  const [openIndex, setOpenIndex] = useState(0);
+  const [openIndex, setOpenIndex] = useState(-1);
 
   const faqs = content.faq && content.faq.length > 0 ? content.faq : DEFAULT_FAQS;
   const siteConfig = content.siteConfig || BUSINESS_INFO;
@@ -83,21 +79,6 @@ export default function FAQ() {
             );
           })}
         </div>
-
-        {/* Help footer */}
-        <div className="mt-10 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
-          <span>Have a question not listed here?</span>
-          <a
-            href={siteConfig.whatsappUrl || BUSINESS_INFO.whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-bold text-emerald-600 hover:underline inline-flex items-center gap-1"
-          >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>Ask Ekrem on WhatsApp</span>
-          </a>
-        </div>
-
       </div>
     </section>
   );

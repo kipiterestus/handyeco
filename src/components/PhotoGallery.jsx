@@ -69,8 +69,8 @@ export default function PhotoGallery({ onOpenLightbox }) {
           ))}
         </div>
 
-        {/* Visual-First Gallery Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
+        {/* Visual-First Gallery Grid - Larger 3-col layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredItems.map((item) => {
             const showBefore = item.isBeforeAfter && beforeAfterStates[item.id];
             const currentImg = showBefore ? item.beforeImage : item.image;
@@ -84,7 +84,7 @@ export default function PhotoGallery({ onOpenLightbox }) {
                   location: item.location,
                   uploadedBy: item.uploadedBy
                 })}
-                className="group relative rounded-3xl overflow-hidden bg-slate-900 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer border border-slate-200/80 aspect-[4/3] sm:aspect-[1/1]"
+                className="group relative rounded-3xl overflow-hidden bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer border border-slate-200/80 aspect-[4/3] sm:aspect-[4/3] md:aspect-[1/1]"
               >
                 {/* Full-bleed Photo */}
                 <img
@@ -98,9 +98,9 @@ export default function PhotoGallery({ onOpenLightbox }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/10 opacity-70 group-hover:opacity-85 transition-opacity" />
 
                 {/* Top Interactive Badges */}
-                <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2 z-10">
+                <div className="absolute top-4 left-4 right-4 flex items-center justify-between gap-2 z-10">
                   {/* Category / Work Tag */}
-                  <span className="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-white/95 text-slate-900 backdrop-blur-md shadow-xs">
+                  <span className="px-3 py-1 rounded-xl text-xs font-bold bg-white/95 text-slate-900 backdrop-blur-md shadow-xs">
                     {item.badge || "Verified Work"}
                   </span>
 
@@ -108,13 +108,13 @@ export default function PhotoGallery({ onOpenLightbox }) {
                   {item.isBeforeAfter && (
                     <button
                       onClick={(e) => toggleBeforeAfter(item.id, e)}
-                      className={`px-3 py-1 rounded-xl text-[11px] font-bold shadow-md flex items-center gap-1.5 transition-all cursor-pointer backdrop-blur-md ${
+                      className={`px-3.5 py-1 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 transition-all cursor-pointer backdrop-blur-md ${
                         showBefore 
                           ? "bg-amber-500 text-white hover:bg-amber-600" 
                           : "bg-emerald-600 text-white hover:bg-emerald-700"
                       }`}
                     >
-                      <Repeat className="w-3 h-3" />
+                      <Repeat className="w-3.5 h-3.5" />
                       <span>{showBefore ? "Before" : "After"}</span>
                     </button>
                   )}
@@ -122,17 +122,14 @@ export default function PhotoGallery({ onOpenLightbox }) {
 
                 {/* Center Hover Magnifier */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <span className="p-3 rounded-2xl bg-white/90 text-slate-900 shadow-2xl backdrop-blur-sm transform scale-90 group-hover:scale-100 transition-transform">
-                    <Maximize2 className="w-5 h-5 text-blue-600" />
+                  <span className="p-3.5 rounded-2xl bg-white/90 text-slate-900 shadow-2xl backdrop-blur-sm transform scale-90 group-hover:scale-100 transition-transform">
+                    <Maximize2 className="w-6 h-6 text-blue-600" />
                   </span>
                 </div>
 
-                {/* Minimal Bottom Info (Focused strictly on the work) */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 text-left text-white z-10">
-                  <div className="text-[11px] sm:text-xs text-blue-300 font-semibold mb-1">
-                    {item.location}
-                  </div>
-                  <h3 className="text-base sm:text-lg font-bold leading-tight text-white drop-shadow-sm line-clamp-2">
+                {/* Minimal Bottom Info (Focused strictly on the work without location) */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 text-left text-white z-10">
+                  <h3 className="text-lg sm:text-xl font-extrabold leading-tight text-white drop-shadow-sm line-clamp-2">
                     {item.title}
                   </h3>
                 </div>

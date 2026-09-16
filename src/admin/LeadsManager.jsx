@@ -85,6 +85,7 @@ export default function LeadsManager({ token }) {
     const matchesSearch = !search || 
       q.name?.toLowerCase().includes(search.toLowerCase()) ||
       q.phone?.includes(search) ||
+      q.email?.toLowerCase().includes(search.toLowerCase()) ||
       q.postcode?.toLowerCase().includes(search.toLowerCase()) ||
       q.service?.toLowerCase().includes(search.toLowerCase()) ||
       q.details?.toLowerCase().includes(search.toLowerCase());
@@ -218,11 +219,19 @@ export default function LeadsManager({ token }) {
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 flex items-center gap-3">
+                    <p className="text-xs text-slate-400 flex items-center gap-3 flex-wrap">
                       <span className="flex items-center gap-1">
                         <MapPin className="w-3.5 h-3.5 text-blue-400" />
                         <span className="font-semibold text-slate-300">{quote.postcode || 'Edinburgh Area'}</span>
                       </span>
+                      {quote.email && (
+                        <>
+                          <span>&bull;</span>
+                          <a href={`mailto:${quote.email}`} className="text-blue-400 hover:underline">
+                            {quote.email}
+                          </a>
+                        </>
+                      )}
                       <span>&bull;</span>
                       <span className="flex items-center gap-1 text-slate-500">
                         <Clock className="w-3.5 h-3.5" />

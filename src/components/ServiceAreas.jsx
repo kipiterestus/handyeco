@@ -17,45 +17,45 @@ export default function ServiceAreas() {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         
         {/* Minimal Chic Container */}
-        <div className="bg-slate-50/90 rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-slate-200/80 shadow-2xs relative">
+        <div className="bg-slate-50/90 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200/80 shadow-2xs relative">
           
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 sm:pb-6 border-b border-slate-200/80 text-left">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 sm:pb-5 border-b border-slate-200/80 text-left">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 leading-tight tracking-tight">
+                <h3 className="text-sm sm:text-base md:text-lg font-black text-slate-900 leading-tight tracking-tight">
                   Where We Work in Scotland
                 </h3>
-                <p className="text-xs sm:text-sm md:text-base text-slate-600 font-medium mt-0.5">
+                <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
                   Full coverage across Edinburgh &amp; Lothians
                 </p>
-                <p className="text-xs sm:text-sm md:text-base font-bold text-slate-900 mt-1 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0"></span>
+                <p className="text-[11px] sm:text-xs font-bold text-slate-800 mt-0.5 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
                   <span>{callOutText}</span>
                 </p>
               </div>
             </div>
 
-            <div className="inline-flex items-center gap-2 text-xs sm:text-sm md:text-base font-bold text-emerald-900 bg-emerald-100/80 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl border border-emerald-300 shadow-2xs self-start sm:self-auto">
-              <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 shrink-0" />
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-900 bg-emerald-100/80 px-3 py-1.5 rounded-xl border border-emerald-300 shadow-2xs self-start sm:self-auto">
+              <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
               <span>Free Quotes &amp; Zero Call-Out Charges</span>
             </div>
           </div>
 
-          {/* Area Postcode Chips Grid - Enriched for high readability */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pt-5 sm:pt-6 text-left">
+          {/* Area Postcode Chips Grid - 2 steps reduced, balanced sizing */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5 pt-4 sm:pt-5 text-left">
             {areaGroups.map((group, idx) => (
-              <div key={idx} className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs hover:border-blue-300 transition-all">
-                <span className="text-xs sm:text-xs font-black uppercase tracking-wider text-blue-600 block">
+              <div key={idx} className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all">
+                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-blue-600 block">
                   {group.zone}
                 </span>
-                <span className="text-base sm:text-lg font-black text-slate-900 block mt-1">
+                <span className="text-xs sm:text-sm font-black text-slate-900 block mt-0.5">
                   {group.postcodes}
                 </span>
-                <span className="text-xs sm:text-sm font-semibold text-slate-600 block mt-1 leading-snug">
+                <span className="text-[11px] sm:text-xs font-medium text-slate-500 block mt-0.5 leading-snug">
                   {group.areas}
                 </span>
               </div>
