@@ -31,7 +31,8 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all' | 'paid_card' | 'paid_cash' | 'paid_bank' | 'pending'
+  const [timeRange, setTimeRange] = useState('month'); // 'week' | 'month' | 'year' | 'all'
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,7 +50,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
     revenue: '',
     materialCost: '',
     otherExpenses: '',
-    paymentStatus: 'paid_card', // 'paid_card' | 'paid_cash' | 'paid_bank' | 'paid' | 'pending' | 'invoiced'
+    paymentStatus: 'paid_card', // 'paid_card' | 'paid_cash' | 'paid_bank' | 'pending'
     date: new Date().toISOString().split('T')[0],
     notes: ''
   });
@@ -88,7 +89,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
       // Check duplicate prevention: is this lead already in finances?
       const existing = finances.find(f => f.leadId === initialLeadData.id);
       if (existing) {
-        alert(`⚠️ DİKKAT: Bu teklif / müşteri zaten muhasebeye eklenmiştir!\n\nMüşteri: ${initialLeadData.name}\nTarih: ${existing.date}\nAlınan Ciro: £${existing.revenue}\nNet Kâr: £${existing.netProfit}\n\nÇift kayıt oluşturulamaz.`);
+        alert(`⚠️ DİKKAT: Bu teklif / müşteri zaten muhasebeye eklenmiştir!\n\nMüşteri: ${initialLeadData.name}\nTarih: ${existing.date}\nAlınan: £${existing.revenue}\nNet Kâr: £${existing.netProfit}\n\nÇift kayıt oluşturulamaz.`);
         if (onClearInitialLead) onClearInitialLead();
         return;
       }
@@ -113,24 +114,62 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
     }
   }, [initialLeadData, finances]);
 
-  // Calculations
-  const totalRevenue = finances.reduce((acc, curr) => acc + (Number(curr.revenue) || 0), 0);
-  const totalMaterial = finances.reduce((acc, curr) => acc + (Number(curr.materialCost) || 0), 0);
-  const totalOther = finances.reduce((acc, curr) => acc + (Number(curr.otherExpenses) || 0), 0);
+  // Date Math Helpers for Week, Month, Year
+  const todayIso = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const currentYear = String(now.getFullYear());
+  const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+  const getCurrentWeekRange = () => {
+    const d = new Date(now);
+    const day = d.getDay();
+    const distanceToMonday = day === 0 ? -6 : 1 - day;
+    const monday = new Date(d);
+    monday.setDate(d.getDate() + distanceToMonday);
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    return {
+      start: monday.toISOString().split('T')[0],
+      end: sunday.toISOString().split('T')[0]
+    };
+  };
+  const weekRange = getCurrentWeekRange();
+
+  // 1. Filter by Time Range (Haftalık / Aylık / Yıllık / Tümü)
+  const periodFinances = finances.filter(item => {
+    if (!item.date) return timeRange === 'all';
+    if (timeRange === 'week') {
+      return item.date >= weekRange.start && item.date <= weekRange.end;
+    }
+    if (timeRange === 'month') {
+      return item.date.startsWith(currentYearMonth);
+    }
+    if (timeRange === 'year') {
+      return item.date.startsWith(currentYear);
+    }
+    return true; // 'all'
+  });
+
+  // KPI Calculations based on selected period
+  const totalRevenue = periodFinances.reduce((acc, curr) => acc + (Number(curr.revenue) || 0), 0);
+  const totalMaterial = periodFinances.reduce((acc, curr) => acc + (Number(curr.materialCost) || 0), 0);
+  const totalOther = periodFinances.reduce((acc, curr) => acc + (Number(curr.otherExpenses) || 0), 0);
   const totalExpenses = totalMaterial + totalOther;
   const netProfit = totalRevenue - totalExpenses;
   const profitMargin = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : 0;
-  const avgProfitPerJob = finances.length > 0 ? (netProfit / finances.length).toFixed(1) : 0;
+  const avgProfitPerJob = periodFinances.length > 0 ? (netProfit / periodFinances.length).toFixed(1) : 0;
 
-  // Filtered entries
-  const filteredFinances = finances.filter(item => {
+  const periodLabel = timeRange === 'week' ? 'Haftalık' : timeRange === 'month' ? 'Aylık' : timeRange === 'year' ? 'Yıllık' : 'Toplam';
+
+  // 2. Further Filter by Payment Status & Search
+  const filteredFinances = periodFinances.filter(item => {
     let matchesStatus = true;
     if (statusFilter === 'paid_card') {
       matchesStatus = item.paymentStatus === 'paid_card';
     } else if (statusFilter === 'paid_cash') {
       matchesStatus = item.paymentStatus === 'paid_cash';
-    } else if (statusFilter === 'paid') {
-      matchesStatus = item.paymentStatus?.startsWith('paid') || item.paymentStatus === 'paid';
+    } else if (statusFilter === 'paid_bank') {
+      matchesStatus = item.paymentStatus === 'paid_bank';
     } else if (statusFilter === 'pending') {
       matchesStatus = item.paymentStatus === 'pending';
     }
@@ -276,9 +315,9 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
   };
 
   const exportCSV = () => {
-    if (finances.length === 0) return alert('Dışa aktarılacak kayıt bulunmuyor.');
-    const headers = ['Tarih', 'Müşteri Adı', 'Telefon', 'Posta Kodu', 'Hizmet', 'Alınan Ücret (Gelir)', 'Malzeme Masrafı', 'Diğer Masraf', 'Net Kâr', 'Ödeme Durumu', 'Notlar'];
-    const rows = finances.map(f => [
+    if (filteredFinances.length === 0) return alert('Dışa aktarılacak kayıt bulunmuyor.');
+    const headers = ['Tarih', 'Müşteri Adı', 'Telefon', 'Posta Kodu', 'Hizmet', 'Müşteriden Alınan', 'Malzeme Masrafı', 'Diğer Masraf', 'Net Kâr', 'Ödeme Durumu', 'Notlar'];
+    const rows = filteredFinances.map(f => [
       f.date,
       `"${f.customerName || ''}"`,
       `"${f.customerPhone || ''}"`,
@@ -288,7 +327,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
       f.materialCost || 0,
       f.otherExpenses || 0,
       f.netProfit || 0,
-      f.paymentStatus === 'paid_card' ? 'Kredi Kartıyla Ödeme Alındı' : f.paymentStatus,
+      f.paymentStatus === 'paid_card' ? 'POS / Kart' : f.paymentStatus === 'paid_cash' ? 'Nakit' : f.paymentStatus === 'paid_bank' ? 'Banka Havalesi' : 'Ödeme Bekliyor',
       `"${(f.notes || '').replace(/"/g, '""')}"`
     ]);
 
@@ -296,7 +335,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Handyeco_Muhasebe_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `Handyeco_Muhasebe_${timeRange}_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -306,48 +345,35 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
     switch (status) {
       case 'paid_card':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-950/80 text-purple-300 border border-purple-800/80">
-            <CreditCard className="w-3.5 h-3.5 text-purple-400" />
-            <span>Kredi Kartıyla Ödeme Alındı</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-purple-950/80 text-purple-300 border border-purple-800/80">
+            <CreditCard className="w-3 h-3 text-purple-400" />
+            <span>POS / Kart</span>
           </span>
         );
       case 'paid_cash':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-800/80">
-            <Banknote className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Nakit Ödendi</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-800/80">
+            <Banknote className="w-3 h-3 text-emerald-400" />
+            <span>Nakit</span>
           </span>
         );
       case 'paid_bank':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-950/80 text-blue-300 border border-blue-800/80">
-            <Building className="w-3.5 h-3.5 text-blue-400" />
-            <span>Banka Havalesi / EFT</span>
-          </span>
-        );
-      case 'paid':
-        return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-950/60 text-emerald-300 border border-emerald-800/60">
-            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-            <span>Ödendi</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-blue-950/80 text-blue-300 border border-blue-800/80">
+            <Building className="w-3 h-3 text-blue-400" />
+            <span>Banka Havalesi</span>
           </span>
         );
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold bg-amber-950/60 text-amber-300 border border-amber-800/60">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-amber-950/60 text-amber-300 border border-amber-800/60">
             <Clock className="w-3 h-3 text-amber-400" />
             <span>Ödeme Bekliyor</span>
           </span>
         );
-      case 'invoiced':
-        return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold bg-indigo-950/60 text-indigo-300 border border-indigo-800/60">
-            <span>Faturalandı</span>
-          </span>
-        );
       default:
         return (
-          <span className="px-2 py-0.5 rounded-lg text-xs font-bold bg-zinc-900 text-zinc-400 border border-zinc-800">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-bold bg-zinc-900 text-zinc-400 border border-zinc-800">
             {status}
           </span>
         );
@@ -366,7 +392,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
             </span>
           </div>
           <p className="text-xs text-zinc-400 mt-1">
-            Her müşteriden alınan iş ücretini, kredi kartı/nakit ödemelerini, harcanan malzeme masraflarını ve net kârınızı iş bazlı takip edin.
+            Her müşteriden alınan iş ücretini, malzeme harcamalarını ve net kârınızı haftalık, aylık veya yıllık takip edin.
           </p>
         </div>
 
@@ -374,10 +400,10 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
           <button
             type="button"
             onClick={exportCSV}
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold transition-all cursor-pointer"
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold transition-all cursor-pointer shadow-sm"
           >
             <Download className="w-3.5 h-3.5 text-zinc-400" />
-            <span>Excel / CSV İndir</span>
+            <span>CSV / Excel</span>
           </button>
 
           <button
@@ -386,7 +412,65 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
             className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Yeni İş / Gelir-Gider Ekle</span>
+            <span>+ Yeni Kayıt Ekle</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Zaman Aralığı Seçici: Haftalık / Aylık / Yıllık / Tümü */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#0b0e14] p-3 rounded-2xl border border-zinc-800">
+        <div className="flex items-center gap-2">
+          <Calendar className="w-4 h-4 text-emerald-400" />
+          <span className="text-xs font-bold text-zinc-200">Muhasebe Takip Dönemi:</span>
+        </div>
+
+        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto bg-zinc-900/90 p-1 rounded-xl border border-zinc-800">
+          <button
+            type="button"
+            onClick={() => setTimeRange('week')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              timeRange === 'week'
+                ? 'bg-emerald-600 text-white shadow-md'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            📅 Bu Hafta (Haftalık)
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setTimeRange('month')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              timeRange === 'month'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            🗓️ Bu Ay (Aylık)
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setTimeRange('year')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              timeRange === 'year'
+                ? 'bg-purple-600 text-white shadow-md'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            📊 Bu Yıl (Yıllık)
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setTimeRange('all')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              timeRange === 'all'
+                ? 'bg-zinc-800 text-white shadow-md'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            🌐 Tüm Zamanlar
           </button>
         </div>
       </div>
@@ -397,7 +481,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
         {/* Toplam Gelir / Ciro */}
         <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Toplam Ciro / Gelir</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider">{periodLabel} Ciro / Gelir</span>
             <span className="p-1.5 rounded-lg bg-blue-950/60 text-blue-400 border border-blue-900/60">
               <PoundSterling className="w-3.5 h-3.5" />
             </span>
@@ -405,13 +489,13 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
           <div className="text-2xl sm:text-3xl font-black text-white mt-2">
             £{totalRevenue.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Tüm tamamlanan işler</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block">{periodFinances.length} müşteri işi</span>
         </div>
 
         {/* Malzeme Gideri */}
         <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Malzeme Gideri</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider">{periodLabel} Malzeme</span>
             <span className="p-1.5 rounded-lg bg-rose-950/60 text-rose-400 border border-rose-900/60">
               <TrendingDown className="w-3.5 h-3.5" />
             </span>
@@ -419,13 +503,13 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
           <div className="text-2xl sm:text-3xl font-black text-rose-400 mt-2">
             -£{totalMaterial.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Dübel, aparat, vida, sarf</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block">Dübel, aparat, sarf malzeme</span>
         </div>
 
         {/* Net Kâr */}
         <div className="bg-[#0b0e14] border border-emerald-900/40 rounded-2xl p-4 shadow-md shadow-emerald-950/20 relative overflow-hidden">
           <div className="flex items-center justify-between text-emerald-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Net Kâr (Cebinize Kalan)</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider">{periodLabel} Net Kâr</span>
             <span className="p-1.5 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800">
               <TrendingUp className="w-3.5 h-3.5" />
             </span>
@@ -447,7 +531,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
           <div className="text-2xl sm:text-3xl font-black text-amber-400 mt-2">
             %{profitMargin}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Brüt kârlılık yüzdesi</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block">Brüt kârlılık oranı</span>
         </div>
 
         {/* İş Başı Ortalama Kâr */}
@@ -461,7 +545,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
           <div className="text-2xl sm:text-3xl font-black text-indigo-300 mt-2">
             £{avgProfitPerJob}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Tamamlanan {finances.length} iş</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block">{periodLabel.toLowerCase()} ortalama</span>
         </div>
 
       </div>
@@ -479,6 +563,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
           />
         </div>
 
+        {/* 4 Ödeme Durumu Filtresi (Nakit, POS, Banka Havalesi, Bekleyen) */}
         <div className="flex items-center gap-1.5 overflow-x-auto">
           <button
             type="button"
@@ -489,150 +574,168 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 : 'bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800'
             }`}
           >
-            Tümü ({finances.length})
+            Tümü ({periodFinances.length})
           </button>
 
           <button
             type="button"
             onClick={() => setStatusFilter('paid_card')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               statusFilter === 'paid_card' 
                 ? 'bg-purple-600 text-white shadow-sm' 
                 : 'bg-zinc-900 text-purple-300 hover:text-white border border-zinc-800'
             }`}
           >
             <CreditCard className="w-3.5 h-3.5" />
-            <span>Kredi Kartı ({finances.filter(f => f.paymentStatus === 'paid_card').length})</span>
+            <span>POS / Kart ({periodFinances.filter(f => f.paymentStatus === 'paid_card').length})</span>
           </button>
 
           <button
             type="button"
-            onClick={() => setStatusFilter('paid')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-              statusFilter === 'paid' 
+            onClick={() => setStatusFilter('paid_cash')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+              statusFilter === 'paid_cash' 
                 ? 'bg-emerald-600 text-white shadow-sm' 
-                : 'bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800'
+                : 'bg-zinc-900 text-emerald-300 hover:text-white border border-zinc-800'
             }`}
           >
-            Ödenenler ({finances.filter(f => f.paymentStatus?.startsWith('paid')).length})
+            <Banknote className="w-3.5 h-3.5" />
+            <span>Nakit ({periodFinances.filter(f => f.paymentStatus === 'paid_cash').length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setStatusFilter('paid_bank')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+              statusFilter === 'paid_bank' 
+                ? 'bg-blue-600 text-white shadow-sm' 
+                : 'bg-zinc-900 text-blue-300 hover:text-white border border-zinc-800'
+            }`}
+          >
+            <Building className="w-3.5 h-3.5" />
+            <span>Banka Havalesi ({periodFinances.filter(f => f.paymentStatus === 'paid_bank').length})</span>
           </button>
 
           <button
             type="button"
             onClick={() => setStatusFilter('pending')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               statusFilter === 'pending' 
                 ? 'bg-amber-600 text-white shadow-sm' 
-                : 'bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800'
+                : 'bg-zinc-900 text-amber-300 hover:text-white border border-zinc-800'
             }`}
           >
-            Bekleyenler ({finances.filter(f => f.paymentStatus === 'pending').length})
+            <Clock className="w-3.5 h-3.5" />
+            <span>Ödeme Bekliyor ({periodFinances.filter(f => f.paymentStatus === 'pending').length})</span>
           </button>
         </div>
       </div>
 
-      {/* Finansal Kayıtlar Tablosu & Kartları */}
+      {/* Finansal Kayıtlar GRID Sistemi (Bir önceki leads gibi modern kart ızgarası) */}
       {loading ? (
         <div className="p-12 text-center text-zinc-500 font-medium">Muhasebe kayıtları yükleniyor...</div>
       ) : filteredFinances.length === 0 ? (
         <div className="p-12 bg-[#0b0e14] rounded-2xl border border-zinc-800 text-center space-y-2">
           <PoundSterling className="w-10 h-10 text-zinc-600 mx-auto" />
-          <h3 className="text-base font-bold text-white">Muhasebe kaydı bulunamadı</h3>
+          <h3 className="text-base font-bold text-white">Seçilen dönemde muhasebe kaydı bulunamadı</h3>
           <p className="text-xs text-zinc-400 max-w-sm mx-auto">
-            Gelen müşteri tekliflerinden tek tıkla veya sağ üstteki "+ Yeni İş / Gelir-Gider Ekle" butonuna tıklayarak ilk kaydınızı oluşturun.
+            Üstteki dönem filtresini değiştirebilir veya sağ üstteki "+ Yeni Kayıt Ekle" butonuyla yeni iş işleyebilirsiniz.
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filteredFinances.map(item => {
             const revenue = Number(item.revenue) || 0;
             const material = Number(item.materialCost) || 0;
             const other = Number(item.otherExpenses) || 0;
             const net = revenue - material - other;
-            const margin = revenue > 0 ? ((net / revenue) * 100).toFixed(0) : 0;
 
             return (
               <div 
                 key={item.id}
-                className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 sm:p-5 hover:border-zinc-700 transition-all shadow-md space-y-3"
+                className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 sm:p-5 hover:border-zinc-700 transition-all shadow-md flex flex-col justify-between space-y-3 group relative"
               >
-                {/* Üst Satır */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800/80">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      <h4 className="text-base font-bold text-white">
+                {/* Üst Kısım: Müşteri Adı, Tarih ve İşlemler */}
+                <div className="space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <h4 className="text-base font-bold text-white truncate group-hover:text-emerald-400 transition-colors">
                         {item.customerName || 'Müşteri Kaydı'}
                       </h4>
-                      <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800">
-                        {item.service || 'Usta İşi'}
-                      </span>
-                      {renderPaymentBadge(item.paymentStatus)}
+                      <div className="flex items-center gap-2 text-[11px] text-zinc-400 mt-0.5">
+                        <Calendar className="w-3 h-3 text-zinc-500" />
+                        <span>{item.date}</span>
+                        {item.postcode && (
+                          <>
+                            <span>&bull;</span>
+                            <span className="text-zinc-300 font-semibold">{item.postcode}</span>
+                          </>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-3 text-xs text-zinc-400 flex-wrap">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-red-400" />
-                        <span>{item.postcode || 'Edinburgh'}</span>
-                      </span>
-                      {item.customerPhone && (
-                        <span>&bull; {item.customerPhone}</span>
-                      )}
-                      <span>&bull;</span>
-                      <span className="flex items-center gap-1 text-zinc-500">
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>{item.date}</span>
-                      </span>
+                    {/* Düzenle / Sil */}
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleEditRecord(item)}
+                        className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+                        title="Düzenle"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteRecord(item.id)}
+                        className="p-1.5 text-zinc-500 hover:text-rose-400 rounded-lg hover:bg-rose-950/40 transition-colors cursor-pointer"
+                        title="Sil"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
 
-                  {/* Sağ Taraf: Düzenle / Sil Butonları */}
-                  <div className="flex items-center gap-1.5 self-end sm:self-center">
-                    <button
-                      type="button"
-                      onClick={() => handleEditRecord(item)}
-                      className="p-2 text-zinc-400 hover:text-white rounded-xl hover:bg-zinc-800 transition-colors cursor-pointer"
-                      title="Düzenle"
-                    >
-                      <Edit3 className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteRecord(item.id)}
-                      className="p-2 text-zinc-500 hover:text-rose-400 rounded-xl hover:bg-rose-950/40 transition-colors cursor-pointer"
-                      title="Sil"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  {/* Rozetler: Hizmet & Ödeme Durumu & Telefon */}
+                  <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                    <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800">
+                      {item.service || 'Usta İşi'}
+                    </span>
+                    {renderPaymentBadge(item.paymentStatus)}
+                    {item.customerPhone && (
+                      <a 
+                        href={`tel:${item.customerPhone}`} 
+                        className="text-[11px] text-zinc-400 hover:text-white flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-900/70 border border-zinc-800"
+                        title="Müşteriyi ara"
+                      >
+                        <Phone className="w-3 h-3 text-blue-400" />
+                        <span>{item.customerPhone}</span>
+                      </a>
+                    )}
                   </div>
                 </div>
 
                 {/* Finansal Sayılar Matrisi */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-zinc-900/70 p-3 rounded-xl border border-zinc-800/80">
+                <div className="grid grid-cols-3 gap-2 bg-zinc-900/70 p-3 rounded-xl border border-zinc-800/80 text-center">
                   <div>
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Alınan Ücret (Ciro)</span>
-                    <span className="text-base sm:text-lg font-black text-white">£{revenue.toFixed(2)}</span>
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Alınan</span>
+                    <span className="text-sm sm:text-base font-black text-white">£{revenue.toFixed(2)}</span>
                   </div>
 
                   <div>
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Malzeme Masrafı</span>
-                    <span className="text-base sm:text-lg font-black text-rose-400">-£{material.toFixed(2)}</span>
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Masraf</span>
+                    <span className="text-sm sm:text-base font-black text-rose-400">-£{(material + other).toFixed(2)}</span>
                   </div>
 
                   <div>
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Net Kâr (Cebinize)</span>
-                    <span className="text-base sm:text-lg font-black text-emerald-400">+£{net.toFixed(2)}</span>
-                  </div>
-
-                  <div>
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Kâr Marjı</span>
-                    <span className="text-base sm:text-lg font-black text-amber-400">%{margin}</span>
+                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">Net Kâr</span>
+                    <span className="text-sm sm:text-base font-black text-emerald-400">+£{net.toFixed(2)}</span>
                   </div>
                 </div>
 
-                {/* Notlar */}
+                {/* Not Varsa */}
                 {item.notes && (
-                  <p className="text-xs text-zinc-400 italic">
-                    📝 Not: {item.notes}
+                  <p className="text-[11px] text-zinc-400 italic line-clamp-2 bg-zinc-900/40 p-2 rounded-lg border border-zinc-800/50">
+                    📝 {item.notes}
                   </p>
                 )}
               </div>
@@ -716,7 +819,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Telefon Numarası</label>
+                  <label className="text-xs font-semibold text-zinc-300">Telefon</label>
                   <input
                     type="tel"
                     placeholder="Örn: +44 7760 123456"
@@ -730,7 +833,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
               {/* Posta Kodu, Hizmet ve Tarih */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Posta Kodu (EH)</label>
+                  <label className="text-xs font-semibold text-zinc-300">Posta Kodu</label>
                   <input
                     type="text"
                     placeholder="Örn: EH3 9DJ"
@@ -741,7 +844,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Hizmet Türü</label>
+                  <label className="text-xs font-semibold text-zinc-300">Hizmet</label>
                   <input
                     type="text"
                     placeholder="Örn: Gardırop Montajı"
@@ -752,7 +855,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">İş Tarihi *</label>
+                  <label className="text-xs font-semibold text-zinc-300">Tarih *</label>
                   <input
                     type="date"
                     required
@@ -763,82 +866,75 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 </div>
               </div>
 
-              {/* Finansal Girişler: Alınan Ücret & Malzeme Masrafı */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-zinc-900/60 p-3.5 rounded-2xl border border-zinc-800">
+              {/* Finansal Girişler (Kısa Başlıklar ve Sabit Yükseklik ile Buton Kaymasını Önler) */}
+              <div className="grid grid-cols-3 gap-2.5 bg-zinc-900/60 p-3 rounded-2xl border border-zinc-800">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-emerald-400">Müşteriden Alınan Ücret (£) *</label>
+                  <label className="text-xs font-bold text-emerald-400 block truncate">Müşteriden Alınan (£) *</label>
                   <input
                     type="number"
                     step="0.01"
                     required
-                    placeholder="Örn: 120"
+                    placeholder="120"
                     value={formData.revenue}
                     onChange={e => setFormData({ ...formData, revenue: e.target.value })}
                     className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-sm font-black focus:border-emerald-500 outline-none"
                   />
-                  <span className="text-[10px] text-zinc-500">Müşterinin ödediği toplam para</span>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-rose-400">Harcanan Malzeme (£)</label>
+                  <label className="text-xs font-bold text-rose-400 block truncate">Malzeme (£)</label>
                   <input
                     type="number"
                     step="0.01"
-                    placeholder="Örn: 25.50"
+                    placeholder="25"
                     value={formData.materialCost}
                     onChange={e => setFormData({ ...formData, materialCost: e.target.value })}
                     className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-sm font-black focus:border-rose-500 outline-none"
                   />
-                  <span className="text-[10px] text-zinc-500">Dübel, aparat, vida, boya vb.</span>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-amber-400">Diğer Masraflar (£)</label>
+                  <label className="text-xs font-bold text-amber-400 block truncate">Diğer Masraf (£)</label>
                   <input
                     type="number"
                     step="0.01"
-                    placeholder="Örn: 5.00"
+                    placeholder="5"
                     value={formData.otherExpenses}
                     onChange={e => setFormData({ ...formData, otherExpenses: e.target.value })}
                     className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-sm font-black focus:border-amber-500 outline-none"
                   />
-                  <span className="text-[10px] text-zinc-500">Otopark, yakıt vb. ek masraf</span>
                 </div>
               </div>
 
-              {/* Canlı Net Kâr Önizlemesi */}
-              {formData.revenue && (
-                <div className="p-3 rounded-2xl bg-emerald-950/40 border border-emerald-900/60 flex items-center justify-between">
-                  <span className="text-xs font-bold text-emerald-400">Tahmini Net Kârınız (Cebinize Kalan):</span>
-                  <span className="text-lg font-black text-white">
-                    £{(Number(formData.revenue || 0) - Number(formData.materialCost || 0) - Number(formData.otherExpenses || 0)).toFixed(2)}
-                  </span>
-                </div>
-              )}
+              {/* Sabit Net Kâr Önizlemesi - Her zaman sabit kalarak butonların kaymasını kesin olarak engeller */}
+              <div className="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 flex items-center justify-between">
+                <span className="text-xs font-bold text-zinc-300">Tahmini Net Kâr (Cebinize Kalan):</span>
+                <span className="text-base font-black text-emerald-400">
+                  £{(Number(formData.revenue || 0) - Number(formData.materialCost || 0) - Number(formData.otherExpenses || 0)).toFixed(2)}
+                </span>
+              </div>
 
-              {/* Ödeme Yöntemi / Durumu (KREDİ KARTI İBARESİ EKLENDİ) */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-200 block">Ödeme Durumu & Tahsilat Yöntemi *</label>
+              {/* Ödeme Durumu (Sadece POS, Nakit, Banka Havalesi ve Bekleyen) */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-zinc-300 block">Ödeme Durumu *</label>
                 <select
                   value={formData.paymentStatus}
                   onChange={e => setFormData({ ...formData, paymentStatus: e.target.value })}
                   className="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-bold focus:border-blue-500 outline-none cursor-pointer"
                 >
-                  <option value="paid_card">💳 Kredi Kartıyla Ödeme Alındı (POS / Kart)</option>
-                  <option value="paid_cash">💵 Ödendi (Nakit Elden)</option>
-                  <option value="paid_bank">🏦 Ödendi (Banka Havalesi / Transfer)</option>
-                  <option value="paid">✅ Ödendi (Genel)</option>
+                  <option value="paid_card">💳 POS / Kredi Kartı</option>
+                  <option value="paid_cash">💵 Nakit</option>
+                  <option value="paid_bank">🏦 Banka Havalesi</option>
                   <option value="pending">⏳ Ödeme Bekliyor</option>
-                  <option value="invoiced">📑 Faturalandı (Vade Bekleniyor)</option>
                 </select>
               </div>
 
               {/* Notlar */}
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-300">Özel Notlar</label>
+                <label className="text-xs font-semibold text-zinc-300">Notlar</label>
                 <textarea
                   rows={2}
-                  placeholder="Örn: 2 adet ağır ayna askı aparatı kullanıldı. Müşteri makbuz istedi."
+                  placeholder="Örn: 2 adet ağır ayna askı aparatı kullanıldı."
                   value={formData.notes}
                   onChange={e => setFormData({ ...formData, notes: e.target.value })}
                   className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
