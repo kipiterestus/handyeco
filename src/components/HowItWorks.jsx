@@ -6,20 +6,20 @@ export default function HowItWorks({ onOpenQuote }) {
     {
       num: "1",
       icon: Camera,
-      title: "1. Send Photo or Details",
+      title: "Send Photo or Details",
       desc: "Quick snap on WhatsApp or our online form."
     },
     {
       num: "2",
       icon: Calculator,
-      title: "2. Get a Fixed Price",
+      title: "Get a Fixed Price",
       desc: "Clear upfront quote with zero surprise extras."
     },
     {
       num: "3",
       icon: CheckCircle2,
-      title: "3. Punctual & Tidy Finish",
-      desc: "Arrive on time, professional tools & spotless cleanup."
+      title: "Punctual & Tidy Finish",
+      desc: "Arrive on time, professional tools & clean work."
     }
   ];
 
@@ -27,39 +27,27 @@ export default function HowItWorks({ onOpenQuote }) {
     <section id="how-it-works" className="pt-0 pb-8 sm:pb-12 bg-white border-b border-slate-200/80">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         
-        {/* Compact Connected Bar */}
-        <div className="relative bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-2 border-blue-100 shadow-xs hover:border-blue-300 transition-all flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 sm:gap-6">
+        {/* Connected Bar Styled to Match Where We Work Banner */}
+        <div className="relative bg-slate-50/90 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 sm:gap-6">
           
           {/* Left Anchor Notch indicating connection */}
           <div className="absolute -top-3.5 left-6 sm:left-12 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] sm:text-xs font-black shadow-md border-2 border-white">
             &darr;
           </div>
 
-          {/* Label */}
-          <div className="flex items-center gap-2.5 shrink-0 text-left pt-1 sm:pt-0">
-            <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-blue-600"></span>
-            <div>
-              <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-900">
-                Simple 3-Step Process
-              </h3>
-              <p className="text-[10px] sm:text-xs text-slate-500">Fast, transparent Edinburgh booking</p>
-            </div>
-          </div>
-
-          {/* Steps Flow */}
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4 w-full">
+          {/* Steps Flow (1 - 2 - 3 strictly) */}
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 w-full">
             {steps.map((step, idx) => {
-              const Icon = step.icon;
               return (
-                <div key={idx} className="flex items-center gap-2.5 sm:gap-3 text-left p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-slate-50/70 hover:bg-blue-50/60 transition-colors border border-slate-100">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                <div key={idx} className="flex items-center gap-3 text-left p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs hover:border-blue-300 transition-all">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-xs sm:text-sm shrink-0 shadow-xs">
                     {step.num}
                   </div>
                   <div>
-                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-tight">
+                    <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-tight">
                       {step.title}
                     </h4>
-                    <p className="text-[10px] sm:text-[11px] text-slate-500 leading-tight mt-0.5">
+                    <p className="text-xs sm:text-xs text-slate-600 leading-snug mt-0.5 font-medium">
                       {step.desc}
                     </p>
                   </div>
@@ -71,10 +59,10 @@ export default function HowItWorks({ onOpenQuote }) {
           {/* Action Button */}
           <button
             onClick={onOpenQuote}
-            className="w-full lg:w-auto shrink-0 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-xs active:scale-95 transition-all cursor-pointer"
+            className="w-full lg:w-auto shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-extrabold text-white bg-blue-600 hover:bg-blue-700 shadow-xs active:scale-95 transition-all cursor-pointer"
           >
-            <span>Start Quote</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <span>Start Free Quote</span>
+            <ArrowRight className="w-4 h-4" />
           </button>
 
         </div>

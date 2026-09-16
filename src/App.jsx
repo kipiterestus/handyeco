@@ -7,7 +7,6 @@ import Services from './components/Services';
 import GoogleReviews from './components/GoogleReviews';
 import PhotoGallery from './components/PhotoGallery';
 import QuoteForm from './components/QuoteForm';
-import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import MobileStickyBar from './components/MobileStickyBar';
 import LightboxModal from './components/LightboxModal';
@@ -64,11 +63,8 @@ export default function App() {
             {/* 6. Recent Completed Work (Minimalist Apple-style Photo Gallery) */}
             <PhotoGallery onOpenLightbox={(item) => setLightboxItem(item)} />
 
-            {/* 7. Interactive Free Quote Request Form */}
+            {/* 7. Interactive Free Quote Request Form & FAQ Side-by-Side */}
             <QuoteForm preselectedService={selectedService} />
-
-            {/* 8. Frequently Asked Questions */}
-            <FAQ />
           </main>
 
           {/* Footer */}

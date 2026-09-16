@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { 
-  Camera, 
-  MapPin, 
   Maximize2, 
   ArrowRight,
   Sparkles,
@@ -46,11 +44,6 @@ export default function PhotoGallery({ onOpenLightbox }) {
         
         {/* Sleek Minimal Header */}
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 text-xs font-bold mb-3">
-            <Camera className="w-3.5 h-3.5 text-blue-600" />
-            <span>On-Site Craftsmanship</span>
-          </div>
-
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
             Recent Completed Work
           </h2>
@@ -136,9 +129,8 @@ export default function PhotoGallery({ onOpenLightbox }) {
 
                 {/* Minimal Bottom Info (Focused strictly on the work) */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 text-left text-white z-10">
-                  <div className="flex items-center gap-1 text-[11px] text-blue-300 font-semibold mb-1">
-                    <MapPin className="w-3 h-3 text-blue-400 shrink-0" />
-                    <span>{item.location}</span>
+                  <div className="text-[11px] sm:text-xs text-blue-300 font-semibold mb-1">
+                    {item.location}
                   </div>
                   <h3 className="text-base sm:text-lg font-bold leading-tight text-white drop-shadow-sm line-clamp-2">
                     {item.title}

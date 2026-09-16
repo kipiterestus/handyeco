@@ -62,16 +62,13 @@ export default function GoogleReviews() {
         
         {/* Header with Google & MyBuilder Verification */}
         <div className="text-center max-w-3xl mx-auto mb-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold mb-3">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <div className="inline-flex items-center gap-2.5 px-4 sm:px-6 py-2 rounded-full bg-emerald-50 border-2 border-emerald-300/80 text-emerald-900 text-xs sm:text-sm md:text-base font-extrabold shadow-xs mb-3">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
             <span>100% Real Feedback &bull; Verified Google & MyBuilder Profiles</span>
           </div>
           
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Real Customer Reviews
-          </h2>
-          <p className="text-sm sm:text-base text-slate-600 mt-2 max-w-xl mx-auto">
-            Authentic reviews from Edinburgh homeowners and tenants on Google Maps and MyBuilder. Pure honest feedback on craftsmanship, punctuality, and spotless tidy work.
+          <p className="text-sm sm:text-base text-slate-600 mt-1 max-w-2xl mx-auto leading-relaxed">
+            Authentic reviews from Edinburgh homeowners and tenants on Google Maps and MyBuilder. Pure honest feedback on craftsmanship, punctuality, and spotless tidy&nbsp;work.
           </p>
         </div>
 
