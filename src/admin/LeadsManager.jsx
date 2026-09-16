@@ -114,8 +114,8 @@ export default function LeadsManager({ token }) {
           onClick={() => setStatusFilter('all')}
           className={`p-4 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'all' 
-              ? 'bg-blue-600 text-white border-blue-600 shadow-md' 
-              : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
+              ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20' 
+              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 shadow-xs'
           }`}
         >
           <span className="text-xs font-bold uppercase opacity-80 block">All Leads</span>
@@ -126,8 +126,8 @@ export default function LeadsManager({ token }) {
           onClick={() => setStatusFilter('new')}
           className={`p-4 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'new' 
-              ? 'bg-amber-600 text-white border-amber-600 shadow-md' 
-              : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
+              ? 'bg-amber-600 text-white border-amber-600 shadow-md shadow-amber-600/20' 
+              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 shadow-xs'
           }`}
         >
           <span className="text-xs font-bold uppercase opacity-80 block">New / Pending</span>
@@ -138,8 +138,8 @@ export default function LeadsManager({ token }) {
           onClick={() => setStatusFilter('contacted')}
           className={`p-4 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'contacted' 
-              ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' 
-              : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
+              ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/20' 
+              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 shadow-xs'
           }`}
         >
           <span className="text-xs font-bold uppercase opacity-80 block">Contacted</span>
@@ -150,8 +150,8 @@ export default function LeadsManager({ token }) {
           onClick={() => setStatusFilter('booked')}
           className={`p-4 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'booked' 
-              ? 'bg-emerald-600 text-white border-emerald-600 shadow-md' 
-              : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
+              ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/20' 
+              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 shadow-xs'
           }`}
         >
           <span className="text-xs font-bold uppercase opacity-80 block">Booked / Done</span>
@@ -160,7 +160,7 @@ export default function LeadsManager({ token }) {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
         <div className="relative flex-1">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -168,14 +168,14 @@ export default function LeadsManager({ token }) {
             placeholder="Search leads by name, phone, EH postcode, or service..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:bg-white transition-all"
           />
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={fetchQuotes}
-            className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition-colors cursor-pointer"
+            className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 border border-slate-200 transition-colors cursor-pointer"
           >
             Refresh
           </button>
@@ -184,12 +184,12 @@ export default function LeadsManager({ token }) {
 
       {/* Leads List */}
       {loading ? (
-        <div className="p-12 text-center text-slate-400">Loading incoming inquiries...</div>
+        <div className="p-12 text-center text-slate-500 font-medium">Loading incoming inquiries...</div>
       ) : filteredQuotes.length === 0 ? (
-        <div className="p-12 bg-slate-900/40 rounded-3xl border border-slate-800 text-center space-y-2">
-          <Inbox className="w-10 h-10 text-slate-600 mx-auto" />
-          <h3 className="text-base font-bold text-white">No inquiries found</h3>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto">
+        <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-2 shadow-xs">
+          <Inbox className="w-10 h-10 text-slate-400 mx-auto" />
+          <h3 className="text-base font-bold text-slate-900">No inquiries found</h3>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto">
             Quotes submitted via the website form or Telegram bot will appear here automatically.
           </p>
         </div>
@@ -203,37 +203,37 @@ export default function LeadsManager({ token }) {
             return (
               <div 
                 key={quote.id}
-                className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-md hover:border-slate-700 transition-all space-y-4"
+                className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 shadow-xs hover:border-slate-300 transition-all space-y-4"
               >
                 {/* Header row */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className="text-lg font-bold text-white">{quote.name || 'Anonymous Client'}</h4>
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-900/50 text-blue-300 border border-blue-700">
+                      <h4 className="text-lg font-bold text-slate-900">{quote.name || 'Anonymous Client'}</h4>
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
                         {quote.service || 'General Handyman'}
                       </span>
                       {quote.urgency && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-amber-950 text-amber-300 border border-amber-800">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-amber-50 text-amber-700 border border-amber-200">
                           {quote.urgency}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 flex items-center gap-3 flex-wrap">
+                    <p className="text-xs text-slate-500 flex items-center gap-3 flex-wrap">
                       <span className="flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-blue-400" />
-                        <span className="font-semibold text-slate-300">{quote.postcode || 'Edinburgh Area'}</span>
+                        <MapPin className="w-3.5 h-3.5 text-blue-600" />
+                        <span className="font-semibold text-slate-700">{quote.postcode || 'Edinburgh Area'}</span>
                       </span>
                       {quote.email && (
                         <>
                           <span>&bull;</span>
-                          <a href={`mailto:${quote.email}`} className="text-blue-400 hover:underline">
+                          <a href={`mailto:${quote.email}`} className="text-blue-600 font-medium hover:underline">
                             {quote.email}
                           </a>
                         </>
                       )}
                       <span>&bull;</span>
-                      <span className="flex items-center gap-1 text-slate-500">
+                      <span className="flex items-center gap-1 text-slate-400">
                         <Clock className="w-3.5 h-3.5" />
                         <span>{quote.createdAt ? new Date(quote.createdAt).toLocaleString('en-GB') : 'Recently'}</span>
                       </span>
@@ -242,12 +242,12 @@ export default function LeadsManager({ token }) {
 
                   {/* Status Dropdown */}
                   <div className="flex items-center gap-2">
-                    <label className="text-xs text-slate-400">Status:</label>
+                    <label className="text-xs font-semibold text-slate-600">Status:</label>
                     <select
                       value={quote.status || 'new'}
                       onChange={(e) => updateStatus(quote.id, e.target.value)}
                       disabled={savingId === quote.id}
-                      className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-blue-500 cursor-pointer"
+                      className="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-blue-500 cursor-pointer"
                     >
                       <option value="new">🟡 New / Pending</option>
                       <option value="contacted">🔵 Contacted</option>
@@ -258,9 +258,9 @@ export default function LeadsManager({ token }) {
                 </div>
 
                 {/* Job details */}
-                <div className="bg-slate-950/60 rounded-2xl p-4 border border-slate-800/80 space-y-2 text-xs sm:text-sm text-slate-300">
-                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Job Details / Description:</span>
-                  <p className="whitespace-pre-line leading-relaxed text-slate-200">
+                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 space-y-2 text-xs sm:text-sm text-slate-700">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Job Details / Description:</span>
+                  <p className="whitespace-pre-line leading-relaxed text-slate-800">
                     {quote.details || 'No additional details provided.'}
                   </p>
                 </div>
@@ -273,16 +273,16 @@ export default function LeadsManager({ token }) {
                       placeholder="Add private note (e.g. Quoted £120, booked for Thursday 10am)..."
                       defaultValue={quote.notes || ''}
                       onBlur={(e) => updateNotes(quote.id, e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-800 rounded-xl text-slate-300 focus:outline-none focus:border-slate-600"
+                      className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
                     />
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
                     <a
                       href={`tel:${quote.phone}`}
-                      className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all"
+                      className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold border border-slate-200 transition-all"
                     >
-                      <Phone className="w-3.5 h-3.5 text-blue-400" />
+                      <Phone className="w-3.5 h-3.5 text-blue-600" />
                       <span>Call {quote.phone}</span>
                     </a>
 
@@ -290,7 +290,7 @@ export default function LeadsManager({ token }) {
                       href={whatsappLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/20 transition-all active:scale-95"
+                      className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-all active:scale-95"
                     >
                       <MessageSquare className="w-3.5 h-3.5" />
                       <span>WhatsApp Reply</span>

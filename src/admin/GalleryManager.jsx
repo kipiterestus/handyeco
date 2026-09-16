@@ -79,10 +79,10 @@ export default function GalleryManager({ data, onSave, token }) {
 
   return (
     <form onSubmit={handleSave} className="space-y-6 text-left">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h2 className="text-xl font-bold text-white">Recent Completed Work & Gallery</h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <h2 className="text-xl font-bold text-slate-900">Recent Completed Work & Gallery</h2>
+          <p className="text-xs text-slate-500 mt-0.5">
             Upload on-site photos of Edinburgh projects, set locations, and manage Before/After comparisons.
           </p>
         </div>
@@ -91,7 +91,7 @@ export default function GalleryManager({ data, onSave, token }) {
           <button
             type="button"
             onClick={handleAddItem}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 cursor-pointer transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Project Photo</span>
@@ -100,9 +100,9 @@ export default function GalleryManager({ data, onSave, token }) {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-lg shadow-blue-600/30 transition-all cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-700 active:scale-95 shadow-sm transition-all cursor-pointer disabled:opacity-50"
           >
-            {saved ? <CheckCircle className="w-4 h-4 text-emerald-300" /> : <Save className="w-4 h-4" />}
+            {saved ? <CheckCircle className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
             <span>{saving ? 'Saving...' : saved ? 'Saved!' : 'Save Gallery'}</span>
           </button>
         </div>
@@ -112,11 +112,11 @@ export default function GalleryManager({ data, onSave, token }) {
         {items.map((item) => (
           <div
             key={item.id}
-            className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4 shadow-md flex flex-col justify-between"
+            className="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all"
           >
             <div>
               {/* Photo Preview & Upload */}
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 mb-3">
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 mb-3 shadow-inner">
                 <img
                   src={item.image}
                   alt={item.title}
@@ -126,7 +126,7 @@ export default function GalleryManager({ data, onSave, token }) {
                   {item.badge}
                 </div>
 
-                <label className="absolute bottom-2 right-2 px-3 py-1.5 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white text-[11px] font-bold flex items-center gap-1 shadow-md cursor-pointer transition-all">
+                <label className="absolute bottom-2 right-2 px-3 py-1.5 rounded-xl bg-blue-600/95 hover:bg-blue-600 text-white text-[11px] font-bold flex items-center gap-1 shadow-md cursor-pointer transition-all">
                   <Upload className="w-3 h-3" />
                   <span>
                     {uploadingFor?.id === item.id && uploadingFor?.type === 'main' ? 'Uploading...' : 'Replace Photo'}
@@ -143,33 +143,33 @@ export default function GalleryManager({ data, onSave, token }) {
               {/* Title & Badge */}
               <div className="space-y-2.5">
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-400 mb-0.5">Project Title</label>
+                  <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">Project Title</label>
                   <input
                     type="text"
                     value={item.title || ''}
                     onChange={e => handleUpdate(item.id, 'title', e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-slate-950 border border-slate-800 rounded-xl text-white font-bold focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-blue-600 focus:bg-white"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[11px] font-semibold text-slate-400 mb-0.5">Location (Postcode)</label>
+                    <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">Location (Postcode)</label>
                     <input
                       type="text"
                       value={item.location || ''}
                       onChange={e => handleUpdate(item.id, 'location', e.target.value)}
                       placeholder="e.g. Morningside, EH10"
-                      className="w-full px-3 py-1.5 text-xs bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-blue-500"
+                      className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-slate-400 mb-0.5">Category</label>
+                    <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">Category</label>
                     <select
                       value={item.category || 'assembly'}
                       onChange={e => handleUpdate(item.id, 'category', e.target.value)}
-                      className="w-full px-2.5 py-1.5 text-xs bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-blue-500"
+                      className="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white cursor-pointer"
                     >
                       <option value="assembly">Assembly</option>
                       <option value="mounting">TV & Mounting</option>
@@ -181,22 +181,22 @@ export default function GalleryManager({ data, onSave, token }) {
                 </div>
 
                 {/* Before / After toggle */}
-                <div className="pt-2 border-t border-slate-800">
-                  <label className="flex items-center gap-2 text-xs font-semibold text-slate-300 cursor-pointer">
+                <div className="pt-2 border-t border-slate-100">
+                  <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={Boolean(item.isBeforeAfter)}
                       onChange={e => handleUpdate(item.id, 'isBeforeAfter', e.target.checked)}
-                      className="rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-0"
+                      className="rounded bg-slate-50 border-slate-300 text-blue-600 focus:ring-0 cursor-pointer"
                     />
                     <span>Include "Before" Photo (Before & After comparison)</span>
                   </label>
 
                   {item.isBeforeAfter && (
-                    <div className="mt-2.5 p-3 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-                      <div className="flex items-center justify-between text-[11px] text-slate-400">
+                    <div className="mt-2.5 p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                      <div className="flex items-center justify-between text-[11px] text-slate-500">
                         <span>Before Photo Preview:</span>
-                        <label className="text-blue-400 hover:underline font-bold cursor-pointer">
+                        <label className="text-blue-600 hover:underline font-bold cursor-pointer">
                           <span>{uploadingFor?.id === item.id && uploadingFor?.type === 'before' ? 'Uploading...' : 'Upload Before Image'}</span>
                           <input
                             type="file"
@@ -210,7 +210,7 @@ export default function GalleryManager({ data, onSave, token }) {
                         <img
                           src={item.beforeImage}
                           alt="Before Preview"
-                          className="w-full h-24 object-cover rounded-xl border border-slate-800"
+                          className="w-full h-24 object-cover rounded-xl border border-slate-200"
                         />
                       )}
                     </div>
@@ -220,12 +220,12 @@ export default function GalleryManager({ data, onSave, token }) {
             </div>
 
             {/* Bottom Actions */}
-            <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
-              <span className="text-[10px] text-slate-500">ID: {item.id}</span>
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-[10px] text-slate-400 font-mono">ID: {item.id}</span>
               <button
                 type="button"
                 onClick={() => handleDeleteItem(item.id)}
-                className="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 cursor-pointer"
+                className="text-xs text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1 cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>Delete Photo</span>
