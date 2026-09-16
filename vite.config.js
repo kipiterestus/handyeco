@@ -299,4 +299,9 @@ export default defineConfig({
     tailwindcss(),
     backendApiPlugin(),
   ],
+  server: {
+    watch: {
+      ignored: ['**/server/data/**', '**/server/data/*.json']
+    }
+  }
 });

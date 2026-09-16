@@ -35,14 +35,14 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
     const newId = 'rev-' + Date.now();
     const newRev = {
       id: newId,
-      author: 'Edinburgh Customer Name',
+      author: 'Yeni Edinburgh Müşterisi',
       location: 'Morningside, Edinburgh (EH10)',
       rating: 5,
-      relativeTime: 'Recently',
-      service: 'Flat-Pack Assembly',
+      relativeTime: 'Yakın zamanda',
+      service: 'Mobilya Montajı & Tamirat',
       platform: 'google',
       likes: 1,
-      text: 'Write the authentic review feedback here. Punctual, spotless clean, and exceptional workmanship.'
+      text: 'Zamanında geldi, temiz ve çok titiz çalıştı. Edinburgh usta ihtiyacı olan herkese gönül rahatlığıyla tavsiye ederim.'
     };
     setReviews(prev => [newRev, ...prev]);
   };

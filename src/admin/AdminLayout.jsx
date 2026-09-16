@@ -38,7 +38,12 @@ export default function AdminLayout() {
   const [token, setToken] = useState(() => localStorage.getItem('handyeco_admin_token') || '');
   const [isAuth, setIsAuth] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [activeTab, setActiveTab] = useState('leads'); // leads | schedule | accounting | telegram | business | hero | services | gallery | reviews | faq_areas | seo
+  
+  // Persist activeTab in localStorage so updating data never kicks the user back to leads
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem('handyeco_admin_active_tab') || 'leads';
+  });
+  
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   
@@ -47,6 +52,12 @@ export default function AdminLayout() {
   const [initialLeadForAccounting, setInitialLeadForAccounting] = useState(null);
 
   const { content, refreshContent, updateSectionLocally } = useContent();
+
+  const handleSelectTab = (tabId) => {
+    setActiveTab(tabId);
+    localStorage.setItem('handyeco_admin_active_tab', tabId);
+    setSidebarOpen(false);
+  };
 
   // Verify token on mount
   useEffect(() => {
@@ -112,15 +123,15 @@ export default function AdminLayout() {
       const resData = await res.json();
       if (res.ok && resData.success) {
         updateSectionLocally(section, data);
-        showToast(`Saved ${section} changes successfully!`);
+        showToast(`${section} başarıyla kaydedildi!`);
         refreshContent();
         return true;
       } else {
-        alert(resData.error || 'Failed to save changes');
+        alert(resData.error || 'Değişiklikler kaydedilemedi');
         return false;
       }
     } catch (err) {
-      alert('Network error while saving: ' + err.message);
+      alert('Kaydetme esnasında ağ hatası: ' + err.message);
       return false;
     }
   };
@@ -128,14 +139,14 @@ export default function AdminLayout() {
   // Handler to schedule a lead into calendar
   const handleScheduleLead = (lead) => {
     setInitialLeadForSchedule(lead);
-    setActiveTab('schedule');
+    handleSelectTab('schedule');
     showToast(`${lead.name || 'Müşteri'} için randevu planlama ekranı açıldı.`);
   };
 
   // Handler to log a lead into accounting
   const handleLogLeadToAccounting = (lead) => {
     setInitialLeadForAccounting(lead);
-    setActiveTab('accounting');
+    handleSelectTab('accounting');
     showToast(`${lead.name || 'Müşteri'} için muhasebe kaydı formu açıldı.`);
   };
 
@@ -144,7 +155,7 @@ export default function AdminLayout() {
       <div className="min-h-screen bg-[#07090e] flex items-center justify-center text-zinc-400 font-medium">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-          <span>Verifying admin session...</span>
+          <span>Yönetici oturumu doğrulanıyor...</span>
         </div>
       </div>
     );
@@ -154,30 +165,28 @@ export default function AdminLayout() {
     return <AdminLogin onLoginSuccess={handleLoginSuccess} />;
   }
 
-  // CATEGORY 1: İŞ & OPERASYON YÖNETİMİ
-  // (Inquiries & Quotes, İş Takip & Randevular, Gelir Gider Muhasebe)
+  // 1. KATEGORİ: İŞ & OPERASYON YÖNETİMİ
   const operationsNav = [
-    { id: 'leads', label: 'Inquiries & Quotes', icon: Inbox, badge: 'Live Leads' },
+    { id: 'leads', label: 'Gelen Teklifler & Talepler', icon: Inbox, badge: 'Canlı Talepler' },
     { id: 'schedule', label: 'İş Takip & Randevular', icon: Calendar, badge: 'Ajanda' },
     { id: 'accounting', label: 'Gelir, Gider & Kâr', icon: PoundSterling, badge: 'Muhasebe' },
   ];
 
-  // CATEGORY 2: SİTE İÇERİK & AYARLAR
-  // (Telegram Bot buraya alındı, Business, Hero, Services, Gallery, Reviews, FAQs, SEO)
+  // 2. KATEGORİ: SİTE İÇERİK & AYARLAR (Telegram buraya alındı)
   const siteSettingsNav = [
-    { id: 'telegram', label: 'Telegram Bot', icon: Send, badge: 'Alerts' },
-    { id: 'business', label: 'Business & Pricing', icon: Building2 },
-    { id: 'hero', label: 'Hero & Headings', icon: Sparkles },
-    { id: 'services', label: 'Services & Scope', icon: Wrench },
-    { id: 'gallery', label: 'Photo Gallery', icon: Camera },
-    { id: 'reviews', label: 'Customer Reviews', icon: Star },
-    { id: 'faq_areas', label: 'Areas & FAQs', icon: MapPin },
-    { id: 'seo', label: 'Edinburgh SEO', icon: Search, badge: '100% SEO' },
+    { id: 'telegram', label: 'Telegram Bot Bildirimleri', icon: Send, badge: 'Uyarılar' },
+    { id: 'business', label: 'İşletme & Fiyatlandırma', icon: Building2 },
+    { id: 'hero', label: 'Hero & Ana Başlıklar', icon: Sparkles },
+    { id: 'services', label: 'Hizmetler & Kapsam', icon: Wrench },
+    { id: 'gallery', label: 'Fotoğraf Galerisi', icon: Camera },
+    { id: 'reviews', label: 'Müşteri Yorumları', icon: Star },
+    { id: 'faq_areas', label: 'Bölgeler & SSS', icon: MapPin },
+    { id: 'seo', label: 'Edinburgh SEO Yönetimi', icon: Search, badge: '%100 SEO' },
   ];
 
   return (
     <div className="min-h-screen bg-[#07090e] text-zinc-100 flex flex-col antialiased">
-      {/* Toast Notification (Screen Only) */}
+      {/* Toast Bildirimi (Yalnızca Ekranda) */}
       {toastMessage && (
         <div className="print:hidden fixed bottom-6 right-6 z-50 bg-emerald-600 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 animate-in slide-in-from-bottom-5">
           <CheckCircle2 className="w-5 h-5" />
@@ -185,7 +194,7 @@ export default function AdminLayout() {
         </div>
       )}
 
-      {/* Top Header Bar (Screen Only, OLED Dark) */}
+      {/* Üst Bar (OLED Siyah) */}
       <header className="print:hidden h-16 bg-[#0b0e14]/95 backdrop-blur-md border-b border-zinc-800/90 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40 shadow-md">
         <div className="flex items-center gap-3">
           <button
@@ -201,10 +210,10 @@ export default function AdminLayout() {
             </div>
             <div className="text-left">
               <span className="font-extrabold text-sm text-white tracking-tight block leading-none">
-                Handyeco Admin
+                Handyeco Yönetici Paneli
               </span>
               <span className="text-[10px] text-blue-400 font-bold tracking-wider uppercase">
-                Edinburgh Control Panel
+                Edinburgh Kontrol Merkezi
               </span>
             </div>
           </a>
@@ -217,30 +226,30 @@ export default function AdminLayout() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-bold border border-zinc-800 transition-all"
           >
-            <span>View Live Site</span>
+            <span>Yayındaki Siteyi Gör</span>
             <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
           </a>
 
           <button
             onClick={handleLogout}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 border border-rose-900/60 transition-colors cursor-pointer"
-            title="Sign out of admin"
+            title="Oturumu Kapat"
           >
             <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
+            <span className="hidden sm:inline">Çıkış Yap</span>
           </button>
         </div>
       </header>
 
-      {/* Main Workspace Layout */}
+      {/* Ana Çalışma Düzeni */}
       <div className="flex-1 flex overflow-hidden relative">
         
-        {/* Sidebar Navigation (Screen Only, OLED Dark & Categorized) */}
+        {/* Sol Menü (OLED Siyah) */}
         <aside className={`print:hidden fixed inset-y-16 left-0 z-30 w-64 bg-[#0b0e14] border-r border-zinc-800/90 p-3 space-y-4 overflow-y-auto transform transition-transform duration-200 md:relative md:inset-auto md:translate-x-0 shadow-lg ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
           
-          {/* CATEGORY 1: İŞ & OPERASYON YÖNETİMİ */}
+          {/* 1. KATEGORİ: İŞ & OPERASYON YÖNETİMİ */}
           <div className="space-y-1 text-left">
             <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
               <Briefcase className="w-3 h-3" />
@@ -254,10 +263,7 @@ export default function AdminLayout() {
               return (
                 <button
                   key={item.id}
-                  onClick={() => {
-                    setActiveTab(item.id);
-                    setSidebarOpen(false);
-                  }}
+                  onClick={() => handleSelectTab(item.id)}
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive
                       ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
@@ -283,7 +289,7 @@ export default function AdminLayout() {
 
           <div className="border-t border-zinc-800/80 my-2" />
 
-          {/* CATEGORY 2: SİTE İÇERİK & AYARLAR */}
+          {/* 2. KATEGORİ: SİTE İÇERİK & AYARLAR */}
           <div className="space-y-1 text-left">
             <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
               <SlidersHorizontal className="w-3 h-3" />
@@ -297,10 +303,7 @@ export default function AdminLayout() {
               return (
                 <button
                   key={item.id}
-                  onClick={() => {
-                    setActiveTab(item.id);
-                    setSidebarOpen(false);
-                  }}
+                  onClick={() => handleSelectTab(item.id)}
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive
                       ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
@@ -324,11 +327,11 @@ export default function AdminLayout() {
             })}
           </div>
 
-          {/* Footer Info */}
+          {/* Alt Bilgi */}
           <div className="pt-4 border-t border-zinc-800/80 px-3 text-left">
             <div className="flex items-center gap-2 text-xs text-emerald-400 font-semibold">
               <ShieldCheck className="w-4 h-4" />
-              <span>Hot Sync Active</span>
+              <span>Canlı Senkronizasyon Aktif</span>
             </div>
             <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
               Tüm değişiklikler JSON veritabanına ve yayındaki siteye anında yansır.
@@ -336,7 +339,7 @@ export default function AdminLayout() {
           </div>
         </aside>
 
-        {/* Main Content Area (Near-Black OLED) */}
+        {/* Ana İçerik Bölgesi (OLED Siyah) */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#07090e] print:p-0 print:bg-white print:overflow-visible">
           <div className="max-w-6xl mx-auto print:max-w-full">
             {activeTab === 'leads' && (

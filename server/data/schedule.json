@@ -11,10 +11,11 @@
     "startTime": "09:30",
     "endTime": "11:30",
     "durationMinutes": 120,
-    "status": "scheduled",
+    "status": "completed",
     "priceEstimate": 120,
     "notes": "Taş duvara 75 inç TV montajı. Ağır yük dubeli ve lazer terazi hazırlandı.",
-    "createdAt": "2026-09-15T18:30:00.000Z"
+    "createdAt": "2026-09-15T18:30:00.000Z",
+    "updatedAt": "2026-09-16T09:44:48.617Z"
   },
   {
     "id": "job-102",

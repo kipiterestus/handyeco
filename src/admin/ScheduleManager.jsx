@@ -31,9 +31,10 @@ import {
 export default function ScheduleManager({ token, initialLeadData = null, onClearInitialLead = null, onLogJobToAccounting = null }) {
   const [schedule, setSchedule] = useState([]);
   const [quotes, setQuotes] = useState([]);
+  const [finances, setFinances] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState('agenda'); // 'agenda' | 'free_slots'
-  const [dateFilter, setDateFilter] = useState('this_week'); // 'all' | 'today' | 'this_week' | 'upcoming'
+  const [dateFilter, setDateFilter] = useState('this_week'); // 'all' | 'today' | 'this_week' | 'this_month' | 'next_month' | 'upcoming'
   const [search, setSearch] = useState('');
 
   // Modal State
@@ -48,7 +49,7 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
     customerPhone: '',
     postcode: 'EH1',
     address: '',
-    service: 'General Handyman Job',
+    service: 'Genel Usta İşi',
     date: new Date().toISOString().split('T')[0],
     startTime: '10:00',
     endTime: '12:00',
@@ -60,9 +61,10 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
 
   const fetchData = async () => {
     try {
-      const [resSchedule, resQuotes] = await Promise.all([
+      const [resSchedule, resQuotes, resFinances] = await Promise.all([
         fetch('/api/schedule', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/quotes', { headers: { Authorization: `Bearer ${token}` } })
+        fetch('/api/quotes', { headers: { Authorization: `Bearer ${token}` } }),
+        fetch('/api/finances', { headers: { Authorization: `Bearer ${token}` } })
       ]);
 
       if (resSchedule.ok) {
@@ -74,8 +76,13 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
         const dataQ = await resQuotes.json();
         if (dataQ.success) setQuotes(dataQ.quotes || []);
       }
+
+      if (resFinances.ok) {
+        const dataFin = await resFinances.json();
+        if (dataFin.success) setFinances(dataFin.finances || []);
+      }
     } catch (err) {
-      console.error('Error fetching schedule data:', err);
+      console.error('İş takip verileri alınırken hata:', err);
     } finally {
       setLoading(false);
     }
@@ -271,6 +278,10 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
 
   // Date Math Helpers
   const todayIso = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const nextMonthObj = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const nextYearMonth = `${nextMonthObj.getFullYear()}-${String(nextMonthObj.getMonth() + 1).padStart(2, '0')}`;
   
   // Calculate current week range (Monday to Sunday)
   const getCurrentWeekDays = () => {
@@ -294,6 +305,16 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
   const weekStartIso = weekDays[0].toISOString().split('T')[0];
   const weekEndIso = weekDays[6].toISOString().split('T')[0];
 
+  // Helper to check if a job is already in finances
+  const getLinkedFinanceForJob = (job) => {
+    return finances.find(f => 
+      (job.leadId && f.leadId === job.leadId) ||
+      (f.leadId === `manual-${job.id}`) ||
+      (f.customerName && job.customerName && f.customerName.trim().toLowerCase() === job.customerName.trim().toLowerCase() && f.date === job.date) ||
+      (f.customerPhone && job.customerPhone && f.customerPhone.replace(/[^0-9]/g, '') === job.customerPhone.replace(/[^0-9]/g, ''))
+    );
+  };
+
   // Filtering
   const filteredSchedule = schedule.filter(job => {
     const matchesSearch = !search || 
@@ -309,6 +330,10 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
       matchesDate = job.date === todayIso;
     } else if (dateFilter === 'this_week') {
       matchesDate = job.date >= weekStartIso && job.date <= weekEndIso;
+    } else if (dateFilter === 'this_month') {
+      matchesDate = Boolean(job.date && job.date.startsWith(currentYearMonth));
+    } else if (dateFilter === 'next_month') {
+      matchesDate = Boolean(job.date && job.date.startsWith(nextYearMonth));
     } else if (dateFilter === 'upcoming') {
       matchesDate = job.date >= todayIso;
     }
@@ -564,6 +589,24 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
             </button>
             <button
               type="button"
+              onClick={() => setDateFilter('this_month')}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
+                dateFilter === 'this_month' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              Bu Ay
+            </button>
+            <button
+              type="button"
+              onClick={() => setDateFilter('next_month')}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
+                dateFilter === 'next_month' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              Gelecek Ay
+            </button>
+            <button
+              type="button"
               onClick={() => setDateFilter('upcoming')}
               className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
                 dateFilter === 'upcoming' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
@@ -664,13 +707,13 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                           {/* Card Header: Time & Status */}
                           <div className="flex items-start justify-between gap-2 pb-2 border-b border-zinc-800/70 print:border-gray-300">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black bg-blue-950/80 text-blue-300 border border-blue-800/70 print:bg-gray-100 print:text-black">
-                                <Clock className="w-3 h-3 text-blue-400" />
-                                <span>{job.startTime} - {job.endTime}</span>
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black bg-rose-950/60 text-rose-300 border border-rose-800/70 print:bg-gray-100 print:text-black">
+                                <Clock className="w-3 h-3 text-rose-400" />
+                                <span>{job.startTime} - {job.endTime} (Dolu)</span>
                               </span>
 
                               {job.durationMinutes && (
-                                <span className="text-[10px] text-zinc-500 print:text-gray-600">
+                                <span className="text-[10px] text-zinc-500 print:text-gray-600 font-semibold">
                                   ({job.durationMinutes} dk)
                                 </span>
                               )}
@@ -774,26 +817,55 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                             </div>
 
                             <div className="print:hidden flex items-center gap-1">
-                              {/* If completed, option to transfer to accounting */}
-                              {job.status === 'completed' && onLogJobToAccounting && (
-                                <button
-                                  type="button"
-                                  onClick={() => onLogJobToAccounting({
-                                    id: job.leadId,
-                                    name: job.customerName,
-                                    phone: job.customerPhone,
-                                    postcode: job.postcode,
-                                    service: job.service,
-                                    priceEstimate: job.priceEstimate,
-                                    details: job.notes
-                                  })}
-                                  className="p-1.5 rounded-lg bg-emerald-950 text-emerald-400 hover:bg-emerald-900 text-xs font-bold flex items-center gap-1 border border-emerald-800"
-                                  title="Bu işi doğrudan Muhasebeye Kâr/Gelir olarak işle"
-                                >
-                                  <PoundSterling className="w-3 h-3" />
-                                  <span className="hidden sm:inline">Muhasebeye İşle</span>
-                                </button>
-                              )}
+                              {/* Accounting Link Status & Warning */}
+                              {(() => {
+                                const linkedFinance = getLinkedFinanceForJob(job);
+                                if (linkedFinance) {
+                                  return (
+                                    <button
+                                      type="button"
+                                      onClick={() => alert(`⚠️ Bu iş zaten muhasebeye eklenmiştir!\n\nMüşteri: ${job.customerName}\nTarih: ${linkedFinance.date}\nAlınan Ciro: £${linkedFinance.revenue}\nNet Kâr: £${linkedFinance.netProfit}\n\nTekrar kayıt yapılamaz.`)}
+                                      className="p-1.5 px-2 rounded-lg bg-emerald-950/70 border border-emerald-800 text-emerald-300 text-[11px] font-bold flex items-center gap-1 cursor-pointer hover:bg-emerald-900"
+                                      title="Bu iş muhasebeye kaydedildi. Çift kayıt engellendi."
+                                    >
+                                      <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                                      <span className="hidden sm:inline">Muhasebeye Eklendi (£{linkedFinance.revenue})</span>
+                                      <span className="sm:hidden">Eklendi</span>
+                                    </button>
+                                  );
+                                } else {
+                                  return (
+                                    <div className="flex items-center gap-1">
+                                      <span 
+                                        className="p-1 px-2 rounded-lg bg-amber-950/40 border border-amber-800/70 text-amber-300 text-[10px] font-bold flex items-center gap-1"
+                                        title="Bu randevu henüz muhasebeye kâr/gelir olarak işlenmedi"
+                                      >
+                                        <AlertCircle className="w-3 h-3 text-amber-400 shrink-0" />
+                                        <span>Muhasebeye Eklenmedi</span>
+                                      </span>
+                                      {onLogJobToAccounting && (
+                                        <button
+                                          type="button"
+                                          onClick={() => onLogJobToAccounting({
+                                            id: job.leadId || `manual-${job.id}`,
+                                            name: job.customerName,
+                                            phone: job.customerPhone,
+                                            postcode: job.postcode,
+                                            service: job.service,
+                                            priceEstimate: job.priceEstimate,
+                                            details: job.notes
+                                          })}
+                                          className="p-1.5 px-2 rounded-lg bg-emerald-950 text-emerald-400 hover:bg-emerald-900 text-xs font-bold flex items-center gap-1 border border-emerald-800 cursor-pointer"
+                                          title="Bu işi doğrudan Muhasebeye Kâr/Gelir olarak işle"
+                                        >
+                                          <PoundSterling className="w-3 h-3" />
+                                          <span className="hidden sm:inline">İşle</span>
+                                        </button>
+                                      )}
+                                    </div>
+                                  );
+                                }
+                              })()}
 
                               <button
                                 type="button"
@@ -837,7 +909,7 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                   <span>Haftalık Çalışma & Boş Saat Analiz Tablosu (08:00 - 18:00)</span>
                 </h3>
                 <p className="text-xs text-zinc-400 mt-0.5">
-                  Yeşil kutular randevu alabileceğiniz <strong>boş saat aralıklarını</strong> gösterir. Boş kutuya tıklayarak o saate anında randevu oluşturabilirsiniz.
+                  Yeşil kutular randevu alabileceğiniz <strong>boş saat aralıklarını</strong>, kırmızı kutular ise randevulu <strong>dolu saatleri</strong> gösterir. Boş kutuya tıklayarak o saate anında randevu oluşturabilirsiniz.
                 </p>
               </div>
 
@@ -904,17 +976,19 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                             <div 
                               key={sIdx}
                               onClick={() => handleEditJob(job)}
-                              className="p-2.5 rounded-xl bg-[#0b0e14] border border-blue-900/60 hover:border-blue-700 space-y-1 cursor-pointer transition-all"
+                              className="p-2.5 rounded-xl bg-rose-950/20 hover:bg-rose-950/40 border border-rose-900/60 hover:border-rose-700 space-y-1 cursor-pointer transition-all shadow-sm group"
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-black text-blue-400">
-                                  {job.startTime} - {job.endTime}
+                                <span className="text-xs font-black text-rose-400 flex items-center gap-1">
+                                  <Clock className="w-3 h-3 text-rose-400" />
+                                  <span>{job.startTime} - {job.endTime}</span>
                                 </span>
-                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
-                                  Dolu
+                                <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 flex items-center gap-1">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                                  Dolu Saat
                                 </span>
                               </div>
-                              <p className="text-xs font-bold text-white truncate">
+                              <p className="text-xs font-bold text-white truncate group-hover:text-rose-200 transition-colors">
                                 {job.customerName}
                               </p>
                               <p className="text-[11px] text-zinc-400 truncate">

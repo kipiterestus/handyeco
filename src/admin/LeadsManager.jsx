@@ -250,7 +250,7 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <h4 className="text-base font-bold text-white truncate group-hover:text-blue-400 transition-colors">
-                        {quote.name || 'Anonymous Client'}
+                        {quote.name || 'İsimsiz Müşteri'}
                       </h4>
                       <div className="flex items-center gap-1.5 text-[11px] text-zinc-400 mt-0.5">
                         <Clock className="w-3 h-3 text-zinc-500" />
@@ -283,7 +283,7 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
                   {/* Badges: Service & Postcode */}
                   <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
                     <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-blue-950/60 text-blue-300 border border-blue-900/60">
-                      {quote.service || 'Handyman'}
+                      {quote.service || 'Genel Usta İşi'}
                     </span>
                     <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800">
                       <MapPin className="w-3 h-3 text-red-400" />
@@ -291,7 +291,7 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
                     </span>
                     {quote.urgency && (
                       <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-amber-950/50 text-amber-400 border border-amber-900/50">
-                        {quote.urgency}
+                        {quote.urgency === 'urgent' ? 'Acil / 24-48 Saat' : quote.urgency === 'soon' ? 'Birkaç Gün İçinde' : 'Standart Planlama'}
                       </span>
                     )}
                   </div>
@@ -362,24 +362,37 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
 
                   {/* 2. Accounting Badge or Add to Accounting Button */}
                   {linkedFinance ? (
-                    <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-900/60 flex items-center justify-between text-xs">
+                    <div 
+                      onClick={() => alert(`⚠️ Bu teklif zaten muhasebeye eklenmiştir!\n\nMüşteri: ${quote.name}\nTarih: ${linkedFinance.date}\nCiro: £${linkedFinance.revenue}\nNet Kâr: £${linkedFinance.netProfit}\n\nTekrar kayıt yapılamaz.`)}
+                      className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-900/60 flex items-center justify-between text-xs cursor-pointer hover:bg-emerald-950/60 transition-colors"
+                      title="Bu teklif zaten muhasebeye eklendi (Çift kayıt engellendi)"
+                    >
                       <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>Muhasebeye İşlendi</span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>✅ Muhasebeye Eklendi</span>
                       </div>
                       <div className="text-[11px] font-black text-white">
                         £{linkedFinance.revenue || 0} &bull; <span className="text-emerald-400">+£{linkedFinance.netProfit || 0} Kâr</span>
                       </div>
                     </div>
                   ) : (
-                    <button
-                      type="button"
-                      onClick={() => onLogLeadToAccounting && onLogLeadToAccounting(quote)}
-                      className="w-full py-1.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                    >
-                      <PoundSterling className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>+ Muhasebeye / Kâra Ekle</span>
-                    </button>
+                    <div className="space-y-1.5">
+                      <div className="px-2.5 py-1.5 rounded-xl bg-amber-950/40 border border-amber-800/70 text-amber-300 text-xs font-bold flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                          <span>⚠️ Muhasebeye Eklenmedi</span>
+                        </div>
+                        <span className="text-[10px] text-amber-400/80 font-normal">Kayıt Bekliyor</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => onLogLeadToAccounting && onLogLeadToAccounting(quote)}
+                        className="w-full py-1.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                      >
+                        <PoundSterling className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>+ Muhasebeye / Kâra Ekle</span>
+                      </button>
+                    </div>
                   )}
 
                   {/* Call & WhatsApp Quick Buttons */}
