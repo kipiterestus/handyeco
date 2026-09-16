@@ -16,9 +16,10 @@ import {
   ExternalLink
 } from 'lucide-react';
 
-export default function LeadsManager({ token, onLogLeadToAccounting }) {
+export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccounting }) {
   const [quotes, setQuotes] = useState([]);
   const [finances, setFinances] = useState([]);
+  const [schedule, setSchedule] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -26,9 +27,10 @@ export default function LeadsManager({ token, onLogLeadToAccounting }) {
 
   const fetchData = async () => {
     try {
-      const [resQuotes, resFinances] = await Promise.all([
+      const [resQuotes, resFinances, resSchedule] = await Promise.all([
         fetch('/api/quotes', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/finances', { headers: { Authorization: `Bearer ${token}` } })
+        fetch('/api/finances', { headers: { Authorization: `Bearer ${token}` } }),
+        fetch('/api/schedule', { headers: { Authorization: `Bearer ${token}` } })
       ]);
 
       if (resQuotes.ok) {
@@ -39,6 +41,11 @@ export default function LeadsManager({ token, onLogLeadToAccounting }) {
       if (resFinances.ok) {
         const dataFin = await resFinances.json();
         if (dataFin.success) setFinances(dataFin.finances || []);
+      }
+
+      if (resSchedule.ok) {
+        const dataSched = await resSchedule.json();
+        if (dataSched.success) setSchedule(dataSched.schedule || []);
       }
     } catch (err) {
       console.error('Error fetching leads:', err);
@@ -118,6 +125,11 @@ export default function LeadsManager({ token, onLogLeadToAccounting }) {
   // Find linked finance entry for a quote
   const getLinkedFinance = (quoteId) => {
     return finances.find(f => f.leadId === quoteId);
+  };
+
+  // Find linked schedule job for a quote
+  const getLinkedSchedule = (quoteId) => {
+    return schedule.find(s => s.leadId === quoteId);
   };
 
   return (
@@ -226,11 +238,12 @@ export default function LeadsManager({ token, onLogLeadToAccounting }) {
             const whatsappText = encodeURIComponent(`Hi ${quote.name || 'there'}, this is Ekrem from Handyeco Edinburgh. Thanks for requesting a quote for ${quote.service || 'handyman services'}!`);
             const whatsappLink = `https://wa.me/${cleanPhone}?text=${whatsappText}`;
             const linkedFinance = getLinkedFinance(quote.id);
+            const linkedSchedule = getLinkedSchedule(quote.id);
 
             return (
               <div 
                 key={quote.id}
-                className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3.5 hover:border-zinc-700 transition-all shadow-md group relative"
+                className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3 hover:border-zinc-700 transition-all shadow-md group relative"
               >
                 {/* Top Card Row */}
                 <div className="space-y-2">
@@ -292,7 +305,7 @@ export default function LeadsManager({ token, onLogLeadToAccounting }) {
                 </div>
 
                 {/* Contact Links */}
-                <div className="space-y-1.5 text-xs text-zinc-400">
+                <div className="space-y-1 text-xs text-zinc-400">
                   {quote.phone && (
                     <div className="flex items-center justify-between">
                       <span className="text-[11px] text-zinc-500">Tel:</span>
@@ -322,9 +335,32 @@ export default function LeadsManager({ token, onLogLeadToAccounting }) {
                   />
                 </div>
 
-                {/* Accounting Connection & Action Section */}
+                {/* Schedule & Accounting Actions */}
                 <div className="pt-2 border-t border-zinc-800/80 space-y-2">
-                  {/* Linked Finance Pill or Add to Accounting Button */}
+                  
+                  {/* 1. Schedule Badge or Schedule Button */}
+                  {linkedSchedule ? (
+                    <div className="p-2 rounded-xl bg-blue-950/40 border border-blue-900/60 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-1.5 text-blue-300 font-bold">
+                        <Calendar className="w-3.5 h-3.5 text-blue-400" />
+                        <span>Randevu: {linkedSchedule.date}</span>
+                      </div>
+                      <span className="text-[11px] font-black text-white bg-blue-900/60 px-2 py-0.5 rounded-md border border-blue-800/60">
+                        {linkedSchedule.startTime}
+                      </span>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => onScheduleLead && onScheduleLead(quote)}
+                      className="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-blue-950 to-indigo-950 hover:from-blue-900 hover:to-indigo-900 border border-blue-800/70 text-blue-300 hover:text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <Calendar className="w-3.5 h-3.5 text-blue-400" />
+                      <span>📅 Randevuya / İşe Planla</span>
+                    </button>
+                  )}
+
+                  {/* 2. Accounting Badge or Add to Accounting Button */}
                   {linkedFinance ? (
                     <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-900/60 flex items-center justify-between text-xs">
                       <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
@@ -332,22 +368,22 @@ export default function LeadsManager({ token, onLogLeadToAccounting }) {
                         <span>Muhasebeye İşlendi</span>
                       </div>
                       <div className="text-[11px] font-black text-white">
-                        £{linkedFinance.revenue || 0} Ciro • <span className="text-emerald-400">+£{linkedFinance.netProfit || 0} Kâr</span>
+                        £{linkedFinance.revenue || 0} &bull; <span className="text-emerald-400">+£{linkedFinance.netProfit || 0} Kâr</span>
                       </div>
                     </div>
                   ) : (
                     <button
                       type="button"
                       onClick={() => onLogLeadToAccounting && onLogLeadToAccounting(quote)}
-                      className="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-blue-900/40 to-indigo-900/40 hover:from-blue-900/60 hover:to-indigo-900/60 border border-blue-800/60 text-blue-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                      className="w-full py-1.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                     >
-                      <PoundSterling className="w-3.5 h-3.5 text-blue-400" />
+                      <PoundSterling className="w-3.5 h-3.5 text-emerald-400" />
                       <span>+ Muhasebeye / Kâra Ekle</span>
                     </button>
                   )}
 
                   {/* Call & WhatsApp Quick Buttons */}
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-2 pt-0.5">
                     <a
                       href={`tel:${quote.phone}`}
                       className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white text-xs font-bold border border-zinc-800 transition-all"

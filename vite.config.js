@@ -18,7 +18,11 @@ import {
   getFinances,
   saveFinanceRecord,
   updateFinanceRecord,
-  deleteFinanceRecord
+  deleteFinanceRecord,
+  getSchedule,
+  saveScheduleJob,
+  updateScheduleJob,
+  deleteScheduleJob
 } from './server/store.js';
 import { sendTelegramNotification } from './server/telegram.js';
 import { syncReviews } from './server/reviewsSync.js';
@@ -247,6 +251,35 @@ const backendApiPlugin = () => ({
           if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
           const id = pathname.replace('/api/finances/', '');
           deleteFinanceRecord(id);
+          return sendJson(200, { success: true, id });
+        }
+
+        // 14. Job Schedule & Appointment Management
+        if (pathname === '/api/schedule' && method === 'GET') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const jobs = getSchedule();
+          return sendJson(200, { success: true, schedule: jobs });
+        }
+
+        if (pathname === '/api/schedule' && method === 'POST') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const body = await parseBody(req);
+          const saved = saveScheduleJob(body);
+          return sendJson(200, { success: true, job: saved });
+        }
+
+        if (pathname.startsWith('/api/schedule/') && method === 'PUT') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const id = pathname.replace('/api/schedule/', '');
+          const body = await parseBody(req);
+          const updated = updateScheduleJob(id, body);
+          return sendJson(200, { success: true, job: updated });
+        }
+
+        if (pathname.startsWith('/api/schedule/') && method === 'DELETE') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const id = pathname.replace('/api/schedule/', '');
+          deleteScheduleJob(id);
           return sendJson(200, { success: true, id });
         }
 

@@ -17,10 +17,12 @@ import {
   CheckCircle2,
   PoundSterling,
   Briefcase,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Calendar
 } from 'lucide-react';
 import AdminLogin from './AdminLogin';
 import LeadsManager from './LeadsManager';
+import ScheduleManager from './ScheduleManager';
 import AccountingManager from './AccountingManager';
 import BusinessEditor from './BusinessEditor';
 import TelegramEditor from './TelegramEditor';
@@ -36,11 +38,12 @@ export default function AdminLayout() {
   const [token, setToken] = useState(() => localStorage.getItem('handyeco_admin_token') || '');
   const [isAuth, setIsAuth] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [activeTab, setActiveTab] = useState('leads'); // leads | accounting | telegram | business | hero | services | gallery | reviews | faq_areas | seo
+  const [activeTab, setActiveTab] = useState('leads'); // leads | schedule | accounting | telegram | business | hero | services | gallery | reviews | faq_areas | seo
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   
-  // State for passing lead data to accounting
+  // State for passing lead data to schedule and accounting
+  const [initialLeadForSchedule, setInitialLeadForSchedule] = useState(null);
   const [initialLeadForAccounting, setInitialLeadForAccounting] = useState(null);
 
   const { content, refreshContent, updateSectionLocally } = useContent();
@@ -122,6 +125,13 @@ export default function AdminLayout() {
     }
   };
 
+  // Handler to schedule a lead into calendar
+  const handleScheduleLead = (lead) => {
+    setInitialLeadForSchedule(lead);
+    setActiveTab('schedule');
+    showToast(`${lead.name || 'Müşteri'} için randevu planlama ekranı açıldı.`);
+  };
+
   // Handler to log a lead into accounting
   const handleLogLeadToAccounting = (lead) => {
     setInitialLeadForAccounting(lead);
@@ -144,16 +154,18 @@ export default function AdminLayout() {
     return <AdminLogin onLoginSuccess={handleLoginSuccess} />;
   }
 
-  // Two categorized navigation groups as requested:
-  // 1. Operations (Leads, Accounting, Telegram)
-  // 2. Site Content & Settings (Business, Hero, Services, Gallery, Reviews, FAQs, SEO)
+  // CATEGORY 1: İŞ & OPERASYON YÖNETİMİ
+  // (Inquiries & Quotes, İş Takip & Randevular, Gelir Gider Muhasebe)
   const operationsNav = [
     { id: 'leads', label: 'Inquiries & Quotes', icon: Inbox, badge: 'Live Leads' },
+    { id: 'schedule', label: 'İş Takip & Randevular', icon: Calendar, badge: 'Ajanda' },
     { id: 'accounting', label: 'Gelir, Gider & Kâr', icon: PoundSterling, badge: 'Muhasebe' },
-    { id: 'telegram', label: 'Telegram Bot', icon: Send, badge: 'Alerts' },
   ];
 
+  // CATEGORY 2: SİTE İÇERİK & AYARLAR
+  // (Telegram Bot buraya alındı, Business, Hero, Services, Gallery, Reviews, FAQs, SEO)
   const siteSettingsNav = [
+    { id: 'telegram', label: 'Telegram Bot', icon: Send, badge: 'Alerts' },
     { id: 'business', label: 'Business & Pricing', icon: Building2 },
     { id: 'hero', label: 'Hero & Headings', icon: Sparkles },
     { id: 'services', label: 'Services & Scope', icon: Wrench },
@@ -165,16 +177,16 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-[#07090e] text-zinc-100 flex flex-col antialiased">
-      {/* Toast Notification */}
+      {/* Toast Notification (Screen Only) */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 animate-in slide-in-from-bottom-5">
+        <div className="print:hidden fixed bottom-6 right-6 z-50 bg-emerald-600 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 animate-in slide-in-from-bottom-5">
           <CheckCircle2 className="w-5 h-5" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Top Header Bar (OLED Dark) */}
-      <header className="h-16 bg-[#0b0e14]/95 backdrop-blur-md border-b border-zinc-800/90 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40 shadow-md">
+      {/* Top Header Bar (Screen Only, OLED Dark) */}
+      <header className="print:hidden h-16 bg-[#0b0e14]/95 backdrop-blur-md border-b border-zinc-800/90 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40 shadow-md">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -223,8 +235,8 @@ export default function AdminLayout() {
       {/* Main Workspace Layout */}
       <div className="flex-1 flex overflow-hidden relative">
         
-        {/* Sidebar Navigation (OLED Dark & Categorized) */}
-        <aside className={`fixed inset-y-16 left-0 z-30 w-64 bg-[#0b0e14] border-r border-zinc-800/90 p-3 space-y-4 overflow-y-auto transform transition-transform duration-200 md:relative md:inset-auto md:translate-x-0 shadow-lg ${
+        {/* Sidebar Navigation (Screen Only, OLED Dark & Categorized) */}
+        <aside className={`print:hidden fixed inset-y-16 left-0 z-30 w-64 bg-[#0b0e14] border-r border-zinc-800/90 p-3 space-y-4 overflow-y-auto transform transition-transform duration-200 md:relative md:inset-auto md:translate-x-0 shadow-lg ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
           
@@ -325,12 +337,21 @@ export default function AdminLayout() {
         </aside>
 
         {/* Main Content Area (Near-Black OLED) */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#07090e]">
-          <div className="max-w-6xl mx-auto">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#07090e] print:p-0 print:bg-white print:overflow-visible">
+          <div className="max-w-6xl mx-auto print:max-w-full">
             {activeTab === 'leads' && (
               <LeadsManager 
                 token={token} 
+                onScheduleLead={handleScheduleLead}
                 onLogLeadToAccounting={handleLogLeadToAccounting} 
+              />
+            )}
+            {activeTab === 'schedule' && (
+              <ScheduleManager 
+                token={token} 
+                initialLeadData={initialLeadForSchedule}
+                onClearInitialLead={() => setInitialLeadForSchedule(null)}
+                onLogJobToAccounting={handleLogLeadToAccounting}
               />
             )}
             {activeTab === 'accounting' && (

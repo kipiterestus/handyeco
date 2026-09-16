@@ -213,3 +213,59 @@ export function deleteFinanceRecord(id) {
   return true;
 }
 
+// -------------------------------------------------------------
+// Schedule & Appointment Management
+// -------------------------------------------------------------
+export function getSchedule() {
+  return readJson('schedule.json', []);
+}
+
+export function saveScheduleJob(job) {
+  const schedule = getSchedule();
+  const newJob = {
+    id: job.id || 'job-' + Date.now(),
+    leadId: job.leadId || null,
+    customerName: job.customerName || 'Anonymous Customer',
+    customerPhone: job.customerPhone || '',
+    postcode: job.postcode || 'Edinburgh',
+    address: job.address || '',
+    service: job.service || 'Handyman Job',
+    date: job.date || new Date().toISOString().split('T')[0],
+    startTime: job.startTime || '10:00',
+    endTime: job.endTime || '12:00',
+    durationMinutes: Number(job.durationMinutes) || 120,
+    status: job.status || 'scheduled', // scheduled | in_progress | completed | rescheduled | cancelled
+    priceEstimate: job.priceEstimate ? Number(job.priceEstimate) : null,
+    notes: job.notes || '',
+    createdAt: new Date().toISOString()
+  };
+
+  schedule.unshift(newJob);
+  writeJson('schedule.json', schedule);
+  return newJob;
+}
+
+export function updateScheduleJob(id, updates) {
+  const schedule = getSchedule();
+  const index = schedule.findIndex(j => j.id === id);
+  if (index === -1) throw new Error('Schedule job not found');
+
+  const existing = schedule[index];
+  const merged = { ...existing, ...updates, updatedAt: new Date().toISOString() };
+  if (merged.priceEstimate !== undefined && merged.priceEstimate !== null) {
+    merged.priceEstimate = Number(merged.priceEstimate);
+  }
+
+  schedule[index] = merged;
+  writeJson('schedule.json', schedule);
+  return merged;
+}
+
+export function deleteScheduleJob(id) {
+  const schedule = getSchedule();
+  const filtered = schedule.filter(j => j.id !== id);
+  writeJson('schedule.json', filtered);
+  return true;
+}
+
+

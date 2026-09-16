@@ -17,7 +17,11 @@ import {
   getFinances,
   saveFinanceRecord,
   updateFinanceRecord,
-  deleteFinanceRecord
+  deleteFinanceRecord,
+  getSchedule,
+  saveScheduleJob,
+  updateScheduleJob,
+  deleteScheduleJob
 } from './store.js';
 import { sendTelegramNotification } from './telegram.js';
 import { syncReviews } from './reviewsSync.js';
@@ -271,6 +275,39 @@ app.delete('/api/finances/:id', requireAuth, (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
+// Job Schedule & Appointment Management
+app.get('/api/schedule', requireAuth, (req, res) => {
+  res.json({ success: true, schedule: getSchedule() });
+});
+
+app.post('/api/schedule', requireAuth, (req, res) => {
+  try {
+    const job = saveScheduleJob(req.body);
+    res.json({ success: true, job });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.put('/api/schedule/:id', requireAuth, (req, res) => {
+  try {
+    const updated = updateScheduleJob(req.params.id, req.body);
+    res.json({ success: true, job: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.delete('/api/schedule/:id', requireAuth, (req, res) => {
+  try {
+    deleteScheduleJob(req.params.id);
+    res.json({ success: true, id: req.params.id });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 
 // Hourly background review synchronization
 setInterval(() => {
