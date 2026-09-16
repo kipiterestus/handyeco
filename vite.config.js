@@ -14,7 +14,11 @@ import {
   createAdminToken, 
   isValidToken, 
   revokeToken,
-  getSection
+  getSection,
+  getFinances,
+  saveFinanceRecord,
+  updateFinanceRecord,
+  deleteFinanceRecord
 } from './server/store.js';
 import { sendTelegramNotification } from './server/telegram.js';
 import { syncReviews } from './server/reviewsSync.js';
@@ -215,6 +219,35 @@ const backendApiPlugin = () => ({
           const syncResult = await syncReviews();
           const reviews = getSection('reviews') || [];
           return sendJson(200, { ...syncResult, reviews });
+        }
+
+        // 13. Finances (Bookkeeping & Profit Tracking)
+        if (pathname === '/api/finances' && method === 'GET') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const records = getFinances();
+          return sendJson(200, { success: true, finances: records });
+        }
+
+        if (pathname === '/api/finances' && method === 'POST') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const body = await parseBody(req);
+          const saved = saveFinanceRecord(body);
+          return sendJson(200, { success: true, record: saved });
+        }
+
+        if (pathname.startsWith('/api/finances/') && method === 'PUT') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const id = pathname.replace('/api/finances/', '');
+          const body = await parseBody(req);
+          const updated = updateFinanceRecord(id, body);
+          return sendJson(200, { success: true, record: updated });
+        }
+
+        if (pathname.startsWith('/api/finances/') && method === 'DELETE') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const id = pathname.replace('/api/finances/', '');
+          deleteFinanceRecord(id);
+          return sendJson(200, { success: true, id });
         }
 
         next();

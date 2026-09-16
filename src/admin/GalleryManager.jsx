@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Save, CheckCircle, Plus, Trash2, Upload, Camera, MapPin, Repeat, Image as ImageIcon } from 'lucide-react';
+import { Save, CheckCircle2, Plus, Trash2, Upload, Camera, MapPin, Repeat, Image as ImageIcon } from 'lucide-react';
 
 export default function GalleryManager({ data, onSave, token }) {
   const [items, setItems] = useState(data || []);
@@ -16,19 +16,19 @@ export default function GalleryManager({ data, onSave, token }) {
     const newId = 'gal-' + Date.now();
     const newItem = {
       id: newId,
-      title: 'New Completed Job',
+      title: 'Yeni Tamamlanan İş',
       category: 'assembly',
       location: 'Edinburgh (EH10)',
-      date: new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }),
+      date: new Date().toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' }),
       isBeforeAfter: false,
       image: 'https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=1000&auto=format&fit=crop&q=80',
-      badge: 'Completed Job'
+      badge: 'Yapılan İş'
     };
     setItems(prev => [newItem, ...prev]);
   };
 
   const handleDeleteItem = (id) => {
-    if (!window.confirm('Delete this project photo from gallery?')) return;
+    if (!window.confirm('Bu proje fotoğrafını galeriden silmek istediğinize emin misiniz?')) return;
     setItems(prev => prev.filter(item => item.id !== id));
   };
 
@@ -79,57 +79,57 @@ export default function GalleryManager({ data, onSave, token }) {
 
   return (
     <form onSubmit={handleSave} className="space-y-6 text-left">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Recent Completed Work & Gallery</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Upload on-site photos of Edinburgh projects, set locations, and manage Before/After comparisons.
+          <h2 className="text-xl font-black text-white">Tamamlanan İşler & Fotoğraf Galerisi</h2>
+          <p className="text-xs text-zinc-400 mt-0.5">
+            Edinburgh'da tamamladığınız iş fotoğraflarını yükleyin, konumlarını belirleyin veya Öncesi / Sonrası karşılaştırması ekleyin.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={handleAddItem}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 cursor-pointer transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Add Project Photo</span>
+            <span>Yeni Proje Fotoğrafı</span>
           </button>
 
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-700 active:scale-95 shadow-sm transition-all cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50"
           >
-            {saved ? <CheckCircle className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
-            <span>{saving ? 'Saving...' : saved ? 'Saved!' : 'Save Gallery'}</span>
+            {saved ? <CheckCircle2 className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
+            <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Galeriyi Kaydet'}</span>
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {items.map((item) => (
           <div
             key={item.id}
-            className="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all"
+            className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-4 sm:p-5 space-y-4 shadow-md flex flex-col justify-between hover:border-zinc-700 transition-all"
           >
             <div>
               {/* Photo Preview & Upload */}
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 mb-3 shadow-inner">
+              <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 mb-3 shadow-inner">
                 <img
                   src={item.image}
                   alt={item.title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-lg bg-black/75 text-white text-[10px] font-bold">
+                <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-lg bg-black/80 text-white text-[10px] font-bold">
                   {item.badge}
                 </div>
 
-                <label className="absolute bottom-2 right-2 px-3 py-1.5 rounded-xl bg-blue-600/95 hover:bg-blue-600 text-white text-[11px] font-bold flex items-center gap-1 shadow-md cursor-pointer transition-all">
+                <label className="absolute bottom-2 right-2 px-3 py-1.5 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white text-[11px] font-bold flex items-center gap-1 shadow-md cursor-pointer transition-all">
                   <Upload className="w-3 h-3" />
                   <span>
-                    {uploadingFor?.id === item.id && uploadingFor?.type === 'main' ? 'Uploading...' : 'Replace Photo'}
+                    {uploadingFor?.id === item.id && uploadingFor?.type === 'main' ? 'Yükleniyor...' : 'Fotoğrafı Değiştir'}
                   </span>
                   <input
                     type="file"
@@ -143,61 +143,61 @@ export default function GalleryManager({ data, onSave, token }) {
               {/* Title & Badge */}
               <div className="space-y-2.5">
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">Project Title</label>
+                  <label className="block text-[11px] font-semibold text-zinc-300 mb-0.5">İş / Proje Başlığı</label>
                   <input
                     type="text"
                     value={item.title || ''}
                     onChange={e => handleUpdate(item.id, 'title', e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-blue-600 focus:bg-white"
+                    className="w-full px-3 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-xl text-white font-bold focus:border-blue-500 outline-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">Location (Postcode)</label>
+                    <label className="block text-[11px] font-semibold text-zinc-300 mb-0.5">Konum / Bölge</label>
                     <input
                       type="text"
                       value={item.location || ''}
                       onChange={e => handleUpdate(item.id, 'location', e.target.value)}
-                      placeholder="e.g. Morningside, EH10"
-                      className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
+                      placeholder="Örn: Morningside, EH10"
+                      className="w-full px-3 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">Category</label>
+                    <label className="block text-[11px] font-semibold text-zinc-300 mb-0.5">Kategori</label>
                     <select
                       value={item.category || 'assembly'}
                       onChange={e => handleUpdate(item.id, 'category', e.target.value)}
-                      className="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white cursor-pointer"
+                      className="w-full px-2.5 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none cursor-pointer"
                     >
-                      <option value="assembly">Assembly</option>
-                      <option value="mounting">TV & Mounting</option>
-                      <option value="repairs">Repairs & Silicone</option>
-                      <option value="painting">Painting</option>
-                      <option value="kitchen">Kitchen Wrap</option>
+                      <option value="assembly">Mobilya Montajı</option>
+                      <option value="mounting">TV & Duvar Montajı</option>
+                      <option value="repairs">Tamirat & Silikon</option>
+                      <option value="painting">Boya</option>
+                      <option value="kitchen">Mutfak Kaplama</option>
                     </select>
                   </div>
                 </div>
 
                 {/* Before / After toggle */}
-                <div className="pt-2 border-t border-slate-100">
-                  <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
+                <div className="pt-2 border-t border-zinc-800">
+                  <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={Boolean(item.isBeforeAfter)}
                       onChange={e => handleUpdate(item.id, 'isBeforeAfter', e.target.checked)}
-                      className="rounded bg-slate-50 border-slate-300 text-blue-600 focus:ring-0 cursor-pointer"
+                      className="rounded bg-zinc-900 border-zinc-700 text-blue-600 focus:ring-0 cursor-pointer"
                     />
-                    <span>Include "Before" Photo (Before & After comparison)</span>
+                    <span>"Öncesi" Fotoğrafı Ekle (Before/After)</span>
                   </label>
 
                   {item.isBeforeAfter && (
-                    <div className="mt-2.5 p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                      <div className="flex items-center justify-between text-[11px] text-slate-500">
-                        <span>Before Photo Preview:</span>
-                        <label className="text-blue-600 hover:underline font-bold cursor-pointer">
-                          <span>{uploadingFor?.id === item.id && uploadingFor?.type === 'before' ? 'Uploading...' : 'Upload Before Image'}</span>
+                    <div className="mt-2.5 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 space-y-2">
+                      <div className="flex items-center justify-between text-[11px] text-zinc-400">
+                        <span>Öncesi Fotoğrafı:</span>
+                        <label className="text-blue-400 hover:underline font-bold cursor-pointer">
+                          <span>{uploadingFor?.id === item.id && uploadingFor?.type === 'before' ? 'Yükleniyor...' : 'Öncesi Fotoğrafını Yükle'}</span>
                           <input
                             type="file"
                             accept="image/*"
@@ -210,7 +210,7 @@ export default function GalleryManager({ data, onSave, token }) {
                         <img
                           src={item.beforeImage}
                           alt="Before Preview"
-                          className="w-full h-24 object-cover rounded-xl border border-slate-200"
+                          className="w-full h-24 object-cover rounded-lg border border-zinc-700"
                         />
                       )}
                     </div>
@@ -220,15 +220,15 @@ export default function GalleryManager({ data, onSave, token }) {
             </div>
 
             {/* Bottom Actions */}
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-[10px] text-slate-400 font-mono">ID: {item.id}</span>
+            <div className="pt-3 border-t border-zinc-800 flex items-center justify-between">
+              <span className="text-[10px] text-zinc-500 font-mono">ID: {item.id}</span>
               <button
                 type="button"
                 onClick={() => handleDeleteItem(item.id)}
-                className="text-xs text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1 cursor-pointer"
+                className="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>Delete Photo</span>
+                <span>Fotoğrafı Sil</span>
               </button>
             </div>
           </div>

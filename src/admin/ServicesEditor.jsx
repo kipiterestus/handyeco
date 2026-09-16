@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Save, CheckCircle, Plus, Trash2, Wrench, Sparkles, Star } from 'lucide-react';
+import { Save, CheckCircle2, Plus, Trash2, Wrench, Sparkles, Star } from 'lucide-react';
 
 export default function ServicesEditor({ data, onSave }) {
   const [services, setServices] = useState(data || []);
@@ -21,7 +21,7 @@ export default function ServicesEditor({ data, onSave }) {
   };
 
   const handleAddBullet = () => {
-    handleUpdateActive('bullets', [...(activeService.bullets || []), 'New Edinburgh service feature point']);
+    handleUpdateActive('bullets', [...(activeService.bullets || []), 'Yeni Edinburgh hizmet özelliği']);
   };
 
   const handleRemoveBullet = (idx) => {
@@ -33,13 +33,13 @@ export default function ServicesEditor({ data, onSave }) {
     const newId = 'service-' + Date.now();
     const newS = {
       id: newId,
-      title: 'New Edinburgh Handyman Service',
+      title: 'Yeni Edinburgh Hizmeti',
       category: 'repairs',
       iconName: 'Wrench',
-      badge: 'New Offering',
-      description: 'Describe your service scope, process, and Edinburgh guarantee here.',
+      badge: 'Yeni',
+      description: 'Hizmet kapsamını, sürecini ve Edinburgh güvencesini buraya yazın.',
       popular: false,
-      bullets: ['Fixed transparent quote upfront', 'Professional cordless tools & tidy cleanup']
+      bullets: ['Önceden belirlenen şeffaf sabit fiyat', 'Profesyonel akülü el aletleri ve temiz çalışma']
     };
     setServices(prev => [newS, ...prev]);
     setEditingId(newId);
@@ -47,7 +47,7 @@ export default function ServicesEditor({ data, onSave }) {
 
   const handleDeleteService = (id, e) => {
     e.stopPropagation();
-    if (!window.confirm('Are you sure you want to delete this service?')) return;
+    if (!window.confirm('Bu hizmeti silmek istediğinize emin misiniz?')) return;
     const next = services.filter(s => s.id !== id);
     setServices(next);
     if (editingId === id) setEditingId(next[0]?.id || null);
@@ -64,31 +64,31 @@ export default function ServicesEditor({ data, onSave }) {
 
   return (
     <form onSubmit={handleSave} className="space-y-6 text-left">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Services & Workmanship Scope</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Add, update, or reorder handyman services, category filters, descriptions, and highlights.
+          <h2 className="text-xl font-black text-white">Hizmetler & Ustalık Kapsamı</h2>
+          <p className="text-xs text-zinc-400 mt-0.5">
+            Sitede sergilenen tüm usta hizmetlerini, kategori filtrelerini, açıklamaları ve maddeleri yönetin.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={handleAddService}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 cursor-pointer transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Add Service</span>
+            <span>Yeni Hizmet Ekle</span>
           </button>
 
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-700 active:scale-95 shadow-sm transition-all cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50"
           >
-            {saved ? <CheckCircle className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
-            <span>{saving ? 'Saving...' : saved ? 'Saved!' : 'Save All Services'}</span>
+            {saved ? <CheckCircle2 className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
+            <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Tüm Hizmetleri Kaydet'}</span>
           </button>
         </div>
       </div>
@@ -97,29 +97,29 @@ export default function ServicesEditor({ data, onSave }) {
         
         {/* Left Services Selector List */}
         <div className="lg:col-span-4 space-y-2">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block px-1">
-            All Services ({services.length})
+          <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 block px-1">
+            Mevcut Hizmetler ({services.length})
           </span>
           <div className="space-y-1.5 max-h-[600px] overflow-y-auto pr-1">
             {services.map((srv) => (
               <div
                 key={srv.id}
                 onClick={() => setEditingId(srv.id)}
-                className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-2 text-left ${
+                className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2 text-left ${
                   editingId === srv.id
-                    ? 'bg-blue-50 border-blue-400 text-blue-900 shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 shadow-xs'
+                    ? 'bg-blue-950/60 border-blue-500 text-white shadow-sm'
+                    : 'bg-[#0b0e14] border-zinc-800 text-zinc-400 hover:border-zinc-700'
                 }`}
               >
                 <div className="truncate">
-                  <span className="text-xs font-bold block truncate">{srv.title}</span>
-                  <span className="text-[10px] text-slate-500 capitalize">{srv.category} &bull; {srv.badge}</span>
+                  <span className="text-xs font-bold block truncate text-white">{srv.title}</span>
+                  <span className="text-[10px] text-zinc-500 capitalize">{srv.category} &bull; {srv.badge}</span>
                 </div>
                 
                 <button
                   type="button"
                   onClick={(e) => handleDeleteService(srv.id, e)}
-                  className="p-1 text-slate-400 hover:text-rose-600 transition-colors shrink-0 cursor-pointer"
+                  className="p-1 text-zinc-600 hover:text-rose-400 transition-colors shrink-0 cursor-pointer"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
@@ -130,95 +130,95 @@ export default function ServicesEditor({ data, onSave }) {
 
         {/* Right Active Service Form */}
         {activeService ? (
-          <div className="lg:col-span-8 bg-white border border-slate-200 rounded-3xl p-5 sm:p-7 space-y-4 shadow-xs">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <span className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                <Wrench className="w-4 h-4 text-blue-600" />
-                <span>Editing: {activeService.title}</span>
+          <div className="lg:col-span-8 bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-7 space-y-4 shadow-md">
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+              <span className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <Wrench className="w-4 h-4 text-blue-400" />
+                <span>Düzenlenen: {activeService.title}</span>
               </span>
 
-              <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={Boolean(activeService.popular)}
                   onChange={e => handleUpdateActive('popular', e.target.checked)}
-                  className="rounded bg-slate-50 border-slate-300 text-blue-600 focus:ring-0 cursor-pointer"
+                  className="rounded bg-zinc-900 border-zinc-700 text-blue-600 focus:ring-0 cursor-pointer"
                 />
-                <span>Highlight as Popular / Recommended</span>
+                <span>Popüler / Öne Çıkan Hizmet</span>
               </label>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Service Title</label>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1">Hizmet Başlığı</label>
                 <input
                   type="text"
                   value={activeService.title || ''}
                   onChange={e => handleUpdateActive('title', e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white font-bold"
+                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none font-bold"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Badge Tag</label>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1">Rozet / Etiket (Badge)</label>
                 <input
                   type="text"
                   value={activeService.badge || ''}
                   onChange={e => handleUpdateActive('badge', e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
+                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Category Filter</label>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1">Kategori Filtresi</label>
                 <select
                   value={activeService.category || 'repairs'}
                   onChange={e => handleUpdateActive('category', e.target.value)}
-                  className="w-full px-3 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white cursor-pointer"
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none cursor-pointer"
                 >
-                  <option value="assembly">Assembly (Flat-pack)</option>
-                  <option value="mounting">Mounting (TV, Shelves, Curtains)</option>
-                  <option value="repairs">Repairs (Silicone, Doors, General)</option>
-                  <option value="painting">Painting & Decor</option>
-                  <option value="kitchen">Kitchen Wrap</option>
-                  <option value="outdoor">Outdoor / Garden</option>
+                  <option value="assembly">Mobilya & Montaj (Assembly)</option>
+                  <option value="mounting">Duvar Montajı (TV, Ayna, Perde)</option>
+                  <option value="repairs">Tamirat & Onarım (Silikon, Kapı)</option>
+                  <option value="painting">Boya & Badana</option>
+                  <option value="kitchen">Mutfak Kaplama / Yenileme</option>
+                  <option value="outdoor">Bahçe & Dış Mekan</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Lucide Icon Identifier</label>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1">Lucide İkon Adı</label>
                 <input
                   type="text"
                   value={activeService.iconName || 'Wrench'}
                   onChange={e => handleUpdateActive('iconName', e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
+                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Service Description</label>
+              <label className="block text-xs font-semibold text-zinc-300 mb-1">Hizmet Açıklaması</label>
               <textarea
                 rows={3}
                 value={activeService.description || ''}
                 onChange={e => handleUpdateActive('description', e.target.value)}
-                className="w-full px-3.5 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white leading-relaxed"
+                className="w-full px-3.5 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none leading-relaxed"
               />
             </div>
 
             {/* Bullets List */}
-            <div className="pt-2 border-t border-slate-100 space-y-2">
+            <div className="pt-2 border-t border-zinc-800 space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-slate-600">Included Features / Bullets</label>
+                <label className="text-xs font-semibold text-zinc-300">Öne Çıkan Özellik / Madde Listesi</label>
                 <button
                   type="button"
                   onClick={handleAddBullet}
-                  className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span>Add Feature</span>
+                  <span>Madde Ekle</span>
                 </button>
               </div>
 
@@ -229,12 +229,12 @@ export default function ServicesEditor({ data, onSave }) {
                       type="text"
                       value={bullet}
                       onChange={e => handleBulletChange(idx, e.target.value)}
-                      className="flex-1 px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white"
+                      className="flex-1 px-3 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => handleRemoveBullet(idx)}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 cursor-pointer"
+                      className="p-1.5 text-zinc-500 hover:text-rose-400 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -245,8 +245,8 @@ export default function ServicesEditor({ data, onSave }) {
 
           </div>
         ) : (
-          <div className="lg:col-span-8 p-12 text-center text-slate-400">
-            No service selected.
+          <div className="lg:col-span-8 p-12 text-center text-zinc-500">
+            Hizmet seçilmedi.
           </div>
         )}
 

@@ -146,3 +146,70 @@ export function revokeToken(token) {
   return true;
 }
 
+// -------------------------------------------------------------
+// Financial / Bookkeeping & Profit Tracking
+// -------------------------------------------------------------
+const financesFile = path.join(dataDir, 'finances.json');
+
+export function getFinances() {
+  return readJson('finances.json', []);
+}
+
+export function saveFinanceRecord(record) {
+  const finances = getFinances();
+  const revenue = Number(record.revenue) || 0;
+  const materialCost = Number(record.materialCost) || 0;
+  const otherExpenses = Number(record.otherExpenses) || 0;
+  const netProfit = Math.round((revenue - materialCost - otherExpenses) * 100) / 100;
+
+  const newRecord = {
+    id: record.id || 'fin-' + Date.now(),
+    leadId: record.leadId || null,
+    customerName: record.customerName || 'Anonymous Job',
+    customerPhone: record.customerPhone || '',
+    postcode: record.postcode || 'Edinburgh',
+    service: record.service || 'Handyman Job',
+    revenue,
+    materialCost,
+    otherExpenses,
+    netProfit,
+    paymentStatus: record.paymentStatus || 'paid', // paid | pending | invoiced
+    date: record.date || new Date().toISOString().split('T')[0],
+    notes: record.notes || '',
+    createdAt: new Date().toISOString()
+  };
+
+  finances.unshift(newRecord);
+  writeJson('finances.json', finances);
+  return newRecord;
+}
+
+export function updateFinanceRecord(id, updates) {
+  const finances = getFinances();
+  const index = finances.findIndex(f => f.id === id);
+  if (index === -1) throw new Error('Finance record not found');
+
+  const existing = finances[index];
+  const merged = { ...existing, ...updates };
+  
+  const revenue = Number(merged.revenue) || 0;
+  const materialCost = Number(merged.materialCost) || 0;
+  const otherExpenses = Number(merged.otherExpenses) || 0;
+  merged.revenue = revenue;
+  merged.materialCost = materialCost;
+  merged.otherExpenses = otherExpenses;
+  merged.netProfit = Math.round((revenue - materialCost - otherExpenses) * 100) / 100;
+  merged.updatedAt = new Date().toISOString();
+
+  finances[index] = merged;
+  writeJson('finances.json', finances);
+  return merged;
+}
+
+export function deleteFinanceRecord(id) {
+  const finances = getFinances();
+  const filtered = finances.filter(f => f.id !== id);
+  writeJson('finances.json', filtered);
+  return true;
+}
+

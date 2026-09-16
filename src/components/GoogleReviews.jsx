@@ -99,7 +99,7 @@ export default function GoogleReviews() {
                     ))}
                   </div>
                   <span className="text-slate-900 font-extrabold text-sm sm:text-base whitespace-nowrap">
-                    5.0 Star Rated Tradesperson
+                    {siteConfig.googleRating || '5.0'} Star Rated Tradesperson
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-600 font-medium">
@@ -116,7 +116,7 @@ export default function GoogleReviews() {
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-xs transition-all active:scale-95 whitespace-nowrap"
               >
-                <span>Google Reviews (48)</span>
+                <span>Google Reviews ({siteConfig.googleReviewCount || 48})</span>
                 <ExternalLink className="w-3.5 h-3.5 shrink-0" />
               </a>
 
@@ -126,7 +126,7 @@ export default function GoogleReviews() {
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-900 bg-amber-400 hover:bg-amber-300 shadow-xs transition-all active:scale-95 whitespace-nowrap"
               >
-                <span>MyBuilder Profile (100%)</span>
+                <span>MyBuilder Profile ({siteConfig.myBuilderRating || '100%'})</span>
                 <ExternalLink className="w-3.5 h-3.5 shrink-0" />
               </a>
             </div>

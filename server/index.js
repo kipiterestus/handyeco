@@ -13,7 +13,11 @@ import {
   createAdminToken, 
   isValidToken, 
   revokeToken,
-  getSection
+  getSection,
+  getFinances,
+  saveFinanceRecord,
+  updateFinanceRecord,
+  deleteFinanceRecord
 } from './store.js';
 import { sendTelegramNotification } from './telegram.js';
 import { syncReviews } from './reviewsSync.js';
@@ -231,6 +235,38 @@ app.post('/api/reviews/sync', requireAuth, async (req, res) => {
     const result = await syncReviews();
     const reviews = getSection('reviews') || [];
     res.json({ ...result, reviews });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Financial Management / Bookkeeping
+app.get('/api/finances', requireAuth, (req, res) => {
+  res.json({ success: true, finances: getFinances() });
+});
+
+app.post('/api/finances', requireAuth, (req, res) => {
+  try {
+    const record = saveFinanceRecord(req.body);
+    res.json({ success: true, record });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.put('/api/finances/:id', requireAuth, (req, res) => {
+  try {
+    const updated = updateFinanceRecord(req.params.id, req.body);
+    res.json({ success: true, record: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.delete('/api/finances/:id', requireAuth, (req, res) => {
+  try {
+    deleteFinanceRecord(req.params.id);
+    res.json({ success: true, id: req.params.id });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

@@ -14,10 +14,14 @@ import {
   Menu, 
   X,
   ShieldCheck,
-  CheckCircle2
+  CheckCircle2,
+  PoundSterling,
+  Briefcase,
+  SlidersHorizontal
 } from 'lucide-react';
 import AdminLogin from './AdminLogin';
 import LeadsManager from './LeadsManager';
+import AccountingManager from './AccountingManager';
 import BusinessEditor from './BusinessEditor';
 import TelegramEditor from './TelegramEditor';
 import HeroEditor from './HeroEditor';
@@ -32,9 +36,12 @@ export default function AdminLayout() {
   const [token, setToken] = useState(() => localStorage.getItem('handyeco_admin_token') || '');
   const [isAuth, setIsAuth] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [activeTab, setActiveTab] = useState('leads'); // leads | telegram | business | hero | services | gallery | reviews | faq_areas | seo
+  const [activeTab, setActiveTab] = useState('leads'); // leads | accounting | telegram | business | hero | services | gallery | reviews | faq_areas | seo
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  
+  // State for passing lead data to accounting
+  const [initialLeadForAccounting, setInitialLeadForAccounting] = useState(null);
 
   const { content, refreshContent, updateSectionLocally } = useContent();
 
@@ -115,10 +122,20 @@ export default function AdminLayout() {
     }
   };
 
+  // Handler to log a lead into accounting
+  const handleLogLeadToAccounting = (lead) => {
+    setInitialLeadForAccounting(lead);
+    setActiveTab('accounting');
+    showToast(`${lead.name || 'Müşteri'} için muhasebe kaydı formu açıldı.`);
+  };
+
   if (checkingAuth) {
     return (
-      <div className="min-h-screen bg-slate-100 flex items-center justify-center text-slate-500 font-medium">
-        Verifying admin session...
+      <div className="min-h-screen bg-[#07090e] flex items-center justify-center text-zinc-400 font-medium">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <span>Verifying admin session...</span>
+        </div>
       </div>
     );
   }
@@ -127,9 +144,16 @@ export default function AdminLayout() {
     return <AdminLogin onLoginSuccess={handleLoginSuccess} />;
   }
 
-  const navItems = [
+  // Two categorized navigation groups as requested:
+  // 1. Operations (Leads, Accounting, Telegram)
+  // 2. Site Content & Settings (Business, Hero, Services, Gallery, Reviews, FAQs, SEO)
+  const operationsNav = [
     { id: 'leads', label: 'Inquiries & Quotes', icon: Inbox, badge: 'Live Leads' },
+    { id: 'accounting', label: 'Gelir, Gider & Kâr', icon: PoundSterling, badge: 'Muhasebe' },
     { id: 'telegram', label: 'Telegram Bot', icon: Send, badge: 'Alerts' },
+  ];
+
+  const siteSettingsNav = [
     { id: 'business', label: 'Business & Pricing', icon: Building2 },
     { id: 'hero', label: 'Hero & Headings', icon: Sparkles },
     { id: 'services', label: 'Services & Scope', icon: Wrench },
@@ -140,7 +164,7 @@ export default function AdminLayout() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#07090e] text-zinc-100 flex flex-col antialiased">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 animate-in slide-in-from-bottom-5">
@@ -149,12 +173,12 @@ export default function AdminLayout() {
         </div>
       )}
 
-      {/* Top Header Bar */}
-      <header className="h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40 shadow-xs">
+      {/* Top Header Bar (OLED Dark) */}
+      <header className="h-16 bg-[#0b0e14]/95 backdrop-blur-md border-b border-zinc-800/90 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40 shadow-md">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 md:hidden cursor-pointer"
+            className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 md:hidden cursor-pointer"
           >
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -164,10 +188,10 @@ export default function AdminLayout() {
               H
             </div>
             <div className="text-left">
-              <span className="font-extrabold text-sm text-slate-900 tracking-tight block leading-none">
+              <span className="font-extrabold text-sm text-white tracking-tight block leading-none">
                 Handyeco Admin
               </span>
-              <span className="text-[10px] text-blue-600 font-bold tracking-wider uppercase">
+              <span className="text-[10px] text-blue-400 font-bold tracking-wider uppercase">
                 Edinburgh Control Panel
               </span>
             </div>
@@ -179,15 +203,15 @@ export default function AdminLayout() {
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 text-xs font-bold border border-slate-200 transition-all"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-bold border border-zinc-800 transition-all"
           >
             <span>View Live Site</span>
-            <ExternalLink className="w-3.5 h-3.5" />
+            <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
           </a>
 
           <button
             onClick={handleLogout}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-600 hover:text-rose-700 hover:bg-rose-50 border border-rose-200 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 border border-rose-900/60 transition-colors cursor-pointer"
             title="Sign out of admin"
           >
             <LogOut className="w-4 h-4" />
@@ -199,70 +223,153 @@ export default function AdminLayout() {
       {/* Main Workspace Layout */}
       <div className="flex-1 flex overflow-hidden relative">
         
-        {/* Sidebar Navigation */}
-        <aside className={`fixed inset-y-16 left-0 z-30 w-64 bg-white border-r border-slate-200 p-3 space-y-1 transform transition-transform duration-200 md:relative md:inset-auto md:translate-x-0 shadow-sm ${
+        {/* Sidebar Navigation (OLED Dark & Categorized) */}
+        <aside className={`fixed inset-y-16 left-0 z-30 w-64 bg-[#0b0e14] border-r border-zinc-800/90 p-3 space-y-4 overflow-y-auto transform transition-transform duration-200 md:relative md:inset-auto md:translate-x-0 shadow-lg ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
-          <div className="px-3 py-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 text-left">
-            Site Management Modules
+          
+          {/* CATEGORY 1: İŞ & OPERASYON YÖNETİMİ */}
+          <div className="space-y-1 text-left">
+            <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
+              <Briefcase className="w-3 h-3" />
+              <span>İş & Operasyon Yönetimi</span>
+            </div>
+
+            {operationsNav.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveTab(item.id);
+                    setSidebarOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                      : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1 text-left">
+                    <Icon className="w-4 h-4 shrink-0" />
+                    <span className="truncate whitespace-nowrap">{item.label}</span>
+                  </div>
+
+                  {item.badge && (
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                      isActive ? 'bg-white/20 text-white' : 'bg-zinc-900 text-zinc-300 border border-zinc-800'
+                    }`}>
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
+          <div className="border-t border-zinc-800/80 my-2" />
 
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  setSidebarOpen(false);
-                }}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
-                  isActive
-                    ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/20'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                }`}
-              >
-                <div className="flex items-center gap-2.5 min-w-0 pr-1 text-left">
-                  <Icon className="w-4 h-4 shrink-0" />
-                  <span className="truncate whitespace-nowrap">{item.label}</span>
-                </div>
+          {/* CATEGORY 2: SİTE İÇERİK & AYARLAR */}
+          <div className="space-y-1 text-left">
+            <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+              <SlidersHorizontal className="w-3 h-3" />
+              <span>Site İçerik & Ayarlar</span>
+            </div>
 
-                {item.badge && (
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600 border border-slate-200'
-                  }`}>
-                    {item.badge}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+            {siteSettingsNav.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
 
-          <div className="pt-5 mt-5 border-t border-slate-200 px-3 text-left">
-            <div className="flex items-center gap-2 text-xs text-emerald-700 font-semibold">
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveTab(item.id);
+                    setSidebarOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                      : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1 text-left">
+                    <Icon className="w-4 h-4 shrink-0" />
+                    <span className="truncate whitespace-nowrap">{item.label}</span>
+                  </div>
+
+                  {item.badge && (
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                      isActive ? 'bg-white/20 text-white' : 'bg-zinc-900 text-zinc-300 border border-zinc-800'
+                    }`}>
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Footer Info */}
+          <div className="pt-4 border-t border-zinc-800/80 px-3 text-left">
+            <div className="flex items-center gap-2 text-xs text-emerald-400 font-semibold">
               <ShieldCheck className="w-4 h-4" />
               <span>Hot Sync Active</span>
             </div>
-            <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">
-              Edits instantly update the public site and persistent JSON store.
+            <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
+              Tüm değişiklikler JSON veritabanına ve yayındaki siteye anında yansır.
             </p>
           </div>
         </aside>
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50">
+        {/* Main Content Area (Near-Black OLED) */}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#07090e]">
           <div className="max-w-6xl mx-auto">
-            {activeTab === 'leads' && <LeadsManager token={token} />}
-            {activeTab === 'telegram' && <TelegramEditor data={content.siteConfig} onSave={handleSaveSection} token={token} />}
-            {activeTab === 'business' && <BusinessEditor data={content.siteConfig} onSave={handleSaveSection} token={token} />}
-            {activeTab === 'hero' && <HeroEditor data={content.hero} onSave={handleSaveSection} token={token} />}
-            {activeTab === 'services' && <ServicesEditor data={content.services} onSave={handleSaveSection} />}
-            {activeTab === 'gallery' && <GalleryManager data={content.gallery} onSave={handleSaveSection} token={token} />}
-            {activeTab === 'reviews' && <ReviewsManager data={content.reviews} onSave={handleSaveSection} token={token} onRefresh={refreshContent} />}
-            {activeTab === 'faq_areas' && <FaqAreasEditor areasData={content.areas} faqData={content.faq} onSave={handleSaveSection} />}
-            {activeTab === 'seo' && <SeoEditor data={content.seo} onSave={handleSaveSection} />}
+            {activeTab === 'leads' && (
+              <LeadsManager 
+                token={token} 
+                onLogLeadToAccounting={handleLogLeadToAccounting} 
+              />
+            )}
+            {activeTab === 'accounting' && (
+              <AccountingManager 
+                token={token} 
+                initialLeadData={initialLeadForAccounting}
+                onClearInitialLead={() => setInitialLeadForAccounting(null)}
+              />
+            )}
+            {activeTab === 'telegram' && (
+              <TelegramEditor data={content.siteConfig} onSave={handleSaveSection} token={token} />
+            )}
+            {activeTab === 'business' && (
+              <BusinessEditor data={content.siteConfig} onSave={handleSaveSection} token={token} />
+            )}
+            {activeTab === 'hero' && (
+              <HeroEditor data={content.hero} onSave={handleSaveSection} token={token} />
+            )}
+            {activeTab === 'services' && (
+              <ServicesEditor data={content.services} onSave={handleSaveSection} />
+            )}
+            {activeTab === 'gallery' && (
+              <GalleryManager data={content.gallery} onSave={handleSaveSection} token={token} />
+            )}
+            {activeTab === 'reviews' && (
+              <ReviewsManager 
+                data={content.reviews} 
+                siteConfig={content.siteConfig}
+                onSave={handleSaveSection} 
+                token={token} 
+                onRefresh={refreshContent} 
+              />
+            )}
+            {activeTab === 'faq_areas' && (
+              <FaqAreasEditor areasData={content.areas} faqData={content.faq} onSave={handleSaveSection} />
+            )}
+            {activeTab === 'seo' && (
+              <SeoEditor data={content.seo} onSave={handleSaveSection} />
+            )}
           </div>
         </main>
 

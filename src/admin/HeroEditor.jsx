@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Save, CheckCircle, Upload, Sparkles, Image as ImageIcon, Plus, Trash2 } from 'lucide-react';
+import { Save, CheckCircle2, Upload, Sparkles, Image as ImageIcon, Plus, Trash2 } from 'lucide-react';
 
 export default function HeroEditor({ data, onSave, token }) {
   const [form, setForm] = useState(data || {});
@@ -19,7 +19,7 @@ export default function HeroEditor({ data, onSave, token }) {
   };
 
   const handleAddBullet = () => {
-    handleChange('bullets', [...(form.bullets || []), 'New Edinburgh Service Guarantee']);
+    handleChange('bullets', [...(form.bullets || []), 'Yeni Edinburgh Hizmet Güvencesi']);
   };
 
   const handleRemoveBullet = (idx) => {
@@ -71,21 +71,21 @@ export default function HeroEditor({ data, onSave, token }) {
 
   return (
     <form onSubmit={handleSave} className="space-y-6 text-left">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Hero Section & Headings</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Customize main title, marketing description, bullet guarantees, and active hero photo.
+          <h2 className="text-xl font-black text-white">Hero Alanı & Ana Başlıklar</h2>
+          <p className="text-xs text-zinc-400 mt-0.5">
+            Sitenin en üstündeki ana başlık, pazarlama açıklaması, güvence maddeleri ve usta fotoğrafını yönetin.
           </p>
         </div>
 
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-700 active:scale-95 shadow-sm transition-all cursor-pointer disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50"
         >
-          {saved ? <CheckCircle className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
-          <span>{saving ? 'Saving...' : saved ? 'Saved Successfully!' : 'Save Changes'}</span>
+          {saved ? <CheckCircle2 className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
+          <span>{saving ? 'Kaydediliyor...' : saved ? 'Başarıyla Kaydedildi!' : 'Değişiklikleri Kaydet'}</span>
         </button>
       </div>
 
@@ -93,66 +93,66 @@ export default function HeroEditor({ data, onSave, token }) {
         
         {/* Left Column: Headlines & Bullets */}
         <div className="lg:col-span-7 space-y-5">
-          <div className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xs">
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-blue-600" />
-              <span>Headline & Value Proposition</span>
+          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-md">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-blue-400" />
+              <span>Ana Başlık & Değer Vaadi</span>
             </h3>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Headline Prefix</label>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1">Başlık Başlangıcı (Prefix)</label>
                 <input
                   type="text"
                   value={form.headlineStart || ''}
                   onChange={e => handleChange('headlineStart', e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
+                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Gradient Highlighted Text</label>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1">Renkli Vurgulanan Kelime (Highlight)</label>
                 <input
                   type="text"
                   value={form.headlineHighlight || ''}
                   onChange={e => handleChange('headlineHighlight', e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-blue-600 font-bold focus:outline-none focus:border-blue-600 focus:bg-white"
+                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-blue-400 font-bold focus:border-blue-500 outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Headline Suffix</label>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1">Başlık Bitişi (Suffix)</label>
                 <input
                   type="text"
                   value={form.headlineEnd || ''}
                   onChange={e => handleChange('headlineEnd', e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
+                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Detailed Description</label>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1">Detaylı Açıklama Metni</label>
                 <textarea
                   rows={3}
                   value={form.description || ''}
                   onChange={e => handleChange('description', e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white leading-relaxed"
+                  className="w-full px-3.5 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none leading-relaxed"
                 />
               </div>
             </div>
           </div>
 
           {/* Checklist Bullets */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 space-y-3 shadow-xs">
+          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-3 shadow-md">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Key Guarantee Bullets</h3>
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">Güvence ve Kalite Maddeleri</h3>
               <button
                 type="button"
                 onClick={handleAddBullet}
-                className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
+                className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Add Bullet</span>
+                <span>Madde Ekle</span>
               </button>
             </div>
 
@@ -163,12 +163,12 @@ export default function HeroEditor({ data, onSave, token }) {
                     type="text"
                     value={bullet}
                     onChange={e => handleBulletChange(idx, e.target.value)}
-                    className="flex-1 px-3 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
+                    className="flex-1 px-3 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => handleRemoveBullet(idx)}
-                    className="p-2 text-slate-400 hover:text-rose-600 cursor-pointer"
+                    className="p-2 text-zinc-500 hover:text-rose-400 cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -180,32 +180,32 @@ export default function HeroEditor({ data, onSave, token }) {
 
         {/* Right Column: Hero Image & Overlay Card */}
         <div className="lg:col-span-5 space-y-5">
-          <div className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xs">
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-              <ImageIcon className="w-4 h-4 text-blue-600" />
-              <span>Hero Photo Display</span>
+          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-md">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <ImageIcon className="w-4 h-4 text-blue-400" />
+              <span>Hero Fotoğrafı Önizlemesi</span>
             </h3>
 
             {/* Current Image Preview */}
-            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner">
+            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 shadow-inner">
               <img
                 src={form.heroImage || '/hero-handyman-edinburgh.jpg'}
                 alt="Hero Preview"
                 className="w-full h-full object-cover object-top"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07090e]/90 via-transparent to-transparent" />
               <div className="absolute bottom-3 left-3 right-3 text-white text-xs">
                 <p className="font-bold">{form.completedCount}</p>
-                <p className="text-[11px] text-slate-300 mt-0.5">{form.completedSubtext}</p>
+                <p className="text-[11px] text-zinc-300 mt-0.5">{form.completedSubtext}</p>
               </div>
             </div>
 
             {/* Upload Button */}
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Change Hero Photo</label>
-              <label className="w-full py-3 px-4 rounded-xl border border-dashed border-slate-300 hover:border-blue-500 bg-slate-50 text-slate-700 hover:text-slate-900 flex items-center justify-center gap-2 text-xs font-bold cursor-pointer transition-all">
-                <Upload className="w-4 h-4 text-blue-600" />
-                <span>{uploading ? 'Optimizing & Uploading...' : 'Upload New Photo (Auto WebP)'}</span>
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Hero Fotoğrafını Değiştir</label>
+              <label className="w-full py-3 px-4 rounded-xl border border-dashed border-zinc-700 hover:border-blue-500 bg-zinc-900 text-zinc-300 hover:text-white flex items-center justify-center gap-2 text-xs font-bold cursor-pointer transition-all">
+                <Upload className="w-4 h-4 text-blue-400" />
+                <span>{uploading ? 'Optimize Ediliyor & Yükleniyor...' : 'Yeni Fotoğraf Yükle (Otomatik WebP)'}</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -214,29 +214,29 @@ export default function HeroEditor({ data, onSave, token }) {
                   className="hidden"
                 />
               </label>
-              <p className="text-[11px] text-slate-500 mt-1">
-                Accepts JPG, PNG, WebP. Auto-scaled and optimized by Sharp.
+              <p className="text-[11px] text-zinc-500 mt-1">
+                JPG, PNG, WebP desteklenir. Sharp ile otomatik boyutlandırılır ve sıkıştırılır.
               </p>
             </div>
 
-            <div className="pt-2 border-t border-slate-100 space-y-3">
+            <div className="pt-2 border-t border-zinc-800 space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Badge Title</label>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1">Rozet Başlığı</label>
                 <input
                   type="text"
                   value={form.completedCount || ''}
                   onChange={e => handleChange('completedCount', e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
+                  className="w-full px-3 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Badge Subtext</label>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1">Rozet Alt Metni</label>
                 <input
                   type="text"
                   value={form.completedSubtext || ''}
                   onChange={e => handleChange('completedSubtext', e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white"
+                  className="w-full px-3 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none"
                 />
               </div>
             </div>

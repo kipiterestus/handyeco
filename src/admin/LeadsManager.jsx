@@ -4,43 +4,51 @@ import {
   MessageSquare, 
   Phone, 
   MapPin, 
-  Calendar, 
   Clock, 
-  CheckCircle, 
+  CheckCircle2, 
   Search, 
-  Filter,
-  ExternalLink,
-  Save,
-  AlertCircle
+  Mail,
+  PoundSterling,
+  Calendar,
+  AlertCircle,
+  TrendingUp,
+  FileText,
+  ExternalLink
 } from 'lucide-react';
 
-export default function LeadsManager({ token }) {
+export default function LeadsManager({ token, onLogLeadToAccounting }) {
   const [quotes, setQuotes] = useState([]);
+  const [finances, setFinances] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [savingId, setSavingId] = useState(null);
 
-  const fetchQuotes = async () => {
+  const fetchData = async () => {
     try {
-      const res = await fetch('/api/quotes', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success) {
-          setQuotes(data.quotes || []);
-        }
+      const [resQuotes, resFinances] = await Promise.all([
+        fetch('/api/quotes', { headers: { Authorization: `Bearer ${token}` } }),
+        fetch('/api/finances', { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+
+      if (resQuotes.ok) {
+        const data = await resQuotes.json();
+        if (data.success) setQuotes(data.quotes || []);
+      }
+
+      if (resFinances.ok) {
+        const dataFin = await resFinances.json();
+        if (dataFin.success) setFinances(dataFin.finances || []);
       }
     } catch (err) {
-      console.error('Error fetching quotes:', err);
+      console.error('Error fetching leads:', err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchQuotes();
+    fetchData();
   }, [token]);
 
   const updateStatus = async (id, newStatus) => {
@@ -88,7 +96,8 @@ export default function LeadsManager({ token }) {
       q.email?.toLowerCase().includes(search.toLowerCase()) ||
       q.postcode?.toLowerCase().includes(search.toLowerCase()) ||
       q.service?.toLowerCase().includes(search.toLowerCase()) ||
-      q.details?.toLowerCase().includes(search.toLowerCase());
+      q.details?.toLowerCase().includes(search.toLowerCase()) ||
+      q.notes?.toLowerCase().includes(search.toLowerCase());
     return matchesStatus && matchesSearch;
   });
 
@@ -106,194 +115,255 @@ export default function LeadsManager({ token }) {
     return p;
   };
 
+  // Find linked finance entry for a quote
+  const getLinkedFinance = (quoteId) => {
+    return finances.find(f => f.leadId === quoteId);
+  };
+
   return (
-    <div className="space-y-6 text-left">
-      {/* Top Banner & Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+    <div className="space-y-5 text-left">
+      {/* Top Banner & Stats (OLED Near-Black) */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div 
           onClick={() => setStatusFilter('all')}
-          className={`p-4 rounded-2xl border transition-all cursor-pointer ${
+          className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'all' 
-              ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20' 
-              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 shadow-xs'
+              ? 'bg-blue-600/20 border-blue-500 text-white shadow-md shadow-blue-500/10' 
+              : 'bg-[#0b0e14] border-zinc-800 text-zinc-400 hover:border-zinc-700'
           }`}
         >
-          <span className="text-xs font-bold uppercase opacity-80 block">All Leads</span>
-          <span className="text-2xl sm:text-3xl font-black mt-1 block">{counts.all}</span>
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider block">Tüm Talepler</span>
+            <span className="w-2 h-2 rounded-full bg-blue-500" />
+          </div>
+          <span className="text-2xl sm:text-3xl font-black text-white mt-1 block">{counts.all}</span>
         </div>
 
         <div 
           onClick={() => setStatusFilter('new')}
-          className={`p-4 rounded-2xl border transition-all cursor-pointer ${
+          className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'new' 
-              ? 'bg-amber-600 text-white border-amber-600 shadow-md shadow-amber-600/20' 
-              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 shadow-xs'
+              ? 'bg-amber-600/20 border-amber-500 text-white shadow-md shadow-amber-500/10' 
+              : 'bg-[#0b0e14] border-zinc-800 text-zinc-400 hover:border-zinc-700'
           }`}
         >
-          <span className="text-xs font-bold uppercase opacity-80 block">New / Pending</span>
-          <span className="text-2xl sm:text-3xl font-black mt-1 block">{counts.new}</span>
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider block">Yeni / Bekleyen</span>
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+          </div>
+          <span className="text-2xl sm:text-3xl font-black text-amber-400 mt-1 block">{counts.new}</span>
         </div>
 
         <div 
           onClick={() => setStatusFilter('contacted')}
-          className={`p-4 rounded-2xl border transition-all cursor-pointer ${
+          className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'contacted' 
-              ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/20' 
-              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 shadow-xs'
+              ? 'bg-indigo-600/20 border-indigo-500 text-white shadow-md shadow-indigo-500/10' 
+              : 'bg-[#0b0e14] border-zinc-800 text-zinc-400 hover:border-zinc-700'
           }`}
         >
-          <span className="text-xs font-bold uppercase opacity-80 block">Contacted</span>
-          <span className="text-2xl sm:text-3xl font-black mt-1 block">{counts.contacted}</span>
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider block">İletişime Geçildi</span>
+            <span className="w-2 h-2 rounded-full bg-indigo-400" />
+          </div>
+          <span className="text-2xl sm:text-3xl font-black text-indigo-400 mt-1 block">{counts.contacted}</span>
         </div>
 
         <div 
           onClick={() => setStatusFilter('booked')}
-          className={`p-4 rounded-2xl border transition-all cursor-pointer ${
+          className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'booked' 
-              ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/20' 
-              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 shadow-xs'
+              ? 'bg-emerald-600/20 border-emerald-500 text-white shadow-md shadow-emerald-500/10' 
+              : 'bg-[#0b0e14] border-zinc-800 text-zinc-400 hover:border-zinc-700'
           }`}
         >
-          <span className="text-xs font-bold uppercase opacity-80 block">Booked / Done</span>
-          <span className="text-2xl sm:text-3xl font-black mt-1 block">{counts.booked}</span>
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider block">Tamamlandı / Yapıldı</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+          </div>
+          <span className="text-2xl sm:text-3xl font-black text-emerald-400 mt-1 block">{counts.booked}</span>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#0b0e14] p-3 rounded-2xl border border-zinc-800">
         <div className="relative flex-1">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search leads by name, phone, EH postcode, or service..."
+            placeholder="İsim, telefon, EH posta kodu veya hizmet ile ara..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:bg-white transition-all"
+            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-zinc-900/80 border border-zinc-700/80 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
           />
         </div>
 
         <div className="flex items-center gap-2">
           <button
-            onClick={fetchQuotes}
-            className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 border border-slate-200 transition-colors cursor-pointer"
+            onClick={fetchData}
+            className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-xs font-bold text-zinc-300 border border-zinc-800 transition-colors cursor-pointer"
           >
-            Refresh
+            Yenile
           </button>
         </div>
       </div>
 
-      {/* Leads List */}
+      {/* Leads Compact Grid Layout */}
       {loading ? (
-        <div className="p-12 text-center text-slate-500 font-medium">Loading incoming inquiries...</div>
+        <div className="p-12 text-center text-zinc-500 font-medium">Gelen müşteri talepleri yükleniyor...</div>
       ) : filteredQuotes.length === 0 ? (
-        <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-2 shadow-xs">
-          <Inbox className="w-10 h-10 text-slate-400 mx-auto" />
-          <h3 className="text-base font-bold text-slate-900">No inquiries found</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Quotes submitted via the website form or Telegram bot will appear here automatically.
+        <div className="p-12 bg-[#0b0e14] rounded-3xl border border-zinc-800 text-center space-y-2">
+          <Inbox className="w-10 h-10 text-zinc-600 mx-auto" />
+          <h3 className="text-base font-bold text-white">Henüz müşteri talebi bulunmuyor</h3>
+          <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+            Web sitesi teklif formundan veya Telegram botundan gelen talepler otomatik olarak buraya düşer.
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filteredQuotes.map((quote) => {
             const cleanPhone = getCleanPhone(quote.phone);
             const whatsappText = encodeURIComponent(`Hi ${quote.name || 'there'}, this is Ekrem from Handyeco Edinburgh. Thanks for requesting a quote for ${quote.service || 'handyman services'}!`);
             const whatsappLink = `https://wa.me/${cleanPhone}?text=${whatsappText}`;
+            const linkedFinance = getLinkedFinance(quote.id);
 
             return (
               <div 
                 key={quote.id}
-                className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 shadow-xs hover:border-slate-300 transition-all space-y-4"
+                className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3.5 hover:border-zinc-700 transition-all shadow-md group relative"
               >
-                {/* Header row */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className="text-lg font-bold text-slate-900">{quote.name || 'Anonymous Client'}</h4>
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                        {quote.service || 'General Handyman'}
-                      </span>
-                      {quote.urgency && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-amber-50 text-amber-700 border border-amber-200">
-                          {quote.urgency}
-                        </span>
-                      )}
+                {/* Top Card Row */}
+                <div className="space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <h4 className="text-base font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                        {quote.name || 'Anonymous Client'}
+                      </h4>
+                      <div className="flex items-center gap-1.5 text-[11px] text-zinc-400 mt-0.5">
+                        <Clock className="w-3 h-3 text-zinc-500" />
+                        <span>{quote.createdAt ? new Date(quote.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Yeni'}</span>
+                      </div>
                     </div>
-                    <p className="text-xs text-slate-500 flex items-center gap-3 flex-wrap">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-blue-600" />
-                        <span className="font-semibold text-slate-700">{quote.postcode || 'Edinburgh Area'}</span>
-                      </span>
-                      {quote.email && (
-                        <>
-                          <span>&bull;</span>
-                          <a href={`mailto:${quote.email}`} className="text-blue-600 font-medium hover:underline">
-                            {quote.email}
-                          </a>
-                        </>
-                      )}
-                      <span>&bull;</span>
-                      <span className="flex items-center gap-1 text-slate-400">
-                        <Clock className="w-3.5 h-3.5" />
-                        <span>{quote.createdAt ? new Date(quote.createdAt).toLocaleString('en-GB') : 'Recently'}</span>
-                      </span>
-                    </p>
-                  </div>
 
-                  {/* Status Dropdown */}
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs font-semibold text-slate-600">Status:</label>
+                    {/* Status Dropdown */}
                     <select
                       value={quote.status || 'new'}
                       onChange={(e) => updateStatus(quote.id, e.target.value)}
                       disabled={savingId === quote.id}
-                      className="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-blue-500 cursor-pointer"
+                      className={`text-[11px] font-bold rounded-lg px-2 py-1 border cursor-pointer focus:outline-none ${
+                        quote.status === 'booked' 
+                          ? 'bg-emerald-950/80 border-emerald-800 text-emerald-300'
+                          : quote.status === 'contacted'
+                          ? 'bg-indigo-950/80 border-indigo-800 text-indigo-300'
+                          : quote.status === 'archived'
+                          ? 'bg-zinc-900 border-zinc-700 text-zinc-400'
+                          : 'bg-amber-950/80 border-amber-800 text-amber-300'
+                      }`}
                     >
-                      <option value="new">🟡 New / Pending</option>
-                      <option value="contacted">🔵 Contacted</option>
-                      <option value="booked">🟢 Booked / Done</option>
-                      <option value="archived">⚪ Archived</option>
+                      <option value="new">🟡 Yeni</option>
+                      <option value="contacted">🔵 Görüşüldü</option>
+                      <option value="booked">🟢 Yapıldı</option>
+                      <option value="archived">⚪ Arşiv</option>
                     </select>
+                  </div>
+
+                  {/* Badges: Service & Postcode */}
+                  <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                    <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-blue-950/60 text-blue-300 border border-blue-900/60">
+                      {quote.service || 'Handyman'}
+                    </span>
+                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800">
+                      <MapPin className="w-3 h-3 text-red-400" />
+                      <span>{quote.postcode || 'Edinburgh'}</span>
+                    </span>
+                    {quote.urgency && (
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-amber-950/50 text-amber-400 border border-amber-900/50">
+                        {quote.urgency}
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                {/* Job details */}
-                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 space-y-2 text-xs sm:text-sm text-slate-700">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Job Details / Description:</span>
-                  <p className="whitespace-pre-line leading-relaxed text-slate-800">
-                    {quote.details || 'No additional details provided.'}
+                {/* Job Description Box */}
+                <div className="bg-zinc-900/70 border border-zinc-800/80 rounded-xl p-3 text-xs text-zinc-300 leading-relaxed max-h-24 overflow-y-auto">
+                  <p className="line-clamp-3">
+                    {quote.details || 'Müşteri detaylı açıklama eklemedi.'}
                   </p>
                 </div>
 
-                {/* Notes & Actions row */}
-                <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 pt-2">
-                  <div className="flex-1">
-                    <input
-                      type="text"
-                      placeholder="Add private note (e.g. Quoted £120, booked for Thursday 10am)..."
-                      defaultValue={quote.notes || ''}
-                      onBlur={(e) => updateNotes(quote.id, e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-                    />
-                  </div>
+                {/* Contact Links */}
+                <div className="space-y-1.5 text-xs text-zinc-400">
+                  {quote.phone && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] text-zinc-500">Tel:</span>
+                      <a href={`tel:${quote.phone}`} className="font-semibold text-zinc-200 hover:text-white">
+                        {quote.phone}
+                      </a>
+                    </div>
+                  )}
+                  {quote.email && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] text-zinc-500">E-posta:</span>
+                      <a href={`mailto:${quote.email}`} className="text-zinc-400 hover:text-blue-400 truncate max-w-[180px]">
+                        {quote.email}
+                      </a>
+                    </div>
+                  )}
+                </div>
 
-                  <div className="flex items-center gap-2 shrink-0">
+                {/* Private Note Input */}
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Özel not ekle (örn: £120 teklif verildi)..."
+                    defaultValue={quote.notes || ''}
+                    onBlur={(e) => updateNotes(quote.id, e.target.value)}
+                    className="w-full px-2.5 py-1.5 text-xs bg-zinc-900/60 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
+                  />
+                </div>
+
+                {/* Accounting Connection & Action Section */}
+                <div className="pt-2 border-t border-zinc-800/80 space-y-2">
+                  {/* Linked Finance Pill or Add to Accounting Button */}
+                  {linkedFinance ? (
+                    <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-900/60 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Muhasebeye İşlendi</span>
+                      </div>
+                      <div className="text-[11px] font-black text-white">
+                        £{linkedFinance.revenue || 0} Ciro • <span className="text-emerald-400">+£{linkedFinance.netProfit || 0} Kâr</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => onLogLeadToAccounting && onLogLeadToAccounting(quote)}
+                      className="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-blue-900/40 to-indigo-900/40 hover:from-blue-900/60 hover:to-indigo-900/60 border border-blue-800/60 text-blue-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <PoundSterling className="w-3.5 h-3.5 text-blue-400" />
+                      <span>+ Muhasebeye / Kâra Ekle</span>
+                    </button>
+                  )}
+
+                  {/* Call & WhatsApp Quick Buttons */}
+                  <div className="grid grid-cols-2 gap-2">
                     <a
                       href={`tel:${quote.phone}`}
-                      className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold border border-slate-200 transition-all"
+                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white text-xs font-bold border border-zinc-800 transition-all"
                     >
-                      <Phone className="w-3.5 h-3.5 text-blue-600" />
-                      <span>Call {quote.phone}</span>
+                      <Phone className="w-3 h-3 text-blue-400" />
+                      <span>Ara</span>
                     </a>
 
                     <a
                       href={whatsappLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-all active:scale-95"
+                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-xs"
                     >
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      <span>WhatsApp Reply</span>
+                      <MessageSquare className="w-3 h-3" />
+                      <span>WhatsApp</span>
                     </a>
                   </div>
                 </div>
