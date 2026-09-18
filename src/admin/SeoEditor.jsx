@@ -41,9 +41,9 @@ export default function SeoEditor({ data, onSave }) {
     <form onSubmit={handleSave} className="space-y-6 text-left">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 className="text-xl font-black text-white">Google & Yerel Edinburgh SEO Paketi</h2>
+          <h2 className="text-xl font-black text-white">SEO Yönetimi</h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            Meta etiketleri, Edinburgh arama anahtar kelimelerini, yerel koordinatları ve Google SERP önizlemesini yönetin.
+            Arama motoru ve yerel SEO ayarlarını yönetin.
           </p>
         </div>
 
@@ -53,7 +53,7 @@ export default function SeoEditor({ data, onSave }) {
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50"
         >
           {saved ? <CheckCircle2 className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
-          <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'SEO Ayarlarını Kaydet'}</span>
+          <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Kaydet'}</span>
         </button>
       </div>
 
@@ -62,10 +62,10 @@ export default function SeoEditor({ data, onSave }) {
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <Search className="w-4 h-4 text-blue-400" />
-            <span>Canlı Google Arama Snippet Önizlemesi (Edinburgh SERP)</span>
+            <span>Google Snippet Önizlemesi</span>
           </h3>
           <span className="text-[11px] text-emerald-400 font-semibold bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-800/60">
-            Google UK Mobil & Masaüstü
+            Google UK
           </span>
         </div>
 
@@ -98,13 +98,13 @@ export default function SeoEditor({ data, onSave }) {
         <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-md">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <Globe className="w-4 h-4 text-blue-400" />
-            <span>Arama Motoru Meta Etiketleri</span>
+            <span>Meta Etiketleri</span>
           </h3>
 
           <div className="space-y-3">
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="text-xs font-semibold text-zinc-300">Sayfa Meta Başlığı (Meta Title)</label>
+                <label className="text-xs font-semibold text-zinc-300">Meta Başlığı (Title)</label>
                 <span className={`text-[11px] font-bold ${titleLength > 60 ? 'text-amber-400' : 'text-zinc-500'}`}>
                   {titleLength}/60 karakter
                 </span>
@@ -133,7 +133,7 @@ export default function SeoEditor({ data, onSave }) {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1">Kanonik URL (Canonical URL)</label>
+              <label className="block text-xs font-semibold text-zinc-300 mb-1">Kanonik URL (Canonical)</label>
               <input
                 type="url"
                 value={form.canonicalUrl || 'https://handyeco.co.uk/'}
@@ -148,7 +148,7 @@ export default function SeoEditor({ data, onSave }) {
         <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-md">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <MapPin className="w-4 h-4 text-emerald-400" />
-            <span>Edinburgh Yerel Geo & Sosyal Paylaşım</span>
+            <span>Konum & Sosyal Paylaşım</span>
           </h3>
 
           <div className="space-y-3">
@@ -216,10 +216,10 @@ export default function SeoEditor({ data, onSave }) {
           <div>
             <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-blue-400" />
-              <span>Hedef Edinburgh Arama Anahtar Kelimeleri</span>
+              <span>Anahtar Kelimeler</span>
             </h3>
             <p className="text-xs text-zinc-400 mt-0.5">
-              Google UK ve Edinburgh yerel organik sıralamada öne çıkmak için optimize edilen kelimeler.
+              Google UK arama motoru optimizasyonu kelimeleri.
             </p>
           </div>
 
@@ -267,7 +267,7 @@ export default function SeoEditor({ data, onSave }) {
       <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-3 shadow-md">
         <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
           <FileText className="w-4 h-4 text-emerald-400" />
-          <span>Teknik SEO Dosyaları (Aktif & Doğrulanmış)</span>
+          <span>Teknik SEO Dosyaları</span>
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">

@@ -507,7 +507,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
             className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold transition-all cursor-pointer shadow-sm"
           >
             <Download className="w-3.5 h-3.5 text-zinc-400" />
-            <span>CSV / Excel</span>
+            <span>Excel / CSV</span>
           </button>
 
           <button
@@ -516,7 +516,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
             className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-white text-xs sm:text-sm font-bold shadow-lg shadow-rose-600/25 transition-all cursor-pointer"
           >
             <Receipt className="w-4 h-4" />
-            <span>+ Şirket Masrafı Ekle</span>
+            <span>+ Masraf Ekle</span>
           </button>
 
           <button
@@ -525,7 +525,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
             className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>+ İş Geliri Ekle</span>
+            <span>+ Gelir Ekle</span>
           </button>
         </div>
       </div>
@@ -543,7 +543,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            Tüm Kayıtlar ({periodFinances.length})
+            Tümü ({periodFinances.length})
           </button>
           <button
             type="button"
@@ -554,7 +554,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            <span>🛠️ Müşteri İşleri</span>
+            <span>🛠️ İşler</span>
             <span className="text-[10px] opacity-80">({jobFinances.length})</span>
           </button>
           <button
@@ -566,7 +566,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            <span>🏢 Şirket Masrafları</span>
+            <span>🏢 Masraflar</span>
             <span className="text-[10px] opacity-80">({overheadFinances.length})</span>
           </button>
         </div>
@@ -582,7 +582,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            📅 Bu Hafta
+            📅 Hafta
           </button>
 
           <button
@@ -594,7 +594,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            🗓️ Bu Ay
+            🗓️ Ay
           </button>
 
           <button
@@ -606,7 +606,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            📊 Bu Yıl
+            📊 Yıl
           </button>
 
           <button

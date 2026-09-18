@@ -58,9 +58,9 @@ export default function BusinessEditor({ data, onSave, token }) {
     <form onSubmit={handleSave} className="space-y-6 text-left">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 className="text-xl font-black text-white">İşletme Ayarları & Fiyatlandırma</h2>
+          <h2 className="text-xl font-black text-white">İşletme Bilgileri</h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            İletişim bilgileri, minimum £65 iş kabul kuralı, WhatsApp numarası ve çalışma saatlerini yönetin.
+            İletişim, çalışma saatleri ve fiyatlandırma ayarları.
           </p>
         </div>
 
@@ -70,7 +70,7 @@ export default function BusinessEditor({ data, onSave, token }) {
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50"
         >
           {saved ? <CheckCircle2 className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
-          <span>{saving ? 'Kaydediliyor...' : saved ? 'Başarıyla Kaydedildi!' : 'Değişiklikleri Kaydet'}</span>
+          <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Kaydet'}</span>
         </button>
       </div>
 
@@ -80,7 +80,7 @@ export default function BusinessEditor({ data, onSave, token }) {
         <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-md">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <Phone className="w-4 h-4 text-blue-400" />
-            <span>İletişim & Usta Bilgileri</span>
+            <span>İletişim & Usta</span>
           </h3>
 
           <div className="space-y-3">
@@ -158,7 +158,7 @@ export default function BusinessEditor({ data, onSave, token }) {
         <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-md">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <PoundSterling className="w-4 h-4 text-emerald-400" />
-            <span>Fiyatlandırma Kuralları (Teklifler Ücretsizdir)</span>
+            <span>Fiyatlandırma</span>
           </h3>
 
           <div className="space-y-3">
@@ -228,10 +228,10 @@ export default function BusinessEditor({ data, onSave, token }) {
             <div>
               <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
                 <Bell className="w-4 h-4 text-emerald-400" />
-                <span>Anlık Telegram Bot Bildirimleri</span>
+                <span>Telegram Bildirimleri</span>
               </h3>
               <p className="text-xs text-zinc-400 mt-0.5">
-                Detaylı rehber ve canlı telefon önizlemesi için soldaki <strong>Telegram Bot</strong> sekmesini kullanabilirsiniz.
+                Telegram botu üzerinden anlık bildirim ayarları.
               </p>
             </div>
 
@@ -242,7 +242,7 @@ export default function BusinessEditor({ data, onSave, token }) {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
             >
               <Send className="w-3.5 h-3.5" />
-              <span>{testingTelegram ? 'Gönderiliyor...' : 'Telefona Test Bildirimi Gönder'}</span>
+              <span>{testingTelegram ? 'Gönderiliyor...' : 'Test Bildirimi Gönder'}</span>
             </button>
           </div>
 
@@ -286,7 +286,7 @@ export default function BusinessEditor({ data, onSave, token }) {
         <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-4 md:col-span-2 shadow-md">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <ExternalLink className="w-4 h-4 text-blue-400" />
-            <span>Harita & Platform Profil Bağlantıları</span>
+            <span>Profil Bağlantıları</span>
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -51,9 +51,9 @@ export default function FaqAreasEditor({ areasData, faqData, onSave }) {
     <form onSubmit={handleSave} className="space-y-8 text-left">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 className="text-xl font-black text-white">Hizmet Bölgeleri & Sık Sorulan Sorular (FAQ)</h2>
+          <h2 className="text-xl font-black text-white">Bölgeler & SSS</h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            Edinburgh EH posta kodu kapsama alanlarını ve müşteri sorularını düzenleyin.
+            Hizmet bölgeleri ve sık sorulan soruları yönetin.
           </p>
         </div>
 
@@ -63,7 +63,7 @@ export default function FaqAreasEditor({ areasData, faqData, onSave }) {
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50"
         >
           {saved ? <CheckCircle2 className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
-          <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Bölgeleri & SSS Kaydet'}</span>
+          <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Kaydet'}</span>
         </button>
       </div>
 
@@ -72,7 +72,7 @@ export default function FaqAreasEditor({ areasData, faqData, onSave }) {
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold text-white flex items-center gap-2">
             <MapPin className="w-4 h-4 text-blue-400" />
-            <span>Edinburgh & Lothians Hizmet Bölgeleri</span>
+            <span>Hizmet Bölgeleri</span>
           </h3>
           <button
             type="button"
@@ -80,7 +80,7 @@ export default function FaqAreasEditor({ areasData, faqData, onSave }) {
             className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Yeni Bölge Ekle</span>
+            <span>+ Bölge Ekle</span>
           </button>
         </div>
 
@@ -134,7 +134,7 @@ export default function FaqAreasEditor({ areasData, faqData, onSave }) {
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold text-white flex items-center gap-2">
             <HelpCircle className="w-4 h-4 text-amber-400" />
-            <span>Sıkça Sorulan Sorular (FAQ)</span>
+            <span>Sık Sorulan Sorular</span>
           </h3>
           <button
             type="button"
@@ -142,7 +142,7 @@ export default function FaqAreasEditor({ areasData, faqData, onSave }) {
             className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Yeni Soru Ekle</span>
+            <span>+ Soru Ekle</span>
           </button>
         </div>
 

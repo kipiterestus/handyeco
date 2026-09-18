@@ -98,7 +98,7 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-xl font-black text-white">Telegram Bot Bildirim Yönetimi</h2>
+            <h2 className="text-xl font-black text-white">Telegram Bildirimleri</h2>
             {isConfigured ? (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -111,7 +111,7 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
             )}
           </div>
           <p className="text-xs text-zinc-400 mt-1">
-            Müşteri web sitesindeki formu doldurduğu anda cep telefonunuza müşteri iletişim bilgileri, posta kodu ve iş detayları anında bildirim olarak düşer.
+            Gelen form talepleri anında cep telefonunuza Telegram ile bildirilir.
           </p>
         </div>
 
@@ -131,7 +131,7 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
           ) : (
             <>
               <Save className="w-4 h-4" />
-              <span>Ayarları Kaydet</span>
+              <span>Kaydet</span>
             </>
           )}
         </button>
@@ -231,7 +231,7 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
                 className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 active:scale-98 text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer disabled:opacity-50"
               >
                 <Send className="w-4 h-4" />
-                <span>{testing ? 'Test Mesajı Gönderiliyor...' : 'Telefona Canlı Test Bildirimi Gönder'}</span>
+                <span>{testing ? 'Gönderiliyor...' : 'Test Bildirimi Gönder'}</span>
               </button>
 
               <button
@@ -241,7 +241,7 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
                 className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs sm:text-sm font-bold border border-zinc-700 transition-all cursor-pointer"
               >
                 <Save className="w-4 h-4" />
-                <span>Bilgileri Kaydet</span>
+                <span>Kaydet</span>
               </button>
             </div>
           </div>
@@ -250,7 +250,7 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
           <div className="bg-[#0b0e14] rounded-2xl p-6 border border-zinc-800 shadow-md space-y-4">
             <div className="flex items-center gap-2.5 text-white font-bold">
               <HelpCircle className="w-5 h-5 text-blue-400" />
-              <h3>2 Dakikada Telegram Bot Kurulum Rehberi</h3>
+              <h3>Telegram Kurulum Rehberi</h3>
             </div>
 
             <ol className="space-y-3 text-xs sm:text-sm text-zinc-400 list-decimal list-inside leading-relaxed">

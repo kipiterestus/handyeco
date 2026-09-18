@@ -66,9 +66,9 @@ export default function ServicesEditor({ data, onSave }) {
     <form onSubmit={handleSave} className="space-y-6 text-left">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 className="text-xl font-black text-white">Hizmetler & Ustalık Kapsamı</h2>
+          <h2 className="text-xl font-black text-white">Hizmetler</h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            Sitede sergilenen tüm usta hizmetlerini, kategori filtrelerini, açıklamaları ve maddeleri yönetin.
+            Hizmetleri, kategorileri ve detayları yönetin.
           </p>
         </div>
 
@@ -79,7 +79,7 @@ export default function ServicesEditor({ data, onSave }) {
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 cursor-pointer transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Yeni Hizmet Ekle</span>
+            <span>+ Hizmet Ekle</span>
           </button>
 
           <button
@@ -88,7 +88,7 @@ export default function ServicesEditor({ data, onSave }) {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50"
           >
             {saved ? <CheckCircle2 className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
-            <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Tüm Hizmetleri Kaydet'}</span>
+            <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Kaydet'}</span>
           </button>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function ServicesEditor({ data, onSave }) {
         {/* Left Services Selector List */}
         <div className="lg:col-span-4 space-y-2">
           <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 block px-1">
-            Mevcut Hizmetler ({services.length})
+            Hizmetler ({services.length})
           </span>
           <div className="space-y-1.5 max-h-[600px] overflow-y-auto pr-1">
             {services.map((srv) => (
@@ -134,7 +134,7 @@ export default function ServicesEditor({ data, onSave }) {
             <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
               <span className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
                 <Wrench className="w-4 h-4 text-blue-400" />
-                <span>Düzenlenen: {activeService.title}</span>
+                <span>{activeService.title}</span>
               </span>
 
               <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 cursor-pointer">
@@ -144,7 +144,7 @@ export default function ServicesEditor({ data, onSave }) {
                   onChange={e => handleUpdateActive('popular', e.target.checked)}
                   className="rounded bg-zinc-900 border-zinc-700 text-blue-600 focus:ring-0 cursor-pointer"
                 />
-                <span>Popüler / Öne Çıkan Hizmet</span>
+                <span>Öne Çıkar</span>
               </label>
             </div>
 

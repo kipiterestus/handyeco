@@ -107,9 +107,9 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 className="text-xl font-black text-white">Google Maps & MyBuilder Müşteri Yorumları</h2>
+          <h2 className="text-xl font-black text-white">Müşteri Yorumları</h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            Sitede gösterilen toplam yorum sayısı, 5.0 yıldız puanı ve müşteri referanslarını yönetin.
+            Yorum sayısı, puanı ve referansları yönetin.
           </p>
         </div>
 
@@ -120,7 +120,7 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 cursor-pointer transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Yeni Yorum Ekle</span>
+            <span>+ Yorum Ekle</span>
           </button>
 
           <button
@@ -129,7 +129,7 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50"
           >
             {saved ? <CheckCircle2 className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
-            <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Yorumları & Sayıları Kaydet'}</span>
+            <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Kaydet'}</span>
           </button>
         </div>
       </div>
@@ -141,7 +141,7 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
             <Info className="w-5 h-5" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-sm font-bold text-white">Google Maps Yorum Senkronizasyonu Nasıl Çalışır?</h3>
+            <h3 className="text-sm font-bold text-white">Google Senkronizasyonu</h3>
             <p className="text-xs text-zinc-400 leading-relaxed">
               Google Maps, botların yorumları doğrudan kazımasını (scraping) engellediği için, otomatik canlı çekim işlemi Google'ın resmi <strong>Google Places API</strong> anahtarı ile çalışır. 
               Lokalde çalışırken veya Google API kotası olmadan da sitenizin Google'daki gerçek yorum sayısını ve puanını aşağıdaki kutulardan istediğiniz gibi belirleyebilirsiniz. Sitedeki tüm butonlar ve sayaçlar buradaki rakamla anında güncellenir.
@@ -152,7 +152,7 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
         {/* Dynamic Number & Rating Controls */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-zinc-800/80">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-zinc-300 block">Sitede Gözüken Google Yorum Sayısı</label>
+            <label className="text-xs font-bold text-zinc-300 block">Google Yorum Sayısı</label>
             <input
               type="number"
               value={reviewCount}
@@ -160,7 +160,7 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
               className="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-bold text-sm focus:border-blue-500 outline-none"
               placeholder="Örn: 54"
             />
-            <span className="text-[10px] text-zinc-500 block">Google Profilinizdeki gerçek yorum sayısını girin</span>
+            <span className="text-[10px] text-zinc-500 block">Profilinizdeki gerçek yorum sayısını girin</span>
           </div>
 
           <div className="space-y-1.5">
@@ -176,7 +176,7 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-zinc-300 block">Google Place ID (Opsiyonel Canlı API)</label>
+            <label className="text-xs font-bold text-zinc-300 block">Google Place ID</label>
             <input
               type="text"
               value={placeId}
@@ -196,7 +196,7 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
                 {syncStatus.message}
               </span>
             ) : (
-              <span>Yorum havuzu ve Google senkronizasyonunu tetikleyin:</span>
+              <span>Google senkronizasyonu:</span>
             )}
           </div>
 
@@ -207,7 +207,7 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
             className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 transition-all cursor-pointer disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-blue-400 ${syncing ? 'animate-spin' : ''}`} />
-            <span>{syncing ? 'Senkronize Ediliyor...' : 'Yorumları Şimdi Senkronize Et'}</span>
+            <span>{syncing ? 'Senkronize Ediliyor...' : 'Senkronize Et'}</span>
           </button>
         </div>
       </div>
@@ -215,7 +215,7 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
       {/* Reviews List */}
       <div className="space-y-4">
         <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-          Sitede Yayınlanan Müşteri Yorumları ({reviews.length})
+          Yorumlar ({reviews.length})
         </h3>
 
         {reviews.map((rev, index) => (

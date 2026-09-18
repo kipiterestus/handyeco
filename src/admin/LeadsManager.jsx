@@ -16,7 +16,9 @@ import {
   ExternalLink,
   ChevronLeft,
   ChevronRight,
-  Archive
+  Archive,
+  X,
+  Plus
 } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 6;
@@ -30,6 +32,32 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
   const [statusFilter, setStatusFilter] = useState('new'); // Varsayılan olarak 'new' veya 'all'
   const [currentPage, setCurrentPage] = useState(1);
   const [savingId, setSavingId] = useState(null);
+
+  // In-page Modal States (Avoid jumping between tabs)
+  const [schedulingLead, setSchedulingLead] = useState(null);
+  const [accountingLead, setAccountingLead] = useState(null);
+  const [savingModal, setSavingModal] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
+
+  // Schedule modal form state
+  const [scheduleForm, setScheduleForm] = useState({
+    date: new Date().toISOString().split('T')[0],
+    startTime: '10:00',
+    endTime: '12:00',
+    durationMinutes: 120,
+    priceEstimate: '',
+    notes: ''
+  });
+
+  // Accounting modal form state
+  const [accountingForm, setAccountingForm] = useState({
+    revenue: '',
+    materialCost: '0',
+    otherExpenses: '0',
+    paymentStatus: 'paid_card',
+    date: new Date().toISOString().split('T')[0],
+    notes: ''
+  });
 
   const fetchData = async () => {
     try {
@@ -98,6 +126,146 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
       setQuotes(prev => prev.map(q => q.id === id ? { ...q, notes } : q));
     } catch (err) {
       console.error('Error saving notes:', err);
+    }
+  };
+
+  // Calculate End Time based on duration
+  const calculateEndTime = (startTime, durationMinutes) => {
+    if (!startTime) return '12:00';
+    const [h, m] = startTime.split(':').map(Number);
+    const totalM = h * 60 + m + Number(durationMinutes);
+    const endH = Math.floor(totalM / 60) % 24;
+    const endM = totalM % 60;
+    return `${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`;
+  };
+
+  // Open In-Page Schedule Modal
+  const handleOpenScheduleModal = (lead) => {
+    const today = new Date().toISOString().split('T')[0];
+    setScheduleForm({
+      date: today,
+      startTime: '10:00',
+      endTime: calculateEndTime('10:00', 120),
+      durationMinutes: 120,
+      priceEstimate: '',
+      notes: lead.details ? `Müşteri Notu: ${lead.details}` : ''
+    });
+    setSchedulingLead(lead);
+  };
+
+  // Save Schedule Modal Form (No page redirection)
+  const handleSaveSchedule = async (e) => {
+    e.preventDefault();
+    if (!schedulingLead) return;
+    setSavingModal(true);
+    try {
+      const payload = {
+        leadId: schedulingLead.id,
+        customerName: schedulingLead.name || 'İsimsiz Müşteri',
+        customerPhone: schedulingLead.phone || '',
+        postcode: schedulingLead.postcode || 'EH1',
+        address: schedulingLead.postcode ? `${schedulingLead.postcode}, Edinburgh` : 'Edinburgh',
+        service: schedulingLead.service || 'Genel Usta İşi',
+        date: scheduleForm.date,
+        startTime: scheduleForm.startTime,
+        endTime: scheduleForm.endTime,
+        durationMinutes: Number(scheduleForm.durationMinutes) || 120,
+        priceEstimate: scheduleForm.priceEstimate ? Number(scheduleForm.priceEstimate) : '',
+        status: 'scheduled',
+        notes: scheduleForm.notes
+      };
+
+      const res = await fetch('/api/schedule', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSchedule(prev => [data.job, ...prev]);
+        if (schedulingLead.status === 'new') {
+          updateStatus(schedulingLead.id, 'contacted');
+        }
+        setSchedulingLead(null);
+        setToastMsg('📅 Randevu başarıyla takvime kaydedildi!');
+        setTimeout(() => setToastMsg(''), 4000);
+      } else {
+        alert(data.error || 'Randevu kaydedilemedi');
+      }
+    } catch (err) {
+      alert('Hata: ' + err.message);
+    } finally {
+      setSavingModal(false);
+    }
+  };
+
+  // Open In-Page Accounting Modal
+  const handleOpenAccountingModal = (lead) => {
+    const today = new Date().toISOString().split('T')[0];
+    setAccountingForm({
+      revenue: '',
+      materialCost: '0',
+      otherExpenses: '0',
+      paymentStatus: 'paid_card',
+      date: today,
+      notes: lead.details ? `Müşteri: ${lead.name || ''} - ${lead.details}` : ''
+    });
+    setAccountingLead(lead);
+  };
+
+  // Save Accounting Modal Form (No page redirection)
+  const handleSaveAccounting = async (e) => {
+    e.preventDefault();
+    if (!accountingLead) return;
+    setSavingModal(true);
+    try {
+      const rev = Number(accountingForm.revenue) || 0;
+      const mat = Number(accountingForm.materialCost) || 0;
+      const oth = Number(accountingForm.otherExpenses) || 0;
+      const net = rev - (mat + oth);
+
+      const payload = {
+        leadId: accountingLead.id,
+        customerName: accountingLead.name || 'İsimsiz Müşteri',
+        customerPhone: accountingLead.phone || '',
+        postcode: accountingLead.postcode || 'Edinburgh',
+        service: accountingLead.service || 'Usta Hizmeti',
+        revenue: rev,
+        materialCost: mat,
+        otherExpenses: oth,
+        netProfit: net,
+        paymentStatus: accountingForm.paymentStatus,
+        date: accountingForm.date,
+        type: 'job',
+        notes: accountingForm.notes
+      };
+
+      const res = await fetch('/api/finances', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setFinances(prev => [data.record, ...prev]);
+        setAccountingLead(null);
+        setToastMsg('💰 Muhasebe kaydı başarıyla oluşturuldu!');
+        setTimeout(() => setToastMsg(''), 4000);
+      } else {
+        alert(data.error || 'Muhasebe kaydı oluşturulamadı');
+      }
+    } catch (err) {
+      alert('Hata: ' + err.message);
+    } finally {
+      setSavingModal(false);
     }
   };
 
@@ -191,7 +359,7 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider block">Tüm Talepler</span>
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider block">Tümü</span>
             <span className="w-2 h-2 rounded-full bg-blue-500" />
           </div>
           <span className="text-xl sm:text-2xl font-black text-white mt-1 block">{counts.all}</span>
@@ -206,7 +374,7 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider block">🟡 Yeni Talepler</span>
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider block">🟡 Yeni</span>
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
           </div>
           <span className="text-xl sm:text-2xl font-black text-amber-400 mt-1 block">{counts.new}</span>
@@ -414,27 +582,27 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
                   ) : (
                     <button
                       type="button"
-                      onClick={() => onScheduleLead && onScheduleLead(quote)}
+                      onClick={() => handleOpenScheduleModal(quote)}
                       className="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-blue-950 to-indigo-950 hover:from-blue-900 hover:to-indigo-900 border border-blue-800/70 text-blue-300 hover:text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                     >
                       <Calendar className="w-3.5 h-3.5 text-blue-400" />
-                      <span>📅 Randevuya / İşe Planla</span>
+                      <span>📅 Randevu Planla</span>
                     </button>
                   )}
 
                   {/* 2. Accounting Badge or Add to Accounting Button */}
                   {linkedFinance ? (
                     <div 
-                      onClick={() => alert(`⚠️ Bu teklif zaten muhasebeye eklenmiştir!\n\nMüşteri: ${quote.name}\nTarih: ${linkedFinance.date}\nCiro: £${linkedFinance.revenue}\nNet Kâr: £${linkedFinance.netProfit}\n\nTekrar kayıt yapılamaz.`)}
+                      onClick={() => alert(`Bu teklif zaten muhasebeye eklenmiştir.\n\nMüşteri: ${quote.name}\nTarih: ${linkedFinance.date}\nCiro: £${linkedFinance.revenue}\nNet Kâr: £${linkedFinance.netProfit}`)}
                       className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-900/60 flex items-center justify-between text-xs cursor-pointer hover:bg-emerald-950/60 transition-colors"
-                      title="Bu teklif zaten muhasebeye eklendi (Çift kayıt engellendi)"
+                      title="Muhasebeye eklendi"
                     >
                       <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>✅ Muhasebeye Eklendi</span>
+                        <span>✅ Muhasebede</span>
                       </div>
                       <div className="text-[11px] font-black text-white">
-                        £{linkedFinance.revenue || 0} &bull; <span className="text-emerald-400">+£{linkedFinance.netProfit || 0} Kâr</span>
+                        £{linkedFinance.revenue || 0} &bull; <span className="text-emerald-400">+£{linkedFinance.netProfit || 0}</span>
                       </div>
                     </div>
                   ) : (
@@ -442,17 +610,17 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
                       <div className="px-2.5 py-1.5 rounded-xl bg-amber-950/40 border border-amber-800/70 text-amber-300 text-xs font-bold flex items-center justify-between">
                         <div className="flex items-center gap-1.5">
                           <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                          <span>⚠️ Muhasebeye Eklenmedi</span>
+                          <span>⚠️ Muhasebesiz</span>
                         </div>
                         <span className="text-[10px] text-amber-400/80 font-normal">Kayıt Bekliyor</span>
                       </div>
                       <button
                         type="button"
-                        onClick={() => onLogLeadToAccounting && onLogLeadToAccounting(quote)}
+                        onClick={() => handleOpenAccountingModal(quote)}
                         className="w-full py-1.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                       >
                         <PoundSterling className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>+ Muhasebeye / Kâra Ekle</span>
+                        <span>+ Muhasebeye Ekle</span>
                       </button>
                     </div>
                   )}
@@ -532,6 +700,309 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
           </div>
         )}
       </>
+    )}
+
+    {/* 📅 Randevu Planla Modalı (Sayfa değiştirmeden) */}
+    {schedulingLead && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
+        <div className="bg-[#0b0e14] border border-zinc-800 rounded-3xl p-6 max-w-lg w-full shadow-2xl text-left space-y-4 animate-in fade-in zoom-in-95">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-blue-950 text-blue-400 border border-blue-800 flex items-center justify-center">
+                <Calendar className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Randevu Planla</h3>
+                <p className="text-xs text-zinc-400">Sayfadan ayrılmadan takvime iş kaydı oluşturun</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSchedulingLead(null)}
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Selected Lead Summary */}
+          <div className="p-3.5 rounded-2xl bg-zinc-900/80 border border-zinc-800 text-xs space-y-1 text-zinc-300">
+            <div className="flex justify-between font-bold text-white">
+              <span>{schedulingLead.name || 'İsimsiz Müşteri'}</span>
+              <span className="text-blue-400">{schedulingLead.phone || ''}</span>
+            </div>
+            <div className="flex justify-between text-zinc-400 text-[11px]">
+              <span>{schedulingLead.service || 'Usta Hizmeti'}</span>
+              <span>{schedulingLead.postcode || 'Edinburgh'}</span>
+            </div>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSaveSchedule} className="space-y-3.5 text-xs">
+            <div>
+              <label className="block text-zinc-400 font-semibold mb-1">Randevu Tarihi</label>
+              <input
+                type="date"
+                required
+                value={scheduleForm.date}
+                onChange={e => setScheduleForm(prev => ({ ...prev, date: e.target.value }))}
+                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-2.5">
+              <div>
+                <label className="block text-zinc-400 font-semibold mb-1">Başlangıç</label>
+                <input
+                  type="time"
+                  required
+                  value={scheduleForm.startTime}
+                  onChange={e => {
+                    const newStart = e.target.value;
+                    setScheduleForm(prev => ({
+                      ...prev,
+                      startTime: newStart,
+                      endTime: calculateEndTime(newStart, prev.durationMinutes)
+                    }));
+                  }}
+                  className="w-full px-2.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 font-semibold mb-1">Süre</label>
+                <select
+                  value={scheduleForm.durationMinutes}
+                  onChange={e => {
+                    const mins = Number(e.target.value);
+                    setScheduleForm(prev => ({
+                      ...prev,
+                      durationMinutes: mins,
+                      endTime: calculateEndTime(prev.startTime, mins)
+                    }));
+                  }}
+                  className="w-full px-2 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none cursor-pointer"
+                >
+                  <option value={60}>1 Saat</option>
+                  <option value={90}>1.5 Saat</option>
+                  <option value={120}>2 Saat</option>
+                  <option value={180}>3 Saat</option>
+                  <option value={240}>4 Saat</option>
+                  <option value={480}>Tam Gün</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 font-semibold mb-1">Bitiş Saati</label>
+                <input
+                  type="time"
+                  value={scheduleForm.endTime}
+                  onChange={e => setScheduleForm(prev => ({ ...prev, endTime: e.target.value }))}
+                  className="w-full px-2.5 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-zinc-400 font-semibold mb-1">Tahmini Fiyat / Ücret (£)</label>
+              <input
+                type="number"
+                placeholder="Örn: 85 (Opsiyonel)"
+                value={scheduleForm.priceEstimate}
+                onChange={e => setScheduleForm(prev => ({ ...prev, priceEstimate: e.target.value }))}
+                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-zinc-400 font-semibold mb-1">Özel İş Notu / Hatırlatıcı</label>
+              <textarea
+                rows={2}
+                placeholder="İş detayı, alet çantası hazırlığı..."
+                value={scheduleForm.notes}
+                onChange={e => setScheduleForm(prev => ({ ...prev, notes: e.target.value }))}
+                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none leading-relaxed"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="pt-2 flex items-center justify-end gap-2.5 border-t border-zinc-800">
+              <button
+                type="button"
+                onClick={() => setSchedulingLead(null)}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 cursor-pointer transition-colors"
+              >
+                Vazgeç
+              </button>
+              <button
+                type="submit"
+                disabled={savingModal}
+                className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/30 cursor-pointer transition-all disabled:opacity-50 flex items-center gap-1.5"
+              >
+                <span>{savingModal ? 'Kaydediliyor...' : 'Randevuyu Kaydet'}</span>
+              </button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    )}
+
+    {/* 💰 Muhasebeye Ekle Modalı (Sayfa değiştirmeden) */}
+    {accountingLead && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
+        <div className="bg-[#0b0e14] border border-zinc-800 rounded-3xl p-6 max-w-lg w-full shadow-2xl text-left space-y-4 animate-in fade-in zoom-in-95">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center justify-center">
+                <PoundSterling className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Muhasebeye Kaydet</h3>
+                <p className="text-xs text-zinc-400">Sayfadan ayrılmadan iş gelir ve giderini kaydedin</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAccountingLead(null)}
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Selected Lead Summary */}
+          <div className="p-3.5 rounded-2xl bg-zinc-900/80 border border-zinc-800 text-xs space-y-1 text-zinc-300">
+            <div className="flex justify-between font-bold text-white">
+              <span>{accountingLead.name || 'İsimsiz Müşteri'}</span>
+              <span className="text-emerald-400">{accountingLead.phone || ''}</span>
+            </div>
+            <div className="flex justify-between text-zinc-400 text-[11px]">
+              <span>{accountingLead.service || 'Usta Hizmeti'}</span>
+              <span>{accountingLead.postcode || 'Edinburgh'}</span>
+            </div>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSaveAccounting} className="space-y-3.5 text-xs">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-zinc-400 font-semibold mb-1">Tarih</label>
+                <input
+                  type="date"
+                  required
+                  value={accountingForm.date}
+                  onChange={e => setAccountingForm(prev => ({ ...prev, date: e.target.value }))}
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 font-semibold mb-1">Müşteriden Alınan Ücret / Ciro (£)</label>
+                <input
+                  type="number"
+                  required
+                  placeholder="Örn: 120"
+                  value={accountingForm.revenue}
+                  onChange={e => setAccountingForm(prev => ({ ...prev, revenue: e.target.value }))}
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-emerald-400 font-bold focus:border-emerald-500 outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-zinc-400 font-semibold mb-1">Harcanan Malzeme (£)</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={accountingForm.materialCost}
+                  onChange={e => setAccountingForm(prev => ({ ...prev, materialCost: e.target.value }))}
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 font-semibold mb-1">Diğer Masraflar (£)</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={accountingForm.otherExpenses}
+                  onChange={e => setAccountingForm(prev => ({ ...prev, otherExpenses: e.target.value }))}
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-zinc-400 font-semibold mb-1.5">Ödeme Durumu</label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { id: 'paid_card', label: '💳 POS / Kart' },
+                  { id: 'paid_cash', label: '💵 Nakit' },
+                  { id: 'paid_bank', label: '🏦 Havale' },
+                  { id: 'pending', label: '⏳ Bekleniyor' }
+                ].map(pm => (
+                  <button
+                    key={pm.id}
+                    type="button"
+                    onClick={() => setAccountingForm(prev => ({ ...prev, paymentStatus: pm.id }))}
+                    className={`py-2 px-2.5 rounded-xl border text-[11px] font-bold transition-all cursor-pointer text-center ${
+                      accountingForm.paymentStatus === pm.id
+                        ? 'bg-emerald-950 border-emerald-600 text-emerald-300 shadow-sm'
+                        : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    {pm.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-zinc-400 font-semibold mb-1">Açıklama / Not</label>
+              <textarea
+                rows={2}
+                placeholder="İş ve ödeme notları..."
+                value={accountingForm.notes}
+                onChange={e => setAccountingForm(prev => ({ ...prev, notes: e.target.value }))}
+                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none leading-relaxed"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="pt-2 flex items-center justify-end gap-2.5 border-t border-zinc-800">
+              <button
+                type="button"
+                onClick={() => setAccountingLead(null)}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 cursor-pointer transition-colors"
+              >
+                Vazgeç
+              </button>
+              <button
+                type="submit"
+                disabled={savingModal}
+                className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 shadow-md shadow-emerald-600/30 cursor-pointer transition-all disabled:opacity-50 flex items-center gap-1.5"
+              >
+                <span>{savingModal ? 'Kaydediliyor...' : 'Muhasebeye Kaydet'}</span>
+              </button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    )}
+
+    {/* Floating In-Page Toast Notification */}
+    {toastMsg && (
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 animate-in slide-in-from-bottom-5">
+        <CheckCircle2 className="w-5 h-5" />
+        <span>{toastMsg}</span>
+      </div>
     )}
   </div>
 );

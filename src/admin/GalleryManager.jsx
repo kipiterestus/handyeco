@@ -81,9 +81,9 @@ export default function GalleryManager({ data, onSave, token }) {
     <form onSubmit={handleSave} className="space-y-6 text-left">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 className="text-xl font-black text-white">Tamamlanan İşler & Fotoğraf Galerisi</h2>
+          <h2 className="text-xl font-black text-white">Galeri</h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            Edinburgh'da tamamladığınız iş fotoğraflarını yükleyin, konumlarını belirleyin veya Öncesi / Sonrası karşılaştırması ekleyin.
+            İş fotoğrafları ve Öncesi / Sonrası görselleri.
           </p>
         </div>
 
@@ -94,7 +94,7 @@ export default function GalleryManager({ data, onSave, token }) {
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 cursor-pointer transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Yeni Proje Fotoğrafı</span>
+            <span>+ Fotoğraf Ekle</span>
           </button>
 
           <button
@@ -103,7 +103,7 @@ export default function GalleryManager({ data, onSave, token }) {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50"
           >
             {saved ? <CheckCircle2 className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
-            <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Galeriyi Kaydet'}</span>
+            <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Kaydet'}</span>
           </button>
         </div>
       </div>
@@ -129,7 +129,7 @@ export default function GalleryManager({ data, onSave, token }) {
                 <label className="absolute bottom-2 right-2 px-3 py-1.5 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white text-[11px] font-bold flex items-center gap-1 shadow-md cursor-pointer transition-all">
                   <Upload className="w-3 h-3" />
                   <span>
-                    {uploadingFor?.id === item.id && uploadingFor?.type === 'main' ? 'Yükleniyor...' : 'Fotoğrafı Değiştir'}
+                    {uploadingFor?.id === item.id && uploadingFor?.type === 'main' ? 'Yükleniyor...' : 'Değiştir'}
                   </span>
                   <input
                     type="file"
@@ -143,7 +143,7 @@ export default function GalleryManager({ data, onSave, token }) {
               {/* Title & Badge */}
               <div className="space-y-2.5">
                 <div>
-                  <label className="block text-[11px] font-semibold text-zinc-300 mb-0.5">İş / Proje Başlığı</label>
+                  <label className="block text-[11px] font-semibold text-zinc-300 mb-0.5">Proje Başlığı</label>
                   <input
                     type="text"
                     value={item.title || ''}
@@ -189,7 +189,7 @@ export default function GalleryManager({ data, onSave, token }) {
                       onChange={e => handleUpdate(item.id, 'isBeforeAfter', e.target.checked)}
                       className="rounded bg-zinc-900 border-zinc-700 text-blue-600 focus:ring-0 cursor-pointer"
                     />
-                    <span>"Öncesi" Fotoğrafı Ekle (Before/After)</span>
+                    <span>Öncesi / Sonrası Karşılaştırma</span>
                   </label>
 
                   {item.isBeforeAfter && (
@@ -197,7 +197,7 @@ export default function GalleryManager({ data, onSave, token }) {
                       <div className="flex items-center justify-between text-[11px] text-zinc-400">
                         <span>Öncesi Fotoğrafı:</span>
                         <label className="text-blue-400 hover:underline font-bold cursor-pointer">
-                          <span>{uploadingFor?.id === item.id && uploadingFor?.type === 'before' ? 'Yükleniyor...' : 'Öncesi Fotoğrafını Yükle'}</span>
+                          <span>{uploadingFor?.id === item.id && uploadingFor?.type === 'before' ? 'Yükleniyor...' : 'Öncesi Yükle'}</span>
                           <input
                             type="file"
                             accept="image/*"
@@ -228,7 +228,7 @@ export default function GalleryManager({ data, onSave, token }) {
                 className="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>Fotoğrafı Sil</span>
+                <span>Sil</span>
               </button>
             </div>
           </div>

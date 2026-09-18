@@ -46,6 +46,7 @@ export default function AdminLayout() {
   
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [unreadLeadsCount, setUnreadLeadsCount] = useState(0);
   
   // State for passing lead data to schedule and accounting
   const [initialLeadForSchedule, setInitialLeadForSchedule] = useState(null);
@@ -53,10 +54,54 @@ export default function AdminLayout() {
 
   const { content, refreshContent, updateSectionLocally } = useContent();
 
+  // Check for new unread leads
+  const checkUnreadLeads = async () => {
+    if (!token) return;
+    try {
+      const res = await fetch('/api/quotes', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.quotes)) {
+          const lastSeen = Number(localStorage.getItem('handyeco_last_seen_quote_time') || 0);
+          
+          // Unread: new quotes arriving after lastSeen or status === 'new'
+          const unread = data.quotes.filter(q => {
+            const quoteTime = q.createdAt ? new Date(q.createdAt).getTime() : 0;
+            return q.status === 'new' && (quoteTime > lastSeen || !lastSeen);
+          });
+
+          if (activeTab === 'leads') {
+            setUnreadLeadsCount(0);
+          } else {
+            setUnreadLeadsCount(unread.length);
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Error checking unread leads:', e);
+    }
+  };
+
+  useEffect(() => {
+    if (isAuth && token) {
+      checkUnreadLeads();
+      const interval = setInterval(checkUnreadLeads, 25000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuth, token, activeTab]);
+
   const handleSelectTab = (tabId) => {
     setActiveTab(tabId);
     localStorage.setItem('handyeco_admin_active_tab', tabId);
     setSidebarOpen(false);
+
+    // When visiting leads, immediately clear notification badge and update last seen
+    if (tabId === 'leads') {
+      localStorage.setItem('handyeco_last_seen_quote_time', String(Date.now()));
+      setUnreadLeadsCount(0);
+    }
   };
 
   // Verify token on mount
@@ -165,23 +210,28 @@ export default function AdminLayout() {
     return <AdminLogin onLoginSuccess={handleLoginSuccess} />;
   }
 
-  // 1. KATEGORİ: İŞ & OPERASYON YÖNETİMİ
+  // 1. KATEGORİ: OPERASYON
   const operationsNav = [
-    { id: 'leads', label: 'Gelen Teklifler & Talepler', icon: Inbox },
-    { id: 'schedule', label: 'İş Takip & Randevular', icon: Calendar },
+    { 
+      id: 'leads', 
+      label: 'Talepler', 
+      icon: Inbox,
+      unreadCount: unreadLeadsCount
+    },
+    { id: 'schedule', label: 'Randevular', icon: Calendar },
     { id: 'accounting', label: 'Muhasebe', icon: PoundSterling },
   ];
 
-  // 2. KATEGORİ: SİTE İÇERİK & AYARLAR (Telegram buraya alındı)
+  // 2. KATEGORİ: SİTE AYARLARI
   const siteSettingsNav = [
-    { id: 'telegram', label: 'Telegram Bot Bildirimleri', icon: Send },
-    { id: 'business', label: 'İşletme & Fiyatlandırma', icon: Building2 },
-    { id: 'hero', label: 'Hero & Ana Başlıklar', icon: Sparkles },
-    { id: 'services', label: 'Hizmetler & Kapsam', icon: Wrench },
-    { id: 'gallery', label: 'Fotoğraf Galerisi', icon: Camera },
-    { id: 'reviews', label: 'Müşteri Yorumları', icon: Star },
+    { id: 'telegram', label: 'Telegram Bot', icon: Send },
+    { id: 'business', label: 'İşletme Bilgileri', icon: Building2 },
+    { id: 'hero', label: 'Ana Sayfa', icon: Sparkles },
+    { id: 'services', label: 'Hizmetler', icon: Wrench },
+    { id: 'gallery', label: 'Galeri', icon: Camera },
+    { id: 'reviews', label: 'Yorumlar', icon: Star },
     { id: 'faq_areas', label: 'Bölgeler & SSS', icon: MapPin },
-    { id: 'seo', label: 'Edinburgh SEO Yönetimi', icon: Search },
+    { id: 'seo', label: 'SEO', icon: Search },
   ];
 
   return (
@@ -226,7 +276,7 @@ export default function AdminLayout() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-bold border border-zinc-800 transition-all"
           >
-            <span>Yayındaki Siteyi Gör</span>
+            <span>Siteyi Gör</span>
             <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
           </a>
 
@@ -236,7 +286,7 @@ export default function AdminLayout() {
             title="Oturumu Kapat"
           >
             <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Çıkış Yap</span>
+            <span className="hidden sm:inline">Çıkış</span>
           </button>
         </div>
       </header>
@@ -249,11 +299,11 @@ export default function AdminLayout() {
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
           
-          {/* 1. KATEGORİ: İŞ & OPERASYON YÖNETİMİ */}
+          {/* 1. KATEGORİ: OPERASYON */}
           <div className="space-y-1 text-left">
             <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
               <Briefcase className="w-3 h-3" />
-              <span>İş & Operasyon Yönetimi</span>
+              <span>Operasyon</span>
             </div>
 
             {operationsNav.map((item) => {
@@ -275,13 +325,18 @@ export default function AdminLayout() {
                     <span className="truncate whitespace-nowrap">{item.label}</span>
                   </div>
 
-                  {item.badge && (
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                  {item.unreadCount > 0 ? (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white animate-pulse shadow-sm shadow-rose-600/40 shrink-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping shrink-0" />
+                      <span>{item.unreadCount} YENİ</span>
+                    </span>
+                  ) : item.badge ? (
+                    <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md ${
                       isActive ? 'bg-white/20 text-white' : 'bg-zinc-900 text-zinc-300 border border-zinc-800'
                     }`}>
                       {item.badge}
                     </span>
-                  )}
+                  ) : null}
                 </button>
               );
             })}
@@ -289,11 +344,11 @@ export default function AdminLayout() {
 
           <div className="border-t border-zinc-800/80 my-2" />
 
-          {/* 2. KATEGORİ: SİTE İÇERİK & AYARLAR */}
+          {/* 2. KATEGORİ: SİTE AYARLARI */}
           <div className="space-y-1 text-left">
             <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
               <SlidersHorizontal className="w-3 h-3" />
-              <span>Site İçerik & Ayarlar</span>
+              <span>Site Ayarları</span>
             </div>
 
             {siteSettingsNav.map((item) => {

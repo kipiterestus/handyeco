@@ -73,9 +73,9 @@ export default function HeroEditor({ data, onSave, token }) {
     <form onSubmit={handleSave} className="space-y-6 text-left">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 className="text-xl font-black text-white">Hero Alanı & Ana Başlıklar</h2>
+          <h2 className="text-xl font-black text-white">Ana Sayfa (Hero)</h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            Sitenin en üstündeki ana başlık, pazarlama açıklaması, güvence maddeleri ve usta fotoğrafını yönetin.
+            Başlık, açıklama ve görsel yönetimi.
           </p>
         </div>
 
@@ -85,7 +85,7 @@ export default function HeroEditor({ data, onSave, token }) {
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50"
         >
           {saved ? <CheckCircle2 className="w-4 h-4 text-white" /> : <Save className="w-4 h-4" />}
-          <span>{saving ? 'Kaydediliyor...' : saved ? 'Başarıyla Kaydedildi!' : 'Değişiklikleri Kaydet'}</span>
+          <span>{saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Kaydet'}</span>
         </button>
       </div>
 
@@ -96,7 +96,7 @@ export default function HeroEditor({ data, onSave, token }) {
           <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-md">
             <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-blue-400" />
-              <span>Ana Başlık & Değer Vaadi</span>
+              <span>Başlık & Metinler</span>
             </h3>
 
             <div className="space-y-3">
@@ -145,14 +145,14 @@ export default function HeroEditor({ data, onSave, token }) {
           {/* Checklist Bullets */}
           <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-3 shadow-md">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">Güvence ve Kalite Maddeleri</h3>
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">Güvence Maddeleri</h3>
               <button
                 type="button"
                 onClick={handleAddBullet}
                 className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Madde Ekle</span>
+                <span>+ Madde Ekle</span>
               </button>
             </div>
 
@@ -183,7 +183,7 @@ export default function HeroEditor({ data, onSave, token }) {
           <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-md">
             <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-blue-400" />
-              <span>Hero Fotoğrafı Önizlemesi</span>
+              <span>Görsel Önizleme</span>
             </h3>
 
             {/* Current Image Preview */}
@@ -202,10 +202,10 @@ export default function HeroEditor({ data, onSave, token }) {
 
             {/* Upload Button */}
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Hero Fotoğrafını Değiştir</label>
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Fotoğraf Değiştir</label>
               <label className="w-full py-3 px-4 rounded-xl border border-dashed border-zinc-700 hover:border-blue-500 bg-zinc-900 text-zinc-300 hover:text-white flex items-center justify-center gap-2 text-xs font-bold cursor-pointer transition-all">
                 <Upload className="w-4 h-4 text-blue-400" />
-                <span>{uploading ? 'Optimize Ediliyor & Yükleniyor...' : 'Yeni Fotoğraf Yükle (Otomatik WebP)'}</span>
+                <span>{uploading ? 'Yükleniyor...' : 'Fotoğraf Yükle'}</span>
                 <input
                   type="file"
                   accept="image/*"

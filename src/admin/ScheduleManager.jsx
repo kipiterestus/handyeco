@@ -25,7 +25,8 @@ import {
   ChevronRight,
   Sparkles,
   ArrowRight,
-  Briefcase
+  Briefcase,
+  Bell
 } from 'lucide-react';
 
 export default function ScheduleManager({ token, initialLeadData = null, onClearInitialLead = null, onLogJobToAccounting = null }) {
@@ -41,6 +42,8 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [sendingReminder, setSendingReminder] = useState(false);
+  const [reminderStatus, setReminderStatus] = useState(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -425,6 +428,36 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
     return acc;
   }, {});
 
+  // Send Tomorrow's Appointment Reminder via Telegram
+  const handleSendTomorrowReminder = async () => {
+    setSendingReminder(true);
+    setReminderStatus(null);
+    try {
+      const res = await fetch('/api/telegram/reminders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        if (data.delivered) {
+          setReminderStatus({ type: 'success', message: `✅ ${data.count} adet randevu Telegram'a başarıyla iletildi!` });
+        } else {
+          setReminderStatus({ type: 'info', message: `ℹ️ ${data.message || 'Yarın için randevu bulunamadı.'}` });
+        }
+      } else {
+        setReminderStatus({ type: 'error', message: `❌ ${data.error || 'Hatırlatıcı gönderilemedi.'}` });
+      }
+    } catch (err) {
+      setReminderStatus({ type: 'error', message: `❌ Hata: ${err.message}` });
+    } finally {
+      setSendingReminder(false);
+      setTimeout(() => setReminderStatus(null), 6000);
+    }
+  };
+
   // Print PDF function
   const handlePrintPDF = () => {
     window.print();
@@ -459,23 +492,35 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
       <div className="print:hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2.5">
-            <h2 className="text-xl font-black text-white tracking-tight">İş Takip & Randevular</h2>
+            <h2 className="text-xl font-black text-white tracking-tight">Randevular</h2>
           </div>
           <p className="text-xs text-zinc-400 mt-1">
-            Hangi müşteriye saat kaçta gideceğinizi planlayın, boş saatlerinizi görün ve PDF olarak yazdırın.
+            Müşteri randevuları ve boş saat yönetimi.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+          {/* Telegram Reminder Button */}
+          <button
+            type="button"
+            onClick={handleSendTomorrowReminder}
+            disabled={sendingReminder}
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-sky-950/60 hover:bg-sky-900/60 text-sky-300 hover:text-white border border-sky-800/60 text-xs font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50"
+            title="Yarınki işleri Telegram'a bildirim olarak gönder"
+          >
+            <Bell className={`w-3.5 h-3.5 text-sky-400 ${sendingReminder ? 'animate-bounce' : ''}`} />
+            <span>{sendingReminder ? 'Gönderiliyor...' : 'Yarınki İşleri Gönder'}</span>
+          </button>
+
           {/* PDF Download Button */}
           <button
             type="button"
             onClick={handlePrintPDF}
             className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-800 text-xs font-bold transition-all cursor-pointer shadow-sm"
-            title="Haftalık programı PDF olarak kaydet veya yazıcıdan çıkar"
+            title="PDF İndir / Yazdır"
           >
             <Printer className="w-3.5 h-3.5 text-blue-400" />
-            <span>Programı PDF İndir / Yazdır</span>
+            <span>PDF İndir</span>
           </button>
 
           {/* Add Job Button */}
@@ -485,16 +530,30 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
             className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Yeni Randevu / İş Planla</span>
+            <span>Yeni Randevu</span>
           </button>
         </div>
       </div>
+
+      {/* Reminder Status Alert */}
+      {reminderStatus && (
+        <div className={`print:hidden p-3 rounded-xl border text-xs flex items-center gap-2 ${
+          reminderStatus.type === 'success' 
+            ? 'bg-emerald-950/60 border-emerald-800 text-emerald-300' 
+            : reminderStatus.type === 'info'
+            ? 'bg-blue-950/60 border-blue-800 text-blue-300'
+            : 'bg-rose-950/60 border-rose-800 text-rose-300'
+        }`}>
+          {reminderStatus.type === 'success' ? <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
+          <span>{reminderStatus.message}</span>
+        </div>
+      )}
 
       {/* 4 Weekly Quick Stat Cards (Screen Only) */}
       <div className="print:hidden grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Bu Haftaki Toplam İş</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider">Haftalık İş</span>
             <span className="p-1.5 rounded-lg bg-blue-950/60 text-blue-400 border border-blue-900/60">
               <CalendarDays className="w-3.5 h-3.5" />
             </span>
@@ -507,7 +566,7 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
 
         <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Bugünkü İşler</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider">Bugün</span>
             <span className="p-1.5 rounded-lg bg-amber-950/60 text-amber-400 border border-amber-900/60">
               <Clock className="w-3.5 h-3.5" />
             </span>
@@ -515,12 +574,12 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
           <div className="text-2xl font-black text-amber-400 mt-1">
             {schedule.filter(j => j.date === todayIso).length} Müşteri
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Bugün gidilecek işler</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block">Gidilecek işler</span>
         </div>
 
         <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Haftalık Müsait Saatler</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider">Müsaitlik</span>
             <span className="p-1.5 rounded-lg bg-emerald-950/60 text-emerald-400 border border-emerald-900/60">
               <Sparkles className="w-3.5 h-3.5" />
             </span>
@@ -528,12 +587,12 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
           <div className="text-2xl font-black text-emerald-400 mt-1">
             🟢 Boş Saatler Var
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Yeni teklif kabul edilebilir</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block">Teklif alınabilir</span>
         </div>
 
         <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Bekleyen / Yeni Teklifler</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider">Bekleyen Talepler</span>
             <span className="p-1.5 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-900/60">
               <Briefcase className="w-3.5 h-3.5" />
             </span>
@@ -541,7 +600,7 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
           <div className="text-2xl font-black text-indigo-300 mt-1">
             {quotes.filter(q => q.status === 'new' || !q.status).length} Talep
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Hemen randevuya dönüştür</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block">Randevuya planla</span>
         </div>
       </div>
 
@@ -559,7 +618,7 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            📅 Güncel & Gelecek Randevular ({activeUpcomingCount})
+            📅 Randevular ({activeUpcomingCount})
           </button>
 
           <button
@@ -571,7 +630,7 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            ⏳ Geçmiş Randevular ({pastCount})
+            ⏳ Geçmiş ({pastCount})
           </button>
 
           <button
@@ -583,7 +642,7 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            ⏰ Bu Hafta Hangi Saatlerim Boş?
+            ⏰ Boş Saatler
           </button>
         </div>
 

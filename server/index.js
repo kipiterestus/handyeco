@@ -28,7 +28,7 @@ import {
   saveTotpSecret,
   resetTotp
 } from './store.js';
-import { sendTelegramNotification } from './telegram.js';
+import { sendTelegramNotification, sendTelegramDailyAppointmentReminder } from './telegram.js';
 import { syncReviews } from './reviewsSync.js';
 import { SECURITY_HEADERS, loginRateLimiter, quoteRateLimiter, corsMiddleware } from './security.js';
 
@@ -331,6 +331,51 @@ app.post('/api/telegram/test', requireAuth, async (req, res) => {
   }
 });
 
+// Send Tomorrow's Appointment Reminder via Telegram (Manual or Automatic Trigger)
+app.post('/api/telegram/reminders', requireAuth, async (req, res) => {
+  try {
+    const siteConfig = getSection('siteConfig') || {};
+    const botToken = siteConfig.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = siteConfig.telegramChatId || process.env.TELEGRAM_CHAT_ID;
+
+    if (!botToken || !chatId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Telegram Bot Token ve Chat ID yapılandırılmamış. Lütfen Yönetim Panelinden Telegram sekmesini kontrol edin.'
+      });
+    }
+
+    // Default to tomorrow in UK time (YYYY-MM-DD)
+    const targetDate = req.body?.targetDate || (() => {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      return d.toLocaleDateString('en-CA', { timeZone: 'Europe/London' });
+    })();
+
+    const allSchedule = getSchedule() || [];
+    const targetJobs = allSchedule.filter(j => j.date === targetDate && j.status !== 'cancelled');
+
+    if (targetJobs.length === 0) {
+      return res.json({
+        success: true,
+        delivered: false,
+        count: 0,
+        message: `${targetDate} (Yarın) için planlanmış herhangi bir randevu bulunamadı.`
+      });
+    }
+
+    const result = await sendTelegramDailyAppointmentReminder(targetJobs, targetDate, botToken, chatId);
+    res.json({
+      ...result,
+      targetDate,
+      message: `${targetDate} tarihli ${targetJobs.length} adet randevu hatırlatması Telegram'a başarıyla iletildi!`
+    });
+  } catch (err) {
+    console.error('[Telegram] Reminder error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Sync Google & MyBuilder reviews
 app.post('/api/reviews/sync', requireAuth, async (req, res) => {
   try {
@@ -412,7 +457,51 @@ setInterval(() => {
   syncReviews().catch(err => console.error('[AutoSync Error]:', err));
 }, 60 * 60 * 1000);
 
+// Automated Daily Appointment Reminders (Checks every 30 minutes in the evening UK time)
+let lastReminderDateSent = null;
+
+async function checkAndSendAppointmentReminders() {
+  try {
+    const siteConfig = getSection('siteConfig') || {};
+    const botToken = siteConfig.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = siteConfig.telegramChatId || process.env.TELEGRAM_CHAT_ID;
+    if (!botToken || !chatId) return;
+
+    // Current hour in UK time
+    const nowUk = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', hour12: false });
+    const currentHour = parseInt(nowUk, 10);
+
+    // Send reminders in the evening between 19:00 and 21:00 (7 PM - 9 PM) for next day
+    if (currentHour >= 19 && currentHour <= 21) {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      const tomorrowDate = d.toLocaleDateString('en-CA', { timeZone: 'Europe/London' });
+
+      if (lastReminderDateSent === tomorrowDate) {
+        // Already dispatched for tomorrow
+        return;
+      }
+
+      const allSchedule = getSchedule() || [];
+      const tomorrowJobs = allSchedule.filter(j => j.date === tomorrowDate && j.status !== 'cancelled');
+
+      if (tomorrowJobs.length > 0) {
+        console.log(`\n[AutoReminder] ⏰ ${tomorrowDate} tarihli ${tomorrowJobs.length} randevu için otomatik Telegram bildirimi iletiliyor...`);
+        await sendTelegramDailyAppointmentReminder(tomorrowJobs, tomorrowDate, botToken, chatId);
+        lastReminderDateSent = tomorrowDate;
+      }
+    }
+  } catch (err) {
+    console.error('[AutoReminder Error]:', err.message);
+  }
+}
+
+setInterval(checkAndSendAppointmentReminders, 30 * 60 * 1000);
+setTimeout(checkAndSendAppointmentReminders, 5000);
+
 app.listen(PORT, () => {
   console.log(`\n🚀 Handyeco API Server active at: http://localhost:${PORT}`);
   console.log(`📱 Telegram Bot: ${process.env.TELEGRAM_BOT_TOKEN ? '✅ Configured' : '⚠️ Ready via Admin Panel or .env'}`);
+  console.log(`🔔 Otomatik Randevu Hatırlatıcısı: Aktif (Her gün 19:00 - 21:00 arası ertesi gün için gönderilir)`);
 });
+
