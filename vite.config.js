@@ -36,12 +36,13 @@ import { SECURITY_HEADERS, loginRateLimiter, quoteRateLimiter } from './server/s
 
 // Shared pending TOTP sessions (dev server only)
 const pendingTotpSessions = new Map();
-setInterval(() => {
+const totpTimer = setInterval(() => {
   const now = Date.now();
   for (const [token, session] of pendingTotpSessions.entries()) {
     if (now > session.expiresAt) pendingTotpSessions.delete(token);
   }
 }, 5 * 60 * 1000);
+if (totpTimer.unref) totpTimer.unref();
 
 
 function readEnv() {
@@ -366,15 +367,15 @@ const backendApiPlugin = () => ({
 });
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     tailwindcss(),
-    backendApiPlugin(),
+    ...(command === 'serve' ? [backendApiPlugin()] : []),
   ],
   server: {
     watch: {
       ignored: ['**/server/data/**', '**/server/data/*.json']
     }
   }
-});
+}));

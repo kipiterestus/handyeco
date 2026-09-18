@@ -79,7 +79,8 @@ class RateLimiter {
     this.windowMs = options.windowMs || 15 * 60 * 1000;
     this.maxRequests = options.maxRequests || 5;
     this.records = new Map();
-    setInterval(() => this.cleanup(), 5 * 60 * 1000);
+    const timer = setInterval(() => this.cleanup(), 5 * 60 * 1000);
+    if (timer.unref) timer.unref();
   }
   check(ip) {
     const now = Date.now();
@@ -145,7 +146,8 @@ export class TokenManager {
   constructor(ttlMs = 24 * 60 * 60 * 1000) {
     this.ttlMs = ttlMs;
     this.tokens = new Map();
-    setInterval(() => this.cleanup(), 15 * 60 * 1000);
+    const timer = setInterval(() => this.cleanup(), 15 * 60 * 1000);
+    if (timer.unref) timer.unref();
   }
   create() {
     const token = crypto.randomBytes(32).toString("hex");
