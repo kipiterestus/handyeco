@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Star, 
   CheckCircle2, 
@@ -7,11 +7,83 @@ import {
   Search, 
   MapPin,
   Calendar,
-  Award
+  Award,
+  ArrowUpDown,
+  Clock
 } from 'lucide-react';
 import { REVIEWS as FALLBACK_REVIEWS, REVIEWS_STATS } from '../data/reviewsData';
 import { BUSINESS_INFO } from '../data/businessData';
 import { useContent } from '../context/ContentContext';
+
+/**
+ * Calculates a comparable timestamp from explicit date, relativeTime string, or ID.
+ */
+export function getReviewTimestamp(review) {
+  if (!review) return 0;
+
+  // 1. Direct explicit date or createdAt (YYYY-MM-DD or ISO string)
+  if (review.date) {
+    const parsed = new Date(review.date).getTime();
+    if (!isNaN(parsed)) return parsed;
+  }
+  if (review.createdAt) {
+    const parsed = new Date(review.createdAt).getTime();
+    if (!isNaN(parsed)) return parsed;
+  }
+
+  // 2. Parse relative time text (e.g. "3 days ago", "1 week ago", "2 months ago")
+  const rel = (review.relativeTime || '').toLowerCase().trim();
+  const now = Date.now();
+  const HOUR = 60 * 60 * 1000;
+  const DAY = 24 * HOUR;
+  const WEEK = 7 * DAY;
+  const MONTH = 30 * DAY;
+  const YEAR = 365 * DAY;
+
+  if (rel.includes('hour') || rel.includes('saat')) {
+    const match = rel.match(/(\d+)/);
+    const count = match ? parseInt(match[1], 10) : 1;
+    return now - count * HOUR;
+  }
+  if (rel.includes('yesterday') || rel.includes('dün')) {
+    return now - DAY;
+  }
+  if (rel.includes('day') || rel.includes('gün')) {
+    const match = rel.match(/(\d+)/);
+    const count = match ? parseInt(match[1], 10) : 1;
+    return now - count * DAY;
+  }
+  if (rel.includes('week') || rel.includes('hafta')) {
+    const match = rel.match(/(\d+)/);
+    const count = match ? parseInt(match[1], 10) : 1;
+    return now - count * WEEK;
+  }
+  if (rel.includes('month') || rel.includes('ay')) {
+    const match = rel.match(/(\d+)/);
+    const count = match ? parseInt(match[1], 10) : 1;
+    return now - count * MONTH;
+  }
+  if (rel.includes('year') || rel.includes('yıl')) {
+    const match = rel.match(/(\d+)/);
+    const count = match ? parseInt(match[1], 10) : 1;
+    return now - count * YEAR;
+  }
+  if (rel.includes('recently') || rel.includes('yakın zamanda') || rel.includes('yeni')) {
+    return now - 2 * DAY;
+  }
+
+  // 3. Fallback: Check for timestamp embedded in review ID (e.g. rev-1726000000)
+  if (review.id) {
+    const idMatch = review.id.match(/\d{10,13}/);
+    if (idMatch) {
+      let val = parseInt(idMatch[0], 10);
+      if (val < 10000000000) val *= 1000;
+      return val;
+    }
+  }
+
+  return 0;
+}
 
 export default function GoogleReviews() {
   const { content } = useContent();
@@ -20,6 +92,7 @@ export default function GoogleReviews() {
 
   const [selectedPlatform, setSelectedPlatform] = useState("all"); // 'all' | 'google' | 'mybuilder'
   const [selectedFilter, setSelectedFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("newest"); // 'newest' (Tarihe göre - en yeni ilk) | 'oldest' | 'helpful'
   const [searchQuery, setSearchQuery] = useState("");
   const [likes, setLikes] = useState(() => {
     const initial = {};
@@ -28,16 +101,27 @@ export default function GoogleReviews() {
   });
   const [likedReviews, setLikedReviews] = useState({});
 
-  // Filter reviews
-  const filteredReviews = reviewsList.filter(rev => {
-    const matchesPlatform = selectedPlatform === "all" || rev.platform === selectedPlatform;
-    const matchesCategory = selectedFilter === "all" || rev.category === selectedFilter;
-    const matchesSearch = searchQuery === "" || 
-      rev.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      rev.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (rev.location && rev.location.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesPlatform && matchesCategory && matchesSearch;
-  });
+  // Filter & Sort reviews chronologically by date
+  const filteredReviews = useMemo(() => {
+    return reviewsList.filter(rev => {
+      const matchesPlatform = selectedPlatform === "all" || rev.platform === selectedPlatform;
+      const matchesCategory = selectedFilter === "all" || rev.category === selectedFilter;
+      const matchesSearch = searchQuery === "" || 
+        rev.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        rev.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (rev.location && rev.location.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesPlatform && matchesCategory && matchesSearch;
+    }).sort((a, b) => {
+      if (sortBy === 'oldest') {
+        return getReviewTimestamp(a) - getReviewTimestamp(b);
+      }
+      if (sortBy === 'helpful') {
+        return (likes[b.id] ?? b.likes ?? 0) - (likes[a.id] ?? a.likes ?? 0);
+      }
+      // Varsayılan: newest (Tarihe göre en yeni en üstte)
+      return getReviewTimestamp(b) - getReviewTimestamp(a);
+    });
+  }, [reviewsList, selectedPlatform, selectedFilter, searchQuery, sortBy, likes]);
 
   const handleLike = (id, e) => {
     e.stopPropagation();
@@ -183,16 +267,63 @@ export default function GoogleReviews() {
             </div>
           </div>
 
-          {/* Search reviews input */}
-          <div className="relative w-full md:w-64">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search reviews..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-            />
+          {/* Right Side: Sort & Search Bar */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+            {/* Sort Dropdown / Pills */}
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl shrink-0">
+              <div className="flex items-center gap-1 px-2 text-[11px] font-bold text-slate-500">
+                <ArrowUpDown className="w-3 h-3 text-slate-400" />
+                <span className="hidden lg:inline">Sort:</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSortBy("newest")}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  sortBy === "newest"
+                    ? "bg-white text-blue-600 shadow-2xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+                title="Tarihe göre en yeni yorumlar önce"
+              >
+                Newest First
+              </button>
+              <button
+                type="button"
+                onClick={() => setSortBy("oldest")}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  sortBy === "oldest"
+                    ? "bg-white text-slate-900 shadow-2xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+                title="En eski yorumlar önce"
+              >
+                Oldest
+              </button>
+              <button
+                type="button"
+                onClick={() => setSortBy("helpful")}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  sortBy === "helpful"
+                    ? "bg-white text-slate-900 shadow-2xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+                title="En çok beğenilenler"
+              >
+                Helpful
+              </button>
+            </div>
+
+            {/* Search reviews input */}
+            <div className="relative w-full sm:w-56">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search reviews..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+              />
+            </div>
           </div>
         </div>
 

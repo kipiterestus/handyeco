@@ -33,12 +33,14 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
 
   const handleAddReview = () => {
     const newId = 'rev-' + Date.now();
+    const today = new Date().toISOString().split('T')[0];
     const newRev = {
       id: newId,
       author: 'Yeni Edinburgh Müşterisi',
       location: 'Morningside, Edinburgh (EH10)',
       rating: 5,
-      relativeTime: 'Yakın zamanda',
+      date: today,
+      relativeTime: 'Bugün',
       service: 'Mobilya Montajı & Tamirat',
       platform: 'google',
       likes: 1,
@@ -248,8 +250,8 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="space-y-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              <div className="space-y-1 sm:col-span-1 lg:col-span-1">
                 <label className="text-[11px] font-semibold text-zinc-400">Müşteri Adı</label>
                 <input
                   type="text"
@@ -259,7 +261,7 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1 sm:col-span-1 lg:col-span-1">
                 <label className="text-[11px] font-semibold text-zinc-400">Konum / Bölge</label>
                 <input
                   type="text"
@@ -269,13 +271,34 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1 sm:col-span-1 lg:col-span-1">
                 <label className="text-[11px] font-semibold text-zinc-400">Yapılan Hizmet / İş</label>
                 <input
                   type="text"
                   value={rev.service || ''}
                   onChange={(e) => handleUpdate(rev.id, 'service', e.target.value)}
                   className="w-full px-3 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-lg text-white"
+                />
+              </div>
+
+              <div className="space-y-1 sm:col-span-1 lg:col-span-1">
+                <label className="text-[11px] font-semibold text-zinc-400">Tarih (GG/AA/YYYY)</label>
+                <input
+                  type="date"
+                  value={rev.date || ''}
+                  onChange={(e) => handleUpdate(rev.id, 'date', e.target.value)}
+                  className="w-full px-3 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-lg text-white"
+                />
+              </div>
+
+              <div className="space-y-1 sm:col-span-1 lg:col-span-1">
+                <label className="text-[11px] font-semibold text-zinc-400">Görünen Süre (Örn: 3 days ago)</label>
+                <input
+                  type="text"
+                  value={rev.relativeTime || ''}
+                  onChange={(e) => handleUpdate(rev.id, 'relativeTime', e.target.value)}
+                  className="w-full px-3 py-1.5 text-xs bg-zinc-900 border border-zinc-700 rounded-lg text-white"
+                  placeholder="3 days ago"
                 />
               </div>
             </div>
