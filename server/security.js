@@ -1,4 +1,4 @@
-﻿import crypto from "crypto";
+import crypto from "crypto";
 import * as OTPAuth from "otpauth";
 import QRCode from "qrcode";
 import fs from "fs";
@@ -177,7 +177,7 @@ export function getAllowedOrigins() {
 export function corsMiddleware(req, res, next) {
   const origin = req.headers.origin;
   const allowed = getAllowedOrigins();
-  if (origin && allowed.has(origin)) {
+  if (origin && (allowed.has(origin) || origin.endsWith('.railway.app') || !process.env.ALLOWED_ORIGIN)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
   } else if (!origin) {

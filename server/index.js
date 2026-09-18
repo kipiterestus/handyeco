@@ -1,4 +1,5 @@
 import express from 'express';
+import fs from 'fs';
 import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -55,6 +56,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve uploaded images statically
 app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
+
+// Serve production build files if present
+const distDir = path.join(process.cwd(), 'dist');
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir));
+}
 
 
 // Auth middleware guard for protected routes
@@ -498,6 +505,19 @@ async function checkAndSendAppointmentReminders() {
 
 setInterval(checkAndSendAppointmentReminders, 30 * 60 * 1000);
 setTimeout(checkAndSendAppointmentReminders, 5000);
+
+// Client-side SPA routing fallback (serves index.html for non-API routes in production)
+app.use((req, res, next) => {
+  if (req.method !== 'GET') return next();
+  if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+    return next();
+  }
+  const indexPath = path.join(process.cwd(), 'dist', 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+  res.status(404).send('Not Found');
+});
 
 app.listen(PORT, () => {
   console.log(`\n🚀 Handyeco API Server active at: http://localhost:${PORT}`);
