@@ -315,6 +315,10 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
     );
   };
 
+  // Quick counts for upcoming vs past
+  const activeUpcomingCount = schedule.filter(j => (j.date || '') >= todayIso).length;
+  const pastCount = schedule.filter(j => (j.date || '') < todayIso).length;
+
   // Filtering
   const filteredSchedule = schedule.filter(job => {
     const matchesSearch = !search || 
@@ -325,21 +329,40 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
       job.service?.toLowerCase().includes(search.toLowerCase()) ||
       job.notes?.toLowerCase().includes(search.toLowerCase());
 
-    let matchesDate = true;
-    if (dateFilter === 'today') {
-      matchesDate = job.date === todayIso;
-    } else if (dateFilter === 'this_week') {
-      matchesDate = job.date >= weekStartIso && job.date <= weekEndIso;
-    } else if (dateFilter === 'this_month') {
-      matchesDate = Boolean(job.date && job.date.startsWith(currentYearMonth));
-    } else if (dateFilter === 'next_month') {
-      matchesDate = Boolean(job.date && job.date.startsWith(nextYearMonth));
-    } else if (dateFilter === 'upcoming') {
-      matchesDate = job.date >= todayIso;
+    if (!matchesSearch) return false;
+
+    // GEÇMİŞ TARİHLER SEKMESİ: Sadece tarihi bugünden önce olanlar
+    if (activeView === 'past') {
+      return (job.date || '') < todayIso;
     }
 
-    return matchesSearch && matchesDate;
+    // GÜNCEL & GELECEK SEKMESİ: Bugünün tarihi geçtikten sonra otomatik olarak geçmişe düşer
+    if (activeView === 'agenda') {
+      if ((job.date || '') < todayIso) return false;
+
+      if (dateFilter === 'today') {
+        return job.date === todayIso;
+      } else if (dateFilter === 'this_week') {
+        return job.date >= weekStartIso && job.date <= weekEndIso;
+      } else if (dateFilter === 'this_month') {
+        return Boolean(job.date && job.date.startsWith(currentYearMonth));
+      } else if (dateFilter === 'next_month') {
+        return Boolean(job.date && job.date.startsWith(nextYearMonth));
+      } else if (dateFilter === 'upcoming') {
+        return job.date >= todayIso;
+      }
+      return true; // 'all' (günceldeki tüm randevular)
+    }
+
+    return true;
   }).sort((a, b) => {
+    // Geçmiş sekmesinde en yeni geçmiş randevudan eskiye doğru sırala
+    if (activeView === 'past') {
+      const dateComp = (b.date || '').localeCompare(a.date || '');
+      if (dateComp !== 0) return dateComp;
+      return (b.startTime || '').localeCompare(a.startTime || '');
+    }
+    // Güncel randevularda en yakın tarihten ileriye doğru sırala
     const dateComp = (a.date || '').localeCompare(b.date || '');
     if (dateComp !== 0) return dateComp;
     return (a.startTime || '').localeCompare(b.startTime || '');
@@ -436,13 +459,10 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
       <div className="print:hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2.5">
-            <h2 className="text-xl font-black text-white tracking-tight">İş Takip, Randevu & Boş Saat Ajandası</h2>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-blue-950 text-blue-400 border border-blue-800 tracking-wider">
-              Edinburgh Canlı Ajanda
-            </span>
+            <h2 className="text-xl font-black text-white tracking-tight">İş Takip & Randevular</h2>
           </div>
           <p className="text-xs text-zinc-400 mt-1">
-            Hangi müşteriye saat kaçta gideceğinizi planlayın, bu haftaki boş saatlerinizi tek bakışta görün ve PDF olarak yazdırın.
+            Hangi müşteriye saat kaçta gideceğinizi planlayın, boş saatlerinizi görün ve PDF olarak yazdırın.
           </p>
         </div>
 
@@ -529,23 +549,35 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
       <div className="print:hidden flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-[#0b0e14] p-3 rounded-2xl border border-zinc-800">
         
         {/* View Toggle Tabs */}
-        <div className="flex items-center gap-1.5 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800">
+        <div className="flex items-center gap-1.5 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800 overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveView('agenda')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
               activeView === 'agenda'
                 ? 'bg-blue-600 text-white shadow-md'
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            📋 İş Ajandası & Müşteri Listesi
+            📅 Güncel & Gelecek Randevular ({activeUpcomingCount})
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveView('past')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              activeView === 'past'
+                ? 'bg-purple-600 text-white shadow-md'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            ⏳ Geçmiş Randevular ({pastCount})
           </button>
 
           <button
             type="button"
             onClick={() => setActiveView('free_slots')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
               activeView === 'free_slots'
                 ? 'bg-emerald-600 text-white shadow-md'
                 : 'text-zinc-400 hover:text-white'
@@ -555,7 +587,7 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
           </button>
         </div>
 
-        {/* Date Filter & Search */}
+        {/* Date Filter & Search (Only shown on agenda view) */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <div className="relative flex-1 sm:w-48">
             <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -627,31 +659,40 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
         </div>
       </div>
 
-      {/* VIEW 1: AGENDA & CUSTOMER JOB CARDS */}
-      {activeView === 'agenda' && (
-        <div className="space-y-6">
+      {/* VIEW 1 & 2: AGENDA (UPCOMING) OR PAST (COMPLETED/HISTORY) JOB CARDS */}
+      {(activeView === 'agenda' || activeView === 'past') && (
+        <div className="space-y-8">
           {loading ? (
             <div className="p-12 text-center text-zinc-500 font-medium">İş takvimi yükleniyor...</div>
           ) : Object.keys(jobsByDate).length === 0 ? (
             <div className="p-12 bg-[#0b0e14] rounded-2xl border border-zinc-800 text-center space-y-3">
               <CalendarIcon className="w-10 h-10 text-zinc-600 mx-auto" />
-              <h3 className="text-base font-bold text-white">Seçilen aralıkta planlanmış randevu bulunmuyor</h3>
+              <h3 className="text-base font-bold text-white">
+                {activeView === 'past' 
+                  ? 'Henüz geçmiş tarihli randevu bulunmuyor' 
+                  : 'Seçilen aralıkta planlanmış randevu bulunmuyor'}
+              </h3>
               <p className="text-xs text-zinc-400 max-w-sm mx-auto">
-                Gelen tekliflerden veya sağ üstteki "+ Yeni Randevu / İş Planla" butonuna tıklayarak yeni iş ekleyebilirsiniz.
+                {activeView === 'past'
+                  ? 'Bugünün tarihi geçtikten sonra tamamlanan veya yapılan randevular otomatik olarak bu geçmiş sayfasına aktarılır.'
+                  : 'Gelen tekliflerden veya sağ üstteki "+ Yeni Randevu / İş Planla" butonuna tıklayarak yeni iş ekleyebilirsiniz.'}
               </p>
-              <button
-                type="button"
-                onClick={() => handleOpenAddModal()}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-500"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>İlk İşi Planla</span>
-              </button>
+              {activeView !== 'past' && (
+                <button
+                  type="button"
+                  onClick={() => handleOpenAddModal()}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-500 cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>İlk İşi Planla</span>
+                </button>
+              )}
             </div>
           ) : (
-            Object.entries(jobsByDate).map(([dateStr, jobs]) => {
+            Object.entries(jobsByDate).map(([dateStr, jobs], groupIdx) => {
               const dateObj = new Date(dateStr);
               const isToday = dateStr === todayIso;
+              const isPastDate = dateStr < todayIso;
               const formattedDate = dateObj.toLocaleDateString('tr-TR', { 
                 weekday: 'long', 
                 day: 'numeric', 
@@ -660,34 +701,79 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
               });
 
               return (
-                <div key={dateStr} className="space-y-3 print:space-y-2">
+                <div key={dateStr} className="space-y-4 print:space-y-2">
                   
-                  {/* Date Heading */}
-                  <div className="flex items-center justify-between pb-1 border-b border-zinc-800/80">
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${
+                  {/* FARKLI TARİHLER ARASINDAKİ BELİRGİN AYIRICI ÇİZGİ */}
+                  {groupIdx > 0 && (
+                    <div className="relative py-2 print:hidden">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t-2 border-zinc-800" />
+                      </div>
+                      <div className="relative flex justify-center">
+                        <span className="bg-[#07090e] px-4 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">
+                          &bull; Farklı Tarih &bull;
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Belirgin Tarih Banner Kartı (Göz Yormayan Net Ayrım) */}
+                  <div className={`p-4 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg transition-all ${
+                    isToday 
+                      ? 'bg-amber-950/30 border-amber-500/80 shadow-amber-950/20' 
+                      : isPastDate
+                      ? 'bg-[#0e1118] border-zinc-700/80'
+                      : 'bg-[#0d121f] border-blue-900/60 shadow-blue-950/20'
+                  }`}>
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
                         isToday 
-                          ? 'bg-amber-500 text-black shadow-md shadow-amber-500/20' 
-                          : 'bg-zinc-800 text-white'
+                          ? 'bg-amber-500 text-black shadow-md shadow-amber-500/30' 
+                          : isPastDate
+                          ? 'bg-zinc-800 text-zinc-300'
+                          : 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
                       }`}>
-                        {isToday ? 'BUGÜN' : formattedDate.split(' ')[0]}
-                      </span>
-                      <h3 className="text-sm font-bold text-zinc-200">
-                        {formattedDate}
-                      </h3>
-                      <span className="text-xs text-zinc-500">
-                        ({jobs.length} iş)
-                      </span>
+                        <CalendarDays className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-base font-extrabold text-white tracking-tight">
+                            {formattedDate}
+                          </h3>
+                          {isToday && (
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500 text-black shadow-xs">
+                              BUGÜN
+                            </span>
+                          )}
+                          {isPastDate && (
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-zinc-800 text-zinc-400 border border-zinc-700">
+                              GEÇMİŞ TARİH
+                            </span>
+                          )}
+                          <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-zinc-900/90 text-zinc-400 border border-zinc-800">
+                            {jobs.length} randevu
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">
+                          {isToday 
+                            ? 'Bugün gidilecek randevular ve saatleri' 
+                            : isPastDate 
+                            ? 'Geçmişte tamamlanmış / kaydedilmiş usta işleri' 
+                            : 'Planlanmış müşteri randevusu ve usta işi'}
+                        </p>
+                      </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleOpenAddModal(dateStr, '14:00')}
-                      className="print:hidden text-[11px] font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
-                    >
-                      <Plus className="w-3 h-3" />
-                      <span>Bu Güne İş Ekle</span>
-                    </button>
+                    {!isPastDate && (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenAddModal(dateStr, '14:00')}
+                        className="print:hidden inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-bold border border-zinc-700 transition-colors cursor-pointer shadow-xs shrink-0"
+                      >
+                        <Plus className="w-3.5 h-3.5 text-blue-400" />
+                        <span>Bu Güne İş Ekle</span>
+                      </button>
+                    )}
                   </div>
 
                   {/* Jobs List for this day */}

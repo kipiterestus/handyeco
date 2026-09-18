@@ -169,7 +169,7 @@ export default function AdminLayout() {
   const operationsNav = [
     { id: 'leads', label: 'Gelen Teklifler & Talepler', icon: Inbox },
     { id: 'schedule', label: 'İş Takip & Randevular', icon: Calendar },
-    { id: 'accounting', label: 'Gelir, Gider & Kâr', icon: PoundSterling },
+    { id: 'accounting', label: 'Muhasebe', icon: PoundSterling },
   ];
 
   // 2. KATEGORİ: SİTE İÇERİK & AYARLAR (Telegram buraya alındı)

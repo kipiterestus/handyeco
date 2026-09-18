@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Inbox, 
   MessageSquare, 
@@ -13,8 +13,13 @@ import {
   AlertCircle,
   TrendingUp,
   FileText,
-  ExternalLink
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+  Archive
 } from 'lucide-react';
+
+const ITEMS_PER_PAGE = 6;
 
 export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccounting }) {
   const [quotes, setQuotes] = useState([]);
@@ -22,7 +27,8 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
   const [schedule, setSchedule] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('new'); // Varsayılan olarak 'new' veya 'all'
+  const [currentPage, setCurrentPage] = useState(1);
   const [savingId, setSavingId] = useState(null);
 
   const fetchData = async () => {
@@ -95,24 +101,64 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
     }
   };
 
-  const filteredQuotes = quotes.filter(q => {
-    const matchesStatus = statusFilter === 'all' || q.status === statusFilter;
-    const matchesSearch = !search || 
-      q.name?.toLowerCase().includes(search.toLowerCase()) ||
-      q.phone?.includes(search) ||
-      q.email?.toLowerCase().includes(search.toLowerCase()) ||
-      q.postcode?.toLowerCase().includes(search.toLowerCase()) ||
-      q.service?.toLowerCase().includes(search.toLowerCase()) ||
-      q.details?.toLowerCase().includes(search.toLowerCase()) ||
-      q.notes?.toLowerCase().includes(search.toLowerCase());
-    return matchesStatus && matchesSearch;
-  });
+  // Yeni gelen talepler DAİMA İLK SIRADA (en yeni createdAt en üstte)
+  const sortedQuotes = useMemo(() => {
+    return [...quotes].sort((a, b) => {
+      const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      if (timeB !== timeA) return timeB - timeA;
+      // Fallback: ID timestamp
+      const idA = parseInt(String(a.id).replace(/\D/g, '').slice(0, 13), 10) || 0;
+      const idB = parseInt(String(b.id).replace(/\D/g, '').slice(0, 13), 10) || 0;
+      return idB - idA;
+    });
+  }, [quotes]);
+
+  // Duruma ve aramaya göre filtreleme
+  const filteredQuotes = useMemo(() => {
+    return sortedQuotes.filter(q => {
+      const matchesStatus = statusFilter === 'all'
+        ? true
+        : statusFilter === 'new'
+        ? (q.status === 'new' || !q.status)
+        : q.status === statusFilter;
+
+      const matchesSearch = !search || 
+        q.name?.toLowerCase().includes(search.toLowerCase()) ||
+        q.phone?.includes(search) ||
+        q.email?.toLowerCase().includes(search.toLowerCase()) ||
+        q.postcode?.toLowerCase().includes(search.toLowerCase()) ||
+        q.service?.toLowerCase().includes(search.toLowerCase()) ||
+        q.details?.toLowerCase().includes(search.toLowerCase()) ||
+        q.notes?.toLowerCase().includes(search.toLowerCase());
+
+      return matchesStatus && matchesSearch;
+    });
+  }, [sortedQuotes, statusFilter, search]);
+
+  // Sayfalama hesaplamaları
+  const totalPages = Math.ceil(filteredQuotes.length / ITEMS_PER_PAGE) || 1;
+  const paginatedQuotes = useMemo(() => {
+    const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredQuotes.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+  }, [filteredQuotes, currentPage]);
+
+  const handleStatusChange = (status) => {
+    setStatusFilter(status);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setCurrentPage(1);
+  };
 
   const counts = {
-    all: quotes.length,
-    new: quotes.filter(q => q.status === 'new' || !q.status).length,
-    contacted: quotes.filter(q => q.status === 'contacted').length,
-    booked: quotes.filter(q => q.status === 'booked').length
+    all: sortedQuotes.length,
+    new: sortedQuotes.filter(q => q.status === 'new' || !q.status).length,
+    contacted: sortedQuotes.filter(q => q.status === 'contacted').length,
+    booked: sortedQuotes.filter(q => q.status === 'booked').length,
+    archived: sortedQuotes.filter(q => q.status === 'archived').length
   };
 
   const getCleanPhone = (phone) => {
@@ -134,66 +180,81 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
 
   return (
     <div className="space-y-5 text-left">
-      {/* Top Banner & Stats (OLED Near-Black) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {/* Top Status Tabs & Quick Counts (OLED Near-Black) */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
         <div 
-          onClick={() => setStatusFilter('all')}
-          className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+          onClick={() => handleStatusChange('all')}
+          className={`p-3 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'all' 
               ? 'bg-blue-600/20 border-blue-500 text-white shadow-md shadow-blue-500/10' 
               : 'bg-[#0b0e14] border-zinc-800 text-zinc-400 hover:border-zinc-700'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider block">Tüm Talepler</span>
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider block">Tüm Talepler</span>
             <span className="w-2 h-2 rounded-full bg-blue-500" />
           </div>
-          <span className="text-2xl sm:text-3xl font-black text-white mt-1 block">{counts.all}</span>
+          <span className="text-xl sm:text-2xl font-black text-white mt-1 block">{counts.all}</span>
         </div>
 
         <div 
-          onClick={() => setStatusFilter('new')}
-          className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+          onClick={() => handleStatusChange('new')}
+          className={`p-3 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'new' 
               ? 'bg-amber-600/20 border-amber-500 text-white shadow-md shadow-amber-500/10' 
               : 'bg-[#0b0e14] border-zinc-800 text-zinc-400 hover:border-zinc-700'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider block">Yeni / Bekleyen</span>
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider block">🟡 Yeni Talepler</span>
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
           </div>
-          <span className="text-2xl sm:text-3xl font-black text-amber-400 mt-1 block">{counts.new}</span>
+          <span className="text-xl sm:text-2xl font-black text-amber-400 mt-1 block">{counts.new}</span>
         </div>
 
         <div 
-          onClick={() => setStatusFilter('contacted')}
-          className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+          onClick={() => handleStatusChange('contacted')}
+          className={`p-3 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'contacted' 
               ? 'bg-indigo-600/20 border-indigo-500 text-white shadow-md shadow-indigo-500/10' 
               : 'bg-[#0b0e14] border-zinc-800 text-zinc-400 hover:border-zinc-700'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider block">İletişime Geçildi</span>
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider block">🔵 Görüşüldü</span>
             <span className="w-2 h-2 rounded-full bg-indigo-400" />
           </div>
-          <span className="text-2xl sm:text-3xl font-black text-indigo-400 mt-1 block">{counts.contacted}</span>
+          <span className="text-xl sm:text-2xl font-black text-indigo-400 mt-1 block">{counts.contacted}</span>
         </div>
 
         <div 
-          onClick={() => setStatusFilter('booked')}
-          className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+          onClick={() => handleStatusChange('booked')}
+          className={`p-3 rounded-2xl border transition-all cursor-pointer ${
             statusFilter === 'booked' 
               ? 'bg-emerald-600/20 border-emerald-500 text-white shadow-md shadow-emerald-500/10' 
               : 'bg-[#0b0e14] border-zinc-800 text-zinc-400 hover:border-zinc-700'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider block">Tamamlandı / Yapıldı</span>
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider block">🟢 Yapıldı</span>
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
           </div>
-          <span className="text-2xl sm:text-3xl font-black text-emerald-400 mt-1 block">{counts.booked}</span>
+          <span className="text-xl sm:text-2xl font-black text-emerald-400 mt-1 block">{counts.booked}</span>
+        </div>
+
+        <div 
+          onClick={() => handleStatusChange('archived')}
+          className={`p-3 rounded-2xl border transition-all cursor-pointer ${
+            statusFilter === 'archived' 
+              ? 'bg-zinc-700/30 border-zinc-500 text-white shadow-md' 
+              : 'bg-[#0b0e14] border-zinc-800 text-zinc-400 hover:border-zinc-700'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider block">⚪ Arşiv</span>
+            <Archive className="w-3 h-3 text-zinc-400" />
+          </div>
+          <span className="text-xl sm:text-2xl font-black text-zinc-300 mt-1 block">{counts.archived}</span>
         </div>
       </div>
 
@@ -205,7 +266,7 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
             type="text"
             placeholder="İsim, telefon, EH posta kodu veya hizmet ile ara..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={handleSearchChange}
             className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-zinc-900/80 border border-zinc-700/80 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
           />
         </div>
@@ -232,8 +293,9 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filteredQuotes.map((quote) => {
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {paginatedQuotes.map((quote) => {
             const cleanPhone = getCleanPhone(quote.phone);
             const whatsappText = encodeURIComponent(`Hi ${quote.name || 'there'}, this is Ekrem from Handyeco Edinburgh. Thanks for requesting a quote for ${quote.service || 'handyman services'}!`);
             const whatsappLink = `https://wa.me/${cleanPhone}?text=${whatsappText}`;
@@ -421,7 +483,56 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
             );
           })}
         </div>
-      )}
-    </div>
-  );
+
+        {/* Sayfalama (Pagination) Kontrolleri */}
+        {filteredQuotes.length > ITEMS_PER_PAGE && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-zinc-800/80">
+            <span className="text-xs text-zinc-400">
+              Toplam <strong className="text-white">{filteredQuotes.length}</strong> talep içinden{' '}
+              <strong className="text-white">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</strong> -{' '}
+              <strong className="text-white">{Math.min(currentPage * ITEMS_PER_PAGE, filteredQuotes.length)}</strong> arası gösteriliyor (Sayfa {currentPage}/{totalPages})
+            </span>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold text-zinc-300 border border-zinc-800 flex items-center gap-1 cursor-pointer transition-all"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Önceki</span>
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(num => (
+                <button
+                  key={num}
+                  type="button"
+                  onClick={() => setCurrentPage(num)}
+                  className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    currentPage === num
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
+                      : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800'
+                  }`}
+                >
+                  {num}
+                </button>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold text-zinc-300 border border-zinc-800 flex items-center gap-1 cursor-pointer transition-all"
+              >
+                <span>Sonraki</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
+      </>
+    )}
+  </div>
+);
 }

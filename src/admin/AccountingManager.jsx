@@ -493,10 +493,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2.5">
-            <h2 className="text-xl font-black text-white tracking-tight">İş Muhasebesi & Kâr Takip Sistemi</h2>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-950 text-emerald-400 border border-emerald-800 tracking-wider">
-              Canlı Finans
-            </span>
+            <h2 className="text-xl font-black text-white tracking-tight">Muhasebe</h2>
           </div>
           <p className="text-xs text-zinc-400 mt-1">
             Her müşteriden alınan iş ücretini, malzeme harcamalarını ve net kârınızı haftalık, aylık veya yıllık takip edin.
