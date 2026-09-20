@@ -144,9 +144,6 @@ export default function GoogleReviews() {
         
         {/* Header with 100% Real Google Reviews Verification */}
         <div className="text-center max-w-3xl mx-auto mb-8">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight mb-3">
-            Edinburgh Handyman Reviews — 5.0 Stars on Google
-          </h2>
           <div className="inline-flex items-center gap-2.5 px-4 sm:px-6 py-2 rounded-full bg-emerald-50 border-2 border-emerald-300/80 text-emerald-900 text-xs sm:text-sm md:text-base font-extrabold shadow-xs mb-3">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
             <span>100% Real Feedback &bull; Verified Google Reviews Profile</span>
