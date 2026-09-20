@@ -185,7 +185,7 @@ export function sanitizeQuotePayload(payload) {
   const name = sanitizeInput(payload.name, 100);
   const phone = sanitizeInput(payload.phone, 30);
   const email = sanitizeInput(payload.email, 100);
-  const postcode = sanitizeInput(payload.postcode, 20);
+  const postcode = sanitizeInput(payload.postcode, 100);
   const service = sanitizeInput(payload.service, 100);
   const urgency = sanitizeInput(payload.urgency, 20);
   const details = sanitizeInput(payload.details, 2000);
@@ -194,7 +194,7 @@ export function sanitizeQuotePayload(payload) {
   return {
     name, phone,
     email: email || "",
-    postcode: postcode || "Edinburgh Area",
+    postcode: postcode || "",
     service: service || "Handyman Service",
     urgency: ["flexible", "this-week", "urgent", "weekend"].includes(urgency) ? urgency : "flexible",
     details: details || "No additional details provided",

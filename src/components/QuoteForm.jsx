@@ -83,7 +83,7 @@ export default function QuoteForm({ preselectedService }) {
       `*Customer Name:* ${formData.name}`,
       `*Phone Number:* ${formData.phone}`,
       formData.email ? `*Email:* ${formData.email}` : "",
-      `*Edinburgh Postcode:* ${formData.postcode || "Edinburgh Area"}`,
+      formData.postcode ? `*Apartment & House No:* ${formData.postcode}` : "",
       `*Requested Service:* ${selectedServiceName}`,
       `*Urgency:* ${formData.urgency.toUpperCase()}`,
       `*Job Description:* ${formData.details || "Details to discuss"}`,
@@ -311,12 +311,15 @@ export default function QuoteForm({ preselectedService }) {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                        Edinburgh Postcode
-                      </label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                          Apartment &amp; House Number
+                        </label>
+                        <span className="text-[10px] text-slate-500 font-medium lowercase">optional</span>
+                      </div>
                       <input
                         type="text"
-                        placeholder="e.g. EH10 4BF (Morningside)"
+                        placeholder="e.g. Flat 3F2, 45 or House 12"
                         value={formData.postcode}
                         onChange={(e) => setFormData({ ...formData, postcode: e.target.value })}
                         className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"

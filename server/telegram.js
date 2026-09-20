@@ -28,7 +28,7 @@ export async function sendTelegramNotification(quote, token, chatId) {
     `👤 <b>Müşteri:</b> ${escapeHtml(quote.name || 'İsimsiz')}`,
     `📞 <b>Telefon:</b> <code>${escapeHtml(quote.phone || 'Belirtilmedi')}</code>`,
     quote.email ? `📧 <b>E-posta:</b> <code>${escapeHtml(quote.email)}</code>` : '',
-    `📍 <b>Posta Kodu / Bölge:</b> ${escapeHtml(quote.postcode || 'Edinburgh')}`,
+    quote.postcode ? `🏢 <b>Apartman & Ev No:</b> ${escapeHtml(quote.postcode)}` : '',
     `🛠️ <b>Hizmet:</b> ${escapeHtml(quote.service || 'Genel Tamirat')}`,
     `⏱️ <b>Zamanlama:</b> ${escapeHtml((quote.urgency || 'flexible').toUpperCase())}`,
     `📝 <b>İş Detayları:</b>\n<i>${escapeHtml(quote.details || 'Detay verilmedi')}</i>`,
