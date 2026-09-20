@@ -194,9 +194,9 @@ export function deleteQuoteRecord(id) {
   return true;
 }
 
-// Authentication handling with Timing-Safe comparison and 24-hour Token TTL
+// Authentication handling with Timing-Safe comparison and persistent 365-day Token TTL
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'handyeco2026!';
-const tokenManager = new TokenManager(24 * 60 * 60 * 1000);
+const tokenManager = new TokenManager(365 * 24 * 60 * 60 * 1000);
 
 export function verifyAdminPassword(password) {
   return timingSafeCompare(password, ADMIN_PASSWORD);

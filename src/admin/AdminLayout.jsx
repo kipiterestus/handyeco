@@ -116,15 +116,25 @@ export default function AdminLayout() {
         const res = await fetch('/api/auth/verify', {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const data = await res.json();
-        if (data.valid) {
-          setIsAuth(true);
-        } else {
+        if (res.ok) {
+          const data = await res.json();
+          if (data.valid) {
+            setIsAuth(true);
+          } else {
+            localStorage.removeItem('handyeco_admin_token');
+            setIsAuth(false);
+          }
+        } else if (res.status === 401) {
           localStorage.removeItem('handyeco_admin_token');
           setIsAuth(false);
+        } else {
+          // Temporary server deploy or 502/503: do not kick user out
+          setIsAuth(true);
         }
       } catch (e) {
-        setIsAuth(false);
+        // Tab was suspended / offline / network hiccup: keep session active
+        console.warn('[Admin Auth] Verification network hiccup, keeping session:', e.message);
+        setIsAuth(true);
       } finally {
         setCheckingAuth(false);
       }

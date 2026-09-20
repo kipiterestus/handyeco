@@ -32,6 +32,7 @@ dist-ssr
 server/data/finances.json
 server/data/schedule.json
 server/data/admin_config.json
+server/data/admin_sessions.json
 server/data/quotes.json
 server/data/reviews.json
 server/quotes.json

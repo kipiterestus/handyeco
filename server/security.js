@@ -154,32 +154,95 @@ export function sanitizeQuotePayload(payload) {
   };
 }
 
+const sessionsFile = path.join(dataDir, "admin_sessions.json");
+
+function readStoredSessions() {
+  try {
+    if (fs.existsSync(sessionsFile)) {
+      return JSON.parse(fs.readFileSync(sessionsFile, "utf-8"));
+    }
+  } catch (e) {}
+  return {};
+}
+
+function writeStoredSessions(sessions) {
+  try {
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    fs.writeFileSync(sessionsFile, JSON.stringify(sessions, null, 2), "utf-8");
+  } catch (e) {}
+}
+
 export class TokenManager {
-  constructor(ttlMs = 24 * 60 * 60 * 1000) {
+  // 365 days TTL: Eliminates arbitrary AFK logouts entirely
+  constructor(ttlMs = 365 * 24 * 60 * 60 * 1000) {
     this.ttlMs = ttlMs;
     this.tokens = new Map();
-    const timer = setInterval(() => this.cleanup(), 15 * 60 * 1000);
+    // Load persisted sessions on startup so restarts don't log out the admin
+    const stored = readStoredSessions();
+    const now = Date.now();
+    for (const [t, exp] of Object.entries(stored)) {
+      if (typeof exp === 'number' && exp > now) {
+        this.tokens.set(t, exp);
+      }
+    }
+    const timer = setInterval(() => this.cleanup(), 60 * 60 * 1000);
     if (timer.unref) timer.unref();
   }
+
+  saveToDisk() {
+    const obj = {};
+    for (const [t, exp] of this.tokens.entries()) {
+      obj[t] = exp;
+    }
+    writeStoredSessions(obj);
+  }
+
   create() {
     const token = crypto.randomBytes(32).toString("hex");
     this.tokens.set(token, Date.now() + this.ttlMs);
+    this.saveToDisk();
     return token;
   }
+
   validate(token) {
     if (!token || typeof token !== "string") return false;
-    const expiresAt = this.tokens.get(token);
+    let expiresAt = this.tokens.get(token);
+    // If not in memory (e.g. process restart), check persistent disk storage
+    if (!expiresAt) {
+      const stored = readStoredSessions();
+      if (stored[token]) {
+        expiresAt = stored[token];
+        this.tokens.set(token, expiresAt);
+      }
+    }
     if (!expiresAt) return false;
-    if (Date.now() > expiresAt) { this.tokens.delete(token); return false; }
+    if (Date.now() > expiresAt) {
+      this.tokens.delete(token);
+      this.saveToDisk();
+      return false;
+    }
+    // Auto-refresh expiry so active users stay logged in indefinitely
     this.tokens.set(token, Date.now() + this.ttlMs);
     return true;
   }
-  revoke(token) { if (token) this.tokens.delete(token); }
+
+  revoke(token) {
+    if (token) {
+      this.tokens.delete(token);
+      this.saveToDisk();
+    }
+  }
+
   cleanup() {
     const now = Date.now();
+    let changed = false;
     for (const [token, expiresAt] of this.tokens.entries()) {
-      if (now > expiresAt) this.tokens.delete(token);
+      if (now > expiresAt) {
+        this.tokens.delete(token);
+        changed = true;
+      }
     }
+    if (changed) this.saveToDisk();
   }
 }
 
