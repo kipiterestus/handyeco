@@ -17,41 +17,41 @@ export default function ServiceAreas() {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         
         {/* Minimal Chic Container */}
-        <div className="bg-slate-50/90 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200/80 shadow-2xs relative">
+        <div className="bg-slate-50/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200/70 shadow-2xs relative">
           
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 sm:pb-5 border-b border-slate-200/80 text-left">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 sm:pb-5 border-b border-slate-200/70 text-left">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div>
-                <h2 className="text-sm sm:text-base md:text-lg font-black text-slate-900 leading-tight tracking-tight">
+                <h2 className="text-sm sm:text-base md:text-lg font-bold text-slate-900 leading-tight tracking-tight">
                   Edinburgh Handyman Service Areas
                 </h2>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
+                <p className="text-[11px] sm:text-xs text-slate-500 font-normal mt-0.5">
                   Full coverage across Edinburgh &amp; Lothians
                 </p>
               </div>
             </div>
 
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-900 bg-emerald-100/80 px-3 py-1.5 rounded-xl border border-emerald-300 shadow-2xs self-start sm:self-auto">
+            <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-800 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200/80 shadow-2xs self-start sm:self-auto">
               <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Free Quotes &amp; Minimum Job £65</span>
+              <span>{callOutText}</span>
             </div>
           </div>
 
           {/* Area Postcode Chips Grid - Static informational chips, not clickable */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5 pt-4 sm:pt-5 text-left select-none">
             {areaGroups.map((group, idx) => (
-              <div key={idx} className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all pointer-events-none">
-                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-blue-600 block">
+              <div key={idx} className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all pointer-events-none">
+                <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-blue-600 block">
                   {group.zone}
                 </span>
-                <span className="text-xs sm:text-sm font-black text-slate-900 block mt-0.5">
+                <span className="text-xs sm:text-sm font-semibold text-slate-800 block mt-0.5 tracking-tight">
                   {group.postcodes}
                 </span>
-                <span className="text-[11px] sm:text-xs font-medium text-slate-500 block mt-0.5 leading-snug">
+                <span className="text-[11px] sm:text-xs font-normal text-slate-500 block mt-0.5 leading-snug">
                   {group.areas}
                 </span>
               </div>
@@ -66,7 +66,7 @@ export default function ServiceAreas() {
           <div className="absolute top-0 bottom-0 left-6 sm:left-12 w-0.5 border-l-2 border-dashed border-blue-400"></div>
 
           {/* Connected Arrow Pill on Left */}
-          <div className="relative z-10 -ml-3 flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded-full text-xs font-bold shadow-2xs">
+          <div className="relative z-10 -ml-3 flex items-center gap-1.5 bg-blue-50/90 text-blue-700 border border-blue-200/80 px-3 py-1 rounded-full text-xs font-medium shadow-2xs">
             <ArrowDown className="w-3.5 h-3.5 text-blue-600 animate-bounce" />
             <span>Next: Easy 3-Step Booking</span>
           </div>
