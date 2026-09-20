@@ -18,11 +18,11 @@ export default function Hero({ onOpenQuote }) {
   const config = content.siteConfig || {};
 
   const handymanVisualCard = (
-    <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[16/11] sm:aspect-[4/3] lg:aspect-[4/5] bg-slate-900">
+    <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[3/4] sm:aspect-[4/5] bg-slate-900">
       <img
         src={hero.heroImage || '/hero-handyman-edinburgh.jpg'}
         alt="Edinburgh Handyman assembling furniture with cordless drill in a home apartment"
-        className="w-full h-full object-cover object-[center_16%] sm:object-top"
+        className="w-full h-full object-cover object-center"
       />
       
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/20" />
@@ -87,7 +87,7 @@ export default function Hero({ onOpenQuote }) {
             </p>
 
             {/* Handyman Image - Pulled up directly under description on Mobile */}
-            <div className="block lg:hidden my-3 max-w-md mx-auto">
+            <div className="block lg:hidden my-3.5 max-w-[340px] xs:max-w-[360px] sm:max-w-md mx-auto">
               {handymanVisualCard}
             </div>
 
