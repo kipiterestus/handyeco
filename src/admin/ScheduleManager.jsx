@@ -29,7 +29,13 @@ import {
   Bell
 } from 'lucide-react';
 
-export default function ScheduleManager({ token, initialLeadData = null, onClearInitialLead = null, onLogJobToAccounting = null }) {
+export default function ScheduleManager({ 
+  token, 
+  initialLeadData = null, 
+  onClearInitialLead = null, 
+  onLogJobToAccounting = null,
+  onNavigateTab = null 
+}) {
   const [schedule, setSchedule] = useState([]);
   const [quotes, setQuotes] = useState([]);
   const [finances, setFinances] = useState([]);
@@ -558,56 +564,87 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
 
       {/* 4 Weekly Quick Stat Cards (Screen Only) */}
       <div className="print:hidden grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-3 sm:p-4 shadow-sm">
+        <div 
+          onClick={() => setActiveView('agenda')}
+          className="bg-[#0b0e14] border border-zinc-800 hover:border-blue-500/70 hover:bg-blue-950/10 rounded-2xl p-3 sm:p-4 shadow-sm cursor-pointer transition-all active:scale-[0.98] group"
+          title="Tüm randevu listesine geç"
+        >
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Haftalık İş</span>
-            <span className="p-1.5 rounded-lg bg-blue-950/60 text-blue-400 border border-blue-900/60">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider group-hover:text-blue-400 transition-colors">Haftalık İş</span>
+            <span className="p-1.5 rounded-lg bg-blue-950/60 text-blue-400 border border-blue-900/60 group-hover:scale-110 transition-transform">
               <CalendarDays className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="text-xl sm:text-2xl font-black text-white mt-1 truncate">
             {schedule.filter(j => j.date >= weekStartIso && j.date <= weekEndIso).length} Randevu
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block truncate">{weekStartIso} - {weekEndIso}</span>
+          <div className="flex items-center justify-between text-[10px] text-zinc-500 mt-1">
+            <span className="truncate">{weekStartIso} - {weekEndIso}</span>
+            <span className="text-blue-400 font-bold group-hover:translate-x-0.5 transition-transform hidden sm:inline">&rarr;</span>
+          </div>
         </div>
 
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-3 sm:p-4 shadow-sm">
+        <div 
+          onClick={() => {
+            setActiveView('agenda');
+            setDateFilter('today');
+          }}
+          className="bg-[#0b0e14] border border-zinc-800 hover:border-amber-500/70 hover:bg-amber-950/10 rounded-2xl p-3 sm:p-4 shadow-sm cursor-pointer transition-all active:scale-[0.98] group"
+          title="Bugünün randevularına filtrele"
+        >
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Bugün</span>
-            <span className="p-1.5 rounded-lg bg-amber-950/60 text-amber-400 border border-amber-900/60">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider group-hover:text-amber-400 transition-colors">Bugün</span>
+            <span className="p-1.5 rounded-lg bg-amber-950/60 text-amber-400 border border-amber-900/60 group-hover:scale-110 transition-transform">
               <Clock className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="text-xl sm:text-2xl font-black text-amber-400 mt-1 truncate">
             {schedule.filter(j => j.date === todayIso).length} Müşteri
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block truncate">Gidilecek işler</span>
+          <div className="flex items-center justify-between text-[10px] text-zinc-500 mt-1">
+            <span className="truncate">Gidilecek işler</span>
+            <span className="text-amber-400 font-bold group-hover:translate-x-0.5 transition-transform hidden sm:inline">&rarr;</span>
+          </div>
         </div>
 
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-3 sm:p-4 shadow-sm">
+        <div 
+          onClick={() => handleOpenAddModal(todayIso, '10:00')}
+          className="bg-[#0b0e14] border border-zinc-800 hover:border-emerald-500/70 hover:bg-emerald-950/10 rounded-2xl p-3 sm:p-4 shadow-sm cursor-pointer transition-all active:scale-[0.98] group"
+          title="Yeni randevu oluştur"
+        >
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Müsaitlik</span>
-            <span className="p-1.5 rounded-lg bg-emerald-950/60 text-emerald-400 border border-emerald-900/60">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider group-hover:text-emerald-400 transition-colors">Müsaitlik</span>
+            <span className="p-1.5 rounded-lg bg-emerald-950/60 text-emerald-400 border border-emerald-900/60 group-hover:scale-110 transition-transform">
               <Sparkles className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="text-lg sm:text-2xl font-black text-emerald-400 mt-1 truncate">
             🟢 Boş Saatler
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block truncate">Teklif alınabilir</span>
+          <div className="flex items-center justify-between text-[10px] text-zinc-500 mt-1">
+            <span className="truncate">Teklif alınabilir</span>
+            <span className="text-emerald-400 font-bold group-hover:translate-x-0.5 transition-transform hidden sm:inline">+ Ekle</span>
+          </div>
         </div>
 
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-3 sm:p-4 shadow-sm">
+        <div 
+          onClick={() => onNavigateTab && onNavigateTab('leads')}
+          className="bg-[#0b0e14] border border-indigo-900/60 hover:border-indigo-500 hover:bg-indigo-950/30 rounded-2xl p-3 sm:p-4 shadow-sm cursor-pointer transition-all active:scale-[0.98] group relative"
+          title="Talepler sayfasına git"
+        >
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Bekleyen Talepler</span>
-            <span className="p-1.5 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-900/60">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-indigo-300 group-hover:text-white transition-colors">Bekleyen Talepler</span>
+            <span className="p-1.5 rounded-lg bg-indigo-950/90 text-indigo-400 border border-indigo-800 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
               <Briefcase className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="text-xl sm:text-2xl font-black text-indigo-300 mt-1 truncate">
             {quotes.filter(q => q.status === 'new' || !q.status).length} Talep
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block truncate">Randevuya planla</span>
+          <div className="flex items-center justify-between text-[10px] text-indigo-400 font-bold mt-1">
+            <span className="truncate">Taleplere git</span>
+            <span className="group-hover:translate-x-1 transition-transform inline-block">&rarr;</span>
+          </div>
         </div>
       </div>
 
@@ -744,14 +781,26 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                   : 'Gelen tekliflerden veya sağ üstteki "+ Yeni Randevu / İş Planla" butonuna tıklayarak yeni iş ekleyebilirsiniz.'}
               </p>
               {activeView !== 'past' && (
-                <button
-                  type="button"
-                  onClick={() => handleOpenAddModal()}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-500 cursor-pointer"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>İlk İşi Planla</span>
-                </button>
+                <div className="flex items-center justify-center gap-2 flex-wrap pt-2">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenAddModal()}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-500 cursor-pointer shadow-md shadow-blue-600/20"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>İlk İşi Planla</span>
+                  </button>
+                  {quotes.filter(q => q.status === 'new' || !q.status).length > 0 && onNavigateTab && (
+                    <button
+                      type="button"
+                      onClick={() => onNavigateTab('leads')}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-800 text-indigo-300 hover:text-white text-xs font-bold cursor-pointer transition-all"
+                    >
+                      <Briefcase className="w-3.5 h-3.5" />
+                      <span>Bekleyen Talepleri Gör ({quotes.filter(q => q.status === 'new' || !q.status).length}) &rarr;</span>
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           ) : (
@@ -976,13 +1025,19 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                                   return (
                                     <button
                                       type="button"
-                                      onClick={() => alert(`⚠️ Bu iş zaten muhasebeye eklenmiştir!\n\nMüşteri: ${job.customerName}\nTarih: ${linkedFinance.date}\nAlınan Ciro: £${linkedFinance.revenue}\nNet Kâr: £${linkedFinance.netProfit}\n\nTekrar kayıt yapılamaz.`)}
-                                      className="p-1.5 px-2 rounded-lg bg-emerald-950/70 border border-emerald-800 text-emerald-300 text-[11px] font-bold flex items-center gap-1 cursor-pointer hover:bg-emerald-900"
-                                      title="Bu iş muhasebeye kaydedildi. Çift kayıt engellendi."
+                                      onClick={() => {
+                                        if (onNavigateTab) {
+                                          onNavigateTab('accounting');
+                                        } else {
+                                          alert(`⚠️ Bu iş zaten muhasebeye eklenmiştir!\n\nMüşteri: ${job.customerName}\nTarih: ${linkedFinance.date}\nAlınan Ciro: £${linkedFinance.revenue}\nNet Kâr: £${linkedFinance.netProfit}\n\nTekrar kayıt yapılamaz.`);
+                                        }
+                                      }}
+                                      className="p-1.5 px-2 rounded-lg bg-emerald-950/70 border border-emerald-800 hover:border-emerald-600 text-emerald-300 text-[11px] font-bold flex items-center gap-1 cursor-pointer hover:bg-emerald-900 transition-colors"
+                                      title="Muhasebe sayfasına git"
                                     >
                                       <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                                      <span className="hidden sm:inline">Muhasebeye Eklendi (£{linkedFinance.revenue})</span>
-                                      <span className="sm:hidden">Eklendi</span>
+                                      <span className="hidden sm:inline">Muhasebeye Eklendi (£{linkedFinance.revenue}) &rarr;</span>
+                                      <span className="sm:hidden">Eklendi &rarr;</span>
                                     </button>
                                   );
                                 } else {

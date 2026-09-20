@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Save, CheckCircle2, Phone, MessageSquare, Mail, Clock, PoundSterling, MapPin, ExternalLink, Bell, AlertCircle, Send } from 'lucide-react';
+import { Save, CheckCircle2, Phone, MessageSquare, Mail, Clock, PoundSterling, MapPin, ExternalLink, Bell, AlertCircle, Send, Bot } from 'lucide-react';
 
-export default function BusinessEditor({ data, onSave, token }) {
+export default function BusinessEditor({ data, onSave, token, onNavigateTab = null }) {
   const [form, setForm] = useState(() => ({
     ...(data || {}),
     email: (data?.email && data.email !== 'ekremguran@gmail.com') ? data.email : 'info@handyeco.co.uk'
@@ -238,15 +238,28 @@ export default function BusinessEditor({ data, onSave, token }) {
               </p>
             </div>
 
-            <button
-              type="button"
-              disabled={testingTelegram}
-              onClick={handleTestTelegram}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
-            >
-              <Send className="w-3.5 h-3.5" />
-              <span>{testingTelegram ? 'Gönderiliyor...' : 'Test Bildirimi Gönder'}</span>
-            </button>
+            <div className="flex items-center gap-2 flex-wrap">
+              {onNavigateTab && (
+                <button
+                  type="button"
+                  onClick={() => onNavigateTab('telegram')}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-sky-300 bg-sky-950/60 hover:bg-sky-900/60 border border-sky-800/60 transition-all cursor-pointer"
+                  title="Detaylı Telegram Botu sayfasına git"
+                >
+                  <Bot className="w-3.5 h-3.5" />
+                  <span>Bot Sayfasına Git &rarr;</span>
+                </button>
+              )}
+              <button
+                type="button"
+                disabled={testingTelegram}
+                onClick={handleTestTelegram}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>{testingTelegram ? 'Gönderiliyor...' : 'Test Bildirimi Gönder'}</span>
+              </button>
+            </div>
           </div>
 
           {telegramStatus && (

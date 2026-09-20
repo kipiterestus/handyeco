@@ -267,19 +267,24 @@ export default function AdminLayout() {
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          <a href="/admin" className="flex items-center gap-2 sm:gap-2.5 group min-w-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-xs sm:text-sm shadow-sm shadow-blue-600/25 shrink-0">
+          <button
+            type="button"
+            onClick={() => handleSelectTab('leads')}
+            className="flex items-center gap-2 sm:gap-2.5 group min-w-0 cursor-pointer text-left"
+            title="Talepler Ana Paneline Dön"
+          >
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-xs sm:text-sm shadow-sm shadow-blue-600/25 shrink-0 group-hover:scale-105 transition-transform">
               H
             </div>
             <div className="text-left min-w-0">
-              <span className="font-extrabold text-xs sm:text-sm text-white tracking-tight block leading-tight truncate">
+              <span className="font-extrabold text-xs sm:text-sm text-white tracking-tight block leading-tight truncate group-hover:text-blue-400 transition-colors">
                 Handyeco Panel
               </span>
               <span className="text-[9px] sm:text-[10px] text-blue-400 font-bold tracking-wider uppercase block truncate">
                 Edinburgh Kontrol Merkezi
               </span>
             </div>
-          </a>
+          </button>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -423,6 +428,7 @@ export default function AdminLayout() {
                 token={token} 
                 onScheduleLead={handleScheduleLead}
                 onLogLeadToAccounting={handleLogLeadToAccounting} 
+                onNavigateTab={handleSelectTab}
               />
             )}
             {activeTab === 'schedule' && (
@@ -431,6 +437,7 @@ export default function AdminLayout() {
                 initialLeadData={initialLeadForSchedule}
                 onClearInitialLead={() => setInitialLeadForSchedule(null)}
                 onLogJobToAccounting={handleLogLeadToAccounting}
+                onNavigateTab={handleSelectTab}
               />
             )}
             {activeTab === 'accounting' && (
@@ -438,13 +445,14 @@ export default function AdminLayout() {
                 token={token} 
                 initialLeadData={initialLeadForAccounting}
                 onClearInitialLead={() => setInitialLeadForAccounting(null)}
+                onNavigateTab={handleSelectTab}
               />
             )}
             {activeTab === 'telegram' && (
               <TelegramEditor data={content.siteConfig} onSave={handleSaveSection} token={token} />
             )}
             {activeTab === 'business' && (
-              <BusinessEditor data={content.siteConfig} onSave={handleSaveSection} token={token} />
+              <BusinessEditor data={content.siteConfig} onSave={handleSaveSection} token={token} onNavigateTab={handleSelectTab} />
             )}
             {activeTab === 'security' && (
               <SecurityEditor token={token} />

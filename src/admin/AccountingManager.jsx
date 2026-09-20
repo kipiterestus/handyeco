@@ -24,7 +24,8 @@ import {
   Banknote, 
   Building, 
   ShieldAlert,
-  Receipt
+  Receipt,
+  Inbox
 } from 'lucide-react';
 
 const OVERHEAD_CATEGORIES = [
@@ -39,7 +40,12 @@ const OVERHEAD_CATEGORIES = [
   { id: 'other', label: 'Diğer Genel İşletme Gideri', icon: '☕' }
 ];
 
-export default function AccountingManager({ token, initialLeadData = null, onClearInitialLead = null }) {
+export default function AccountingManager({ 
+  token, 
+  initialLeadData = null, 
+  onClearInitialLead = null,
+  onNavigateTab = null 
+}) {
   const [finances, setFinances] = useState([]);
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -630,52 +636,85 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-4">
         
         {/* Toplam Gelir / Ciro */}
-        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-3 sm:p-4 shadow-sm relative overflow-hidden">
+        <div 
+          onClick={() => setEntryTypeFilter('job')}
+          className={`bg-[#0b0e14] border rounded-2xl p-3 sm:p-4 shadow-sm relative overflow-hidden cursor-pointer transition-all active:scale-[0.98] group ${
+            entryTypeFilter === 'job' ? 'border-blue-500 bg-blue-950/20' : 'border-zinc-800/90 hover:border-blue-500/70'
+          }`}
+          title="Yalnızca müşteri işlerini filtrele"
+        >
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{periodLabel} Ciro</span>
-            <span className="p-1.5 rounded-lg bg-blue-950/60 text-blue-400 border border-blue-900/60 shrink-0">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate group-hover:text-blue-400 transition-colors">{periodLabel} Ciro</span>
+            <span className="p-1.5 rounded-lg bg-blue-950/60 text-blue-400 border border-blue-900/60 shrink-0 group-hover:scale-110 transition-transform">
               <PoundSterling className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="text-xl sm:text-2xl lg:text-3xl font-black text-white mt-2 truncate">
             £{totalRevenue.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block truncate">{jobFinances.length} müşteri işi</span>
+          <div className="flex items-center justify-between text-[10px] text-zinc-500 mt-1">
+            <span className="truncate">{jobFinances.length} müşteri işi</span>
+            <span className="text-blue-400 font-bold group-hover:translate-x-0.5 transition-transform hidden sm:inline">&rarr;</span>
+          </div>
         </div>
 
         {/* İş Malzemesi Gideri */}
-        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-3 sm:p-4 shadow-sm relative overflow-hidden">
+        <div 
+          onClick={() => setEntryTypeFilter('job')}
+          className={`bg-[#0b0e14] border rounded-2xl p-3 sm:p-4 shadow-sm relative overflow-hidden cursor-pointer transition-all active:scale-[0.98] group ${
+            entryTypeFilter === 'job' ? 'border-rose-500 bg-rose-950/20' : 'border-zinc-800/90 hover:border-rose-500/70'
+          }`}
+          title="Yalnızca iş malzemesi olan kayıtları filtrele"
+        >
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{periodLabel} Malzeme</span>
-            <span className="p-1.5 rounded-lg bg-rose-950/60 text-rose-400 border border-rose-900/60 shrink-0">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate group-hover:text-rose-400 transition-colors">{periodLabel} Malzeme</span>
+            <span className="p-1.5 rounded-lg bg-rose-950/60 text-rose-400 border border-rose-900/60 shrink-0 group-hover:scale-110 transition-transform">
               <TrendingDown className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="text-xl sm:text-2xl lg:text-3xl font-black text-rose-400 mt-2 truncate">
             -£{totalMaterial.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block truncate">Sarf malzeme</span>
+          <div className="flex items-center justify-between text-[10px] text-zinc-500 mt-1">
+            <span className="truncate">Sarf malzeme</span>
+            <span className="text-rose-400 font-bold group-hover:translate-x-0.5 transition-transform hidden sm:inline">&rarr;</span>
+          </div>
         </div>
 
         {/* Genel Şirket Masrafları */}
-        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-3 sm:p-4 shadow-sm relative overflow-hidden">
+        <div 
+          onClick={() => setEntryTypeFilter('overhead')}
+          className={`bg-[#0b0e14] border rounded-2xl p-3 sm:p-4 shadow-sm relative overflow-hidden cursor-pointer transition-all active:scale-[0.98] group ${
+            entryTypeFilter === 'overhead' ? 'border-amber-500 bg-amber-950/20' : 'border-zinc-800/90 hover:border-amber-500/70'
+          }`}
+          title="Yalnızca şirket masraflarını filtrele"
+        >
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{periodLabel} Masraf</span>
-            <span className="p-1.5 rounded-lg bg-amber-950/60 text-amber-400 border border-amber-900/60 shrink-0">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate group-hover:text-amber-400 transition-colors">{periodLabel} Masraf</span>
+            <span className="p-1.5 rounded-lg bg-amber-950/60 text-amber-400 border border-amber-900/60 shrink-0 group-hover:scale-110 transition-transform">
               <Receipt className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="text-xl sm:text-2xl lg:text-3xl font-black text-amber-400 mt-2 truncate">
             -£{totalOverhead.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block truncate">{overheadFinances.length} gider (yakıt vb.)</span>
+          <div className="flex items-center justify-between text-[10px] text-zinc-500 mt-1">
+            <span className="truncate">{overheadFinances.length} gider (yakıt vb.)</span>
+            <span className="text-amber-400 font-bold group-hover:translate-x-0.5 transition-transform hidden sm:inline">&rarr;</span>
+          </div>
         </div>
 
         {/* Net Kâr */}
-        <div className="bg-[#0b0e14] border border-emerald-900/40 rounded-2xl p-3 sm:p-4 shadow-md shadow-emerald-950/20 relative overflow-hidden">
+        <div 
+          onClick={() => setEntryTypeFilter('all')}
+          className={`bg-[#0b0e14] border rounded-2xl p-3 sm:p-4 shadow-md shadow-emerald-950/20 relative overflow-hidden cursor-pointer transition-all active:scale-[0.98] group ${
+            entryTypeFilter === 'all' ? 'border-emerald-500 bg-emerald-950/30' : 'border-emerald-900/40 hover:border-emerald-500/70'
+          }`}
+          title="Tüm kayıtları listele"
+        >
           <div className="flex items-center justify-between text-emerald-400 mb-1">
             <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{periodLabel} Net Kâr</span>
-            <span className="p-1.5 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800 shrink-0">
+            <span className="p-1.5 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800 shrink-0 group-hover:scale-110 transition-transform">
               <TrendingUp className="w-3.5 h-3.5" />
             </span>
           </div>
@@ -686,10 +725,14 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
         </div>
 
         {/* Kâr Marjı */}
-        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-3 sm:p-4 shadow-sm col-span-2 lg:col-span-1">
+        <div 
+          onClick={() => setEntryTypeFilter('all')}
+          className="bg-[#0b0e14] border border-zinc-800/90 hover:border-indigo-500/70 rounded-2xl p-3 sm:p-4 shadow-sm col-span-2 lg:col-span-1 cursor-pointer transition-all active:scale-[0.98] group"
+          title="Tüm kayıtları listele"
+        >
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Kâr Marjı</span>
-            <span className="p-1.5 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-900/60 font-black text-xs shrink-0">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider group-hover:text-indigo-300 transition-colors">Kâr Marjı</span>
+            <span className="p-1.5 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-900/60 font-black text-xs shrink-0 group-hover:scale-110 transition-transform">
               %
             </span>
           </div>
@@ -786,12 +829,30 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
       {loading ? (
         <div className="p-12 text-center text-zinc-500 font-medium">Muhasebe kayıtları yükleniyor...</div>
       ) : filteredFinances.length === 0 ? (
-        <div className="p-12 bg-[#0b0e14] rounded-2xl border border-zinc-800 text-center space-y-2">
+        <div className="p-12 bg-[#0b0e14] rounded-2xl border border-zinc-800 text-center space-y-3">
           <PoundSterling className="w-10 h-10 text-zinc-600 mx-auto" />
           <h3 className="text-base font-bold text-white">Seçilen dönemde muhasebe kaydı bulunamadı</h3>
           <p className="text-xs text-zinc-400 max-w-sm mx-auto">
-            Üstteki dönem filtresini değiştirebilir veya sağ üstteki "+ Yeni Kayıt Ekle" butonuyla yeni iş işleyebilirsiniz.
+            Üstteki dönem filtresini değiştirebilir veya sağ üstteki "+ Gelir Ekle" butonuyla yeni iş işleyebilirsiniz.
           </p>
+          {onNavigateTab && (
+            <div className="flex items-center justify-center gap-2 pt-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => onNavigateTab('schedule')}
+                className="px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-bold border border-zinc-800 cursor-pointer transition-all"
+              >
+                📅 Randevuları Gör
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('leads')}
+                className="px-3.5 py-1.5 rounded-xl bg-indigo-950/80 hover:bg-indigo-900 text-indigo-300 text-xs font-bold border border-indigo-900 cursor-pointer transition-all"
+              >
+                📥 Bekleyen Talepleri Gör
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -939,6 +1000,17 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                         <Phone className="w-3 h-3 text-blue-400" />
                         <span>{item.customerPhone}</span>
                       </a>
+                    )}
+                    {item.leadId && onNavigateTab && (
+                      <button
+                        type="button"
+                        onClick={() => onNavigateTab('leads')}
+                        className="text-[11px] text-indigo-400 hover:text-indigo-200 flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-950/40 border border-indigo-900/60 hover:bg-indigo-950/80 transition-colors cursor-pointer"
+                        title="İlgili müşteri teklifine git"
+                      >
+                        <Inbox className="w-3 h-3" />
+                        <span>Talebe Git &rarr;</span>
+                      </button>
                     )}
                   </div>
                 </div>

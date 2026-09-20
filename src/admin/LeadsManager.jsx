@@ -23,7 +23,7 @@ import {
 
 const ITEMS_PER_PAGE = 6;
 
-export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccounting }) {
+export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccounting, onNavigateTab = null }) {
   const [quotes, setQuotes] = useState([]);
   const [finances, setFinances] = useState([]);
   const [schedule, setSchedule] = useState([]);
@@ -570,14 +570,21 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
                   
                   {/* 1. Schedule Badge or Schedule Button */}
                   {linkedSchedule ? (
-                    <div className="p-2 rounded-xl bg-blue-950/40 border border-blue-900/60 flex items-center justify-between text-xs">
+                    <div 
+                      onClick={() => onNavigateTab && onNavigateTab('schedule')}
+                      className="p-2 rounded-xl bg-blue-950/40 border border-blue-900/60 hover:border-blue-700 hover:bg-blue-950/70 flex items-center justify-between text-xs cursor-pointer transition-all group"
+                      title="Randevular takviminde gör"
+                    >
                       <div className="flex items-center gap-1.5 text-blue-300 font-bold">
                         <Calendar className="w-3.5 h-3.5 text-blue-400" />
                         <span>Randevu: {linkedSchedule.date}</span>
                       </div>
-                      <span className="text-[11px] font-black text-white bg-blue-900/60 px-2 py-0.5 rounded-md border border-blue-800/60">
-                        {linkedSchedule.startTime}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[11px] font-black text-white bg-blue-900/60 px-2 py-0.5 rounded-md border border-blue-800/60">
+                          {linkedSchedule.startTime}
+                        </span>
+                        <span className="text-blue-400 text-xs font-bold group-hover:translate-x-0.5 transition-transform">&rarr;</span>
+                      </div>
                     </div>
                   ) : (
                     <button
@@ -593,16 +600,25 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
                   {/* 2. Accounting Badge or Add to Accounting Button */}
                   {linkedFinance ? (
                     <div 
-                      onClick={() => alert(`Bu teklif zaten muhasebeye eklenmiştir.\n\nMüşteri: ${quote.name}\nTarih: ${linkedFinance.date}\nCiro: £${linkedFinance.revenue}\nNet Kâr: £${linkedFinance.netProfit}`)}
-                      className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-900/60 flex items-center justify-between text-xs cursor-pointer hover:bg-emerald-950/60 transition-colors"
-                      title="Muhasebeye eklendi"
+                      onClick={() => {
+                        if (onNavigateTab) {
+                          onNavigateTab('accounting');
+                        } else {
+                          alert(`Bu teklif zaten muhasebeye eklenmiştir.\n\nMüşteri: ${quote.name}\nTarih: ${linkedFinance.date}\nCiro: £${linkedFinance.revenue}\nNet Kâr: £${linkedFinance.netProfit}`);
+                        }
+                      }}
+                      className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-900/60 hover:border-emerald-700 hover:bg-emerald-950/70 flex items-center justify-between text-xs cursor-pointer transition-all group"
+                      title="Muhasebe sayfasına git"
                     >
                       <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                         <span>✅ Muhasebede</span>
                       </div>
-                      <div className="text-[11px] font-black text-white">
-                        £{linkedFinance.revenue || 0} &bull; <span className="text-emerald-400">+£{linkedFinance.netProfit || 0}</span>
+                      <div className="flex items-center gap-1.5">
+                        <div className="text-[11px] font-black text-white">
+                          £{linkedFinance.revenue || 0} &bull; <span className="text-emerald-400">+£{linkedFinance.netProfit || 0}</span>
+                        </div>
+                        <span className="text-emerald-400 text-xs font-bold group-hover:translate-x-0.5 transition-transform">&rarr;</span>
                       </div>
                     </div>
                   ) : (
