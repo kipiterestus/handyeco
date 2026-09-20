@@ -8,11 +8,41 @@ import { timingSafeCompare, TokenManager, sanitizeQuotePayload, isTotpConfigured
 export { isTotpConfigured, verifyTotpCode, generateTotpSetup, saveTotpSecret, resetTotp };
 
 const dataDir = path.join(process.cwd(), 'server', 'data');
-const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-const quotesFile = path.join(process.cwd(), 'server', 'quotes.json');
+const defaultDataDir = path.join(process.cwd(), 'server', 'default_data');
+const uploadsDir = path.join(dataDir, 'uploads');
+const quotesFile = path.join(dataDir, 'quotes.json');
+const legacyQuotesFile = path.join(process.cwd(), 'server', 'quotes.json');
 
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+
+// Auto-seed data directory if empty or missing files (critical for newly mounted Railway volumes)
+function seedDataDir() {
+  if (!fs.existsSync(defaultDataDir)) return;
+  try {
+    const files = fs.readdirSync(defaultDataDir);
+    for (const file of files) {
+      const dest = path.join(dataDir, file);
+      if (!fs.existsSync(dest)) {
+        fs.copyFileSync(path.join(defaultDataDir, file), dest);
+        console.log(`[Store] Seeded missing file ${file} to data directory`);
+      }
+    }
+  } catch (err) {
+    console.error('[Store] Error seeding data directory:', err);
+  }
+}
+seedDataDir();
+
+// Migrate legacy quotes.json if needed
+if (!fs.existsSync(quotesFile) && fs.existsSync(legacyQuotesFile)) {
+  try {
+    fs.copyFileSync(legacyQuotesFile, quotesFile);
+    console.log('[Store] Migrated quotes.json to server/data/quotes.json');
+  } catch (err) {
+    console.error('[Store] Error migrating quotes.json:', err);
+  }
+}
 
 // Read JSON file safely
 export function readJson(filename, defaultValue = {}) {

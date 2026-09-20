@@ -1,0 +1,92 @@
+[
+  {
+    "id": "flatpack-assembly",
+    "title": "Flat-Pack Furniture Assembly",
+    "category": "assembly",
+    "iconName": "Wrench",
+    "badge": "IKEA & Wayfair Pro",
+    "description": "Expert assembly of all flat-pack furniture. From multi-door IKEA PAX wardrobes with sliding doors to complex ottoman beds, dining tables, and office desks.",
+    "popular": true,
+    "bullets": [
+      "IKEA PAX, Hemnes, Brimnes & Songesand specialists",
+      "Heavy wardrobes safely secured and anchored to walls",
+      "All packaging and cardboard neatly bundled or removed",
+      "Fixed transparent quote per item before work starts"
+    ]
+  },
+  {
+    "id": "tv-wall-mounting",
+    "title": "TV, Mirrors & Wall Mounting",
+    "category": "mounting",
+    "iconName": "Tv",
+    "badge": "Laser-Level Precision",
+    "description": "Secure mounting into historic Edinburgh sandstone tenements or stud partitions. TVs up to 85\", heavy ornate mirrors, floating oak shelves, and curtain tracks.",
+    "popular": true,
+    "bullets": [
+      "TVs from 32\" up to 85\" OLED with laser-level precision",
+      "Heavy Victorian mirrors, gallery walls & solid oak shelves",
+      "Specialist heavy-duty anchors for stone & plaster walls",
+      "Discreet paintable cable trunking & blind/curtain fittings"
+    ]
+  },
+  {
+    "id": "bathroom-silicone",
+    "title": "Mould-Free Bathroom Silicone & Sealing",
+    "category": "repairs",
+    "iconName": "Sparkles",
+    "badge": "100% Waterproof",
+    "description": "Professional stripping of blackened, mouldy, or leaking silicone around baths, shower enclosures, sinks, and kitchen worktops. Pristine new silicone applied.",
+    "popular": true,
+    "bullets": [
+      "Complete mechanical stripping of degraded old sealant",
+      "Surface sterilisation with anti-fungal treatment",
+      "High-grade sanitary grade anti-mould silicone",
+      "Flawless smooth bead tooling with clean tape edges"
+    ]
+  },
+  {
+    "id": "painting-decorating",
+    "title": "Painting & Decorating",
+    "category": "painting",
+    "iconName": "Paintbrush",
+    "badge": "Flawless Finish",
+    "description": "Interior freshening, feature accent walls, water stain remediation, door and skirting woodwork painting, and high-quality paint finishes.",
+    "popular": false,
+    "bullets": [
+      "Crack filling, plaster smoothing & surface preparation",
+      "Skirting boards, architraves & tenement doors glossing",
+      "Dust-sheet protection for all furniture and carpets",
+      "Farrow & Ball, Dulux Heritage & Johnstone finishes"
+    ]
+  },
+  {
+    "id": "kitchen-wrap",
+    "title": "Kitchen Cabinet Vinyl Wrap",
+    "category": "kitchen",
+    "iconName": "Layers",
+    "badge": "Renovation Alternative",
+    "description": "Modernise dated kitchen cupboard doors and drawer fronts with architectural-grade, heat-resistant textured vinyl wrap at a fraction of kitchen replacement cost.",
+    "popular": false,
+    "bullets": [
+      "Matte, gloss, and natural woodgrain textures available",
+      "Heat, moisture & scratch-resistant architectural vinyl",
+      "Seamless edge wrapping with bubble-free precision",
+      "Transform whole kitchen aesthetic in just 1–2 days"
+    ]
+  },
+  {
+    "id": "garden-fencing",
+    "title": "Garden Fencing Repair & Installation",
+    "category": "outdoor",
+    "iconName": "ShieldCheck",
+    "badge": "Storm & Timber Pro",
+    "description": "Professional timber fencing repairs, storm-damaged post replacements, and new fence installations. From post spurs and featheredge fencing to garden gates.",
+    "popular": false,
+    "bullets": [
+      "Storm-damaged fence panel & post repair / replacement",
+      "New timber boundary fencing & featheredge installation",
+      "Garden gate hanging, heavy-duty hinges, latches & locks",
+      "Rot-resistant pressure-treated wood & concrete spur reinforcement"
+    ]
+  }
+]
