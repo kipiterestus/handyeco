@@ -179,7 +179,7 @@ export function getAllowedOrigins() {
 export function corsMiddleware(req, res, next) {
   const origin = req.headers.origin;
   const allowed = getAllowedOrigins();
-  if (origin && (allowed.has(origin) || origin.endsWith('.railway.app') || !process.env.ALLOWED_ORIGIN)) {
+  if (origin && (allowed.has(origin) || origin.endsWith('.railway.app') || origin.endsWith('handyeco.co.uk') || !process.env.ALLOWED_ORIGIN)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
   } else if (!origin) {
