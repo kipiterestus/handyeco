@@ -32,6 +32,7 @@ import GalleryManager from './GalleryManager';
 import ReviewsManager from './ReviewsManager';
 import FaqAreasEditor from './FaqAreasEditor';
 import SeoEditor from './SeoEditor';
+import SecurityEditor from './SecurityEditor';
 import { useContent } from '../context/ContentContext';
 
 export default function AdminLayout() {
@@ -236,6 +237,7 @@ export default function AdminLayout() {
   const siteSettingsNav = [
     { id: 'telegram', label: 'Telegram Bot', icon: Send },
     { id: 'business', label: 'İşletme Bilgileri', icon: Building2 },
+    { id: 'security', label: 'Güvenlik & 2FA', icon: ShieldCheck },
     { id: 'hero', label: 'Ana Sayfa', icon: Sparkles },
     { id: 'services', label: 'Hizmetler', icon: Wrench },
     { id: 'gallery', label: 'Galeri', icon: Camera },
@@ -443,6 +445,9 @@ export default function AdminLayout() {
             )}
             {activeTab === 'business' && (
               <BusinessEditor data={content.siteConfig} onSave={handleSaveSection} token={token} />
+            )}
+            {activeTab === 'security' && (
+              <SecurityEditor token={token} />
             )}
             {activeTab === 'hero' && (
               <HeroEditor data={content.hero} onSave={handleSaveSection} token={token} />

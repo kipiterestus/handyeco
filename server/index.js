@@ -29,6 +29,8 @@ import {
   generateTotpSetup,
   saveTotpSecret,
   resetTotp,
+  getTotpStatus,
+  toggleTotp,
   readJson,
   writeJson
 } from './store.js';
@@ -255,12 +257,19 @@ app.post('/api/auth/totp', async (req, res) => {
 app.post('/api/auth/totp/reset', requireAuth, (req, res) => {
   resetTotp();
   console.log('[Auth] 2FA TOTP reset by authenticated admin.');
-  return res.json({ success: true, message: '2FA has been reset. You will be prompted to re-configure on next login.' });
+  return res.json({ success: true, message: '2FA sıfırlandı. Bir sonraki girişte yeniden kurulum istenecektir.' });
 });
 
-// Check TOTP status
+// Check TOTP status & backup codes
 app.get('/api/auth/totp/status', requireAuth, (req, res) => {
-  return res.json({ configured: isTotpConfigured() });
+  return res.json({ success: true, ...getTotpStatus() });
+});
+
+// Toggle 2FA enabled / disabled
+app.post('/api/auth/totp/toggle', requireAuth, (req, res) => {
+  const result = toggleTotp(req.body?.disabled);
+  console.log(`[Auth] 2FA toggle changed: ${result.enabled ? 'Enabled' : 'Disabled'}`);
+  return res.json({ success: true, ...result });
 });
 
 app.get('/api/auth/verify', (req, res) => {

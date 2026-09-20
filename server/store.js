@@ -2,10 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import sharp from 'sharp';
-import { timingSafeCompare, TokenManager, sanitizeQuotePayload, isTotpConfigured, verifyTotpCode, generateTotpSetup, saveTotpSecret, resetTotp } from './security.js';
+import { timingSafeCompare, TokenManager, sanitizeQuotePayload, isTotpConfigured, verifyTotpCode, generateTotpSetup, saveTotpSecret, resetTotp, getTotpStatus, toggleTotp } from './security.js';
 
 // Re-export TOTP helpers so server/index.js can import them from one place
-export { isTotpConfigured, verifyTotpCode, generateTotpSetup, saveTotpSecret, resetTotp };
+export { isTotpConfigured, verifyTotpCode, generateTotpSetup, saveTotpSecret, resetTotp, getTotpStatus, toggleTotp };
 
 const dataDir = path.join(process.cwd(), 'server', 'data');
 const defaultDataDir = path.join(process.cwd(), 'server', 'default_data');
