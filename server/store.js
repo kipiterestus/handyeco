@@ -195,16 +195,6 @@ export function deleteQuoteRecord(id) {
 }
 
 // Authentication handling with Timing-Safe comparison and 24-hour Token TTL
-try {
-  if (typeof process.loadEnvFile === 'function') {
-    process.loadEnvFile();
-  }
-} catch (e) {}
-
-if (!process.env.ADMIN_PASSWORD && process.env.NODE_ENV === 'production') {
-  console.error('[FATAL] ADMIN_PASSWORD environment variable is not set. Production server refusing to start.');
-  process.exit(1);
-}
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'handyeco2026!';
 const tokenManager = new TokenManager(24 * 60 * 60 * 1000);
 
