@@ -173,8 +173,8 @@ function writeStoredSessions(sessions) {
 }
 
 export class TokenManager {
-  // 365 days TTL: Eliminates arbitrary AFK logouts entirely
-  constructor(ttlMs = 365 * 24 * 60 * 60 * 1000) {
+  // 1 hour TTL (60 minutes) - automatically refreshed while user is active
+  constructor(ttlMs = 60 * 60 * 1000) {
     this.ttlMs = ttlMs;
     this.tokens = new Map();
     // Load persisted sessions on startup so restarts don't log out the admin
