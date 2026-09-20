@@ -1,6 +1,6 @@
 export const REVIEWS_STATS = {
   averageRating: 5.0,
-  totalReviews: 48,
+  totalReviews: 73,
   fiveStarPercentage: 100,
   googleProfileUrl: "https://maps.google.com/?cid=14359767137015043852",
   googlePlaceId: "14359767137015043852"

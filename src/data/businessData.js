@@ -16,7 +16,7 @@ export const BUSINESS_INFO = {
   googleMapsUrl: "https://maps.google.com/?cid=14359767137015043852",
   facebookUrl: "https://www.facebook.com/people/Handyeco-Edinburgh-Handyman-Services/100092524458321/",
   rating: 5.0,
-  reviewCount: 48,
+  reviewCount: 73,
   googleRating: 5.0,
   workingHours: "Monday - Saturday: 8:00 AM - 6:00 PM (Emergency Callouts Available)",
   primaryLocation: "Edinburgh, Midlothian & Surrounding Areas, Scotland",
