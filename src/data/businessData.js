@@ -10,7 +10,7 @@ export const BUSINESS_INFO = {
   displayPhone: "07760 696723",
   whatsappNumber: "447760696723",
   whatsappUrl: "https://wa.me/447760696723?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20quote%20for%20a%20handyman%20job%20in%20Edinburgh.",
-  email: "ekremguran@gmail.com",
+  email: "info@handyeco.co.uk",
   googleProfileUrl: "https://maps.app.goo.gl/jQH6GXAotpV1oXG78",
   googlePlaceId: "14359767137015043852",
   googleMapsUrl: "https://maps.app.goo.gl/jQH6GXAotpV1oXG78",
