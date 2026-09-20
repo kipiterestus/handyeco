@@ -11,6 +11,7 @@ import {
   saveQuoteRecord, 
   updateQuoteStatus, 
   deleteQuoteRecord, 
+  clearAllQuotes,
   verifyAdminPassword, 
   createAdminToken, 
   isValidToken, 
@@ -345,6 +346,18 @@ app.patch('/api/quotes/:id', requireAuth, (req, res) => {
     res.json({ success: true, quote: updated });
   } catch (err) {
     console.error('[API] Update quote error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Clear all quote leads
+app.delete('/api/quotes', requireAuth, (req, res) => {
+  try {
+    clearAllQuotes();
+    console.log('[API] All quotes cleared by admin.');
+    res.json({ success: true, message: 'All quotes have been deleted.' });
+  } catch (err) {
+    console.error('[API] Clear all quotes error:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 });

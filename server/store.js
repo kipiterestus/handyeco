@@ -62,6 +62,29 @@ function migrateSiteConfigEmail() {
 }
 migrateSiteConfigEmail();
 
+// One-time startup migration to wipe old test quotes as requested by user
+function clearExistingQuotesMigration() {
+  try {
+    const adminConfigFile = path.join(dataDir, 'admin_config.json');
+    let cfg = {};
+    if (fs.existsSync(adminConfigFile)) {
+      try { cfg = JSON.parse(fs.readFileSync(adminConfigFile, 'utf-8')); } catch (e) {}
+    }
+    if (!cfg.quotesCleaned_v1) {
+      fs.writeFileSync(quotesFile, JSON.stringify([], null, 2), 'utf-8');
+      if (fs.existsSync(legacyQuotesFile)) {
+        try { fs.writeFileSync(legacyQuotesFile, JSON.stringify([], null, 2), 'utf-8'); } catch (e) {}
+      }
+      cfg.quotesCleaned_v1 = true;
+      fs.writeFileSync(adminConfigFile, JSON.stringify(cfg, null, 2), 'utf-8');
+      console.log('[Store] Automatically cleared old test quotes on deploy (quotesCleaned_v1).');
+    }
+  } catch (err) {
+    console.error('[Store] Error in clearExistingQuotesMigration:', err);
+  }
+}
+clearExistingQuotesMigration();
+
 // Read JSON file safely
 export function readJson(filename, defaultValue = {}) {
   const filePath = path.join(dataDir, filename);
@@ -219,6 +242,14 @@ export function deleteQuoteRecord(id) {
   const quotes = getQuotes();
   const filtered = quotes.filter(q => q.id !== id);
   fs.writeFileSync(quotesFile, JSON.stringify(filtered, null, 2), 'utf-8');
+  return true;
+}
+
+export function clearAllQuotes() {
+  fs.writeFileSync(quotesFile, JSON.stringify([], null, 2), 'utf-8');
+  if (fs.existsSync(legacyQuotesFile)) {
+    try { fs.writeFileSync(legacyQuotesFile, JSON.stringify([], null, 2), 'utf-8'); } catch (e) {}
+  }
   return true;
 }
 

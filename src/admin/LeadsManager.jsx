@@ -18,7 +18,8 @@ import {
   ChevronRight,
   Archive,
   X,
-  Plus
+  Plus,
+  Trash2
 } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 6;
@@ -126,6 +127,36 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
       setQuotes(prev => prev.map(q => q.id === id ? { ...q, notes } : q));
     } catch (err) {
       console.error('Error saving notes:', err);
+    }
+  };
+
+  const handleDeleteQuote = async (id) => {
+    if (!window.confirm('Bu müşteri talebini silmek istediğinize emin misiniz?')) return;
+    try {
+      const res = await fetch(`/api/quotes/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setQuotes(prev => prev.filter(q => q.id !== id));
+      }
+    } catch (err) {
+      console.error('Error deleting quote:', err);
+    }
+  };
+
+  const handleClearAll = async () => {
+    if (!window.confirm('DİKKAT: Paneldeki TÜM müşteri talepleri kalıcı olarak silinecektir.\n\nOnaylıyor musunuz?')) return;
+    try {
+      const res = await fetch('/api/quotes', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setQuotes([]);
+      }
+    } catch (err) {
+      console.error('Error clearing quotes:', err);
     }
   };
 
@@ -286,7 +317,7 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
   const filteredQuotes = useMemo(() => {
     return sortedQuotes.filter(q => {
       const matchesStatus = statusFilter === 'all'
-        ? true
+        ? q.status !== 'archived' // Tümü kısmında arşivlenmişleri gösterme, sadece aktifler
         : statusFilter === 'new'
         ? (q.status === 'new' || !q.status)
         : q.status === statusFilter;
@@ -322,7 +353,7 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
   };
 
   const counts = {
-    all: sortedQuotes.length,
+    all: sortedQuotes.filter(q => q.status !== 'archived').length,
     new: sortedQuotes.filter(q => q.status === 'new' || !q.status).length,
     contacted: sortedQuotes.filter(q => q.status === 'contacted').length,
     booked: sortedQuotes.filter(q => q.status === 'booked').length,
@@ -440,6 +471,17 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
         </div>
 
         <div className="flex items-center gap-2">
+          {quotes.length > 0 && (
+            <button
+              type="button"
+              onClick={handleClearAll}
+              className="px-3 py-2 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 hover:text-rose-100 text-xs font-bold border border-rose-900/60 transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm"
+              title="Paneldeki tüm talepleri temizle"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+              <span>Tümünü Temizle</span>
+            </button>
+          )}
           <button
             onClick={fetchData}
             className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-xs font-bold text-zinc-300 border border-zinc-800 transition-colors cursor-pointer"
@@ -488,26 +530,37 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
                       </div>
                     </div>
 
-                    {/* Status Dropdown */}
-                    <select
-                      value={quote.status || 'new'}
-                      onChange={(e) => updateStatus(quote.id, e.target.value)}
-                      disabled={savingId === quote.id}
-                      className={`text-[11px] font-bold rounded-lg px-2 py-1 border cursor-pointer focus:outline-none ${
-                        quote.status === 'booked' 
-                          ? 'bg-emerald-950/80 border-emerald-800 text-emerald-300'
-                          : quote.status === 'contacted'
-                          ? 'bg-indigo-950/80 border-indigo-800 text-indigo-300'
-                          : quote.status === 'archived'
-                          ? 'bg-zinc-900 border-zinc-700 text-zinc-400'
-                          : 'bg-amber-950/80 border-amber-800 text-amber-300'
-                      }`}
-                    >
-                      <option value="new">🟡 Yeni</option>
-                      <option value="contacted">🔵 Görüşüldü</option>
-                      <option value="booked">🟢 Yapıldı</option>
-                      <option value="archived">⚪ Arşiv</option>
-                    </select>
+                    {/* Status Dropdown & Delete */}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <select
+                        value={quote.status || 'new'}
+                        onChange={(e) => updateStatus(quote.id, e.target.value)}
+                        disabled={savingId === quote.id}
+                        className={`text-[11px] font-bold rounded-lg px-2 py-1 border cursor-pointer focus:outline-none ${
+                          quote.status === 'booked' 
+                            ? 'bg-emerald-950/80 border-emerald-800 text-emerald-300'
+                            : quote.status === 'contacted'
+                            ? 'bg-indigo-950/80 border-indigo-800 text-indigo-300'
+                            : quote.status === 'archived'
+                            ? 'bg-zinc-900 border-zinc-700 text-zinc-400'
+                            : 'bg-amber-950/80 border-amber-800 text-amber-300'
+                        }`}
+                      >
+                        <option value="new">🟡 Yeni</option>
+                        <option value="contacted">🔵 Görüşüldü</option>
+                        <option value="booked">🟢 Yapıldı</option>
+                        <option value="archived">⚪ Arşiv</option>
+                      </select>
+
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteQuote(quote.id)}
+                        className="p-1.5 text-zinc-500 hover:text-rose-400 rounded-lg hover:bg-rose-950/40 transition-colors cursor-pointer"
+                        title="Bu talebi kalıcı olarak sil"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
 
                   {/* Badges: Service & Postcode */}
