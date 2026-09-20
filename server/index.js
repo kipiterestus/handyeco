@@ -28,7 +28,9 @@ import {
   verifyTotpCode,
   generateTotpSetup,
   saveTotpSecret,
-  resetTotp
+  resetTotp,
+  readJson,
+  writeJson
 } from './store.js';
 import { sendTelegramNotification, sendTelegramDailyAppointmentReminder } from './telegram.js';
 import { syncReviews } from './reviewsSync.js';
@@ -430,20 +432,13 @@ app.post('/api/telegram/reminders', requireAuth, async (req, res) => {
     const allSchedule = getSchedule() || [];
     const targetJobs = allSchedule.filter(j => j.date === targetDate && j.status !== 'cancelled');
 
-    if (targetJobs.length === 0) {
-      return res.json({
-        success: true,
-        delivered: false,
-        count: 0,
-        message: `${targetDate} (Yarın) için planlanmış herhangi bir randevu bulunamadı.`
-      });
-    }
-
     const result = await sendTelegramDailyAppointmentReminder(targetJobs, targetDate, botToken, chatId);
     res.json({
       ...result,
       targetDate,
-      message: `${targetDate} tarihli ${targetJobs.length} adet randevu hatırlatması Telegram'a başarıyla iletildi!`
+      message: targetJobs.length > 0
+        ? `${targetDate} tarihli ${targetJobs.length} adet randevu hatırlatması Telegram'a başarıyla iletildi!`
+        : `${targetDate} için planlanmış iş olmadığı bilgisi Telegram'a iletildi.`
     });
   } catch (err) {
     console.error('[Telegram] Reminder error:', err);
@@ -532,9 +527,7 @@ setInterval(() => {
   syncReviews().catch(err => console.error('[AutoSync Error]:', err));
 }, 60 * 60 * 1000);
 
-// Automated Daily Appointment Reminders (Checks every 30 minutes in the evening UK time)
-let lastReminderDateSent = null;
-
+// Automated Daily Appointment Reminders (Checks every 15 minutes, dispatches once daily between 19:00 and 22:00 UK time)
 async function checkAndSendAppointmentReminders() {
   try {
     const siteConfig = getSection('siteConfig') || {};
@@ -546,32 +539,38 @@ async function checkAndSendAppointmentReminders() {
     const nowUk = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', hour12: false });
     const currentHour = parseInt(nowUk, 10);
 
-    // Send reminders in the evening between 19:00 and 21:00 (7 PM - 9 PM) for next day
-    if (currentHour >= 19 && currentHour <= 21) {
+    // Send reminders in the evening between 19:00 and 22:00 (7 PM - 10 PM) UK time for the next day
+    if (currentHour >= 19 && currentHour <= 22) {
       const d = new Date();
       d.setDate(d.getDate() + 1);
       const tomorrowDate = d.toLocaleDateString('en-CA', { timeZone: 'Europe/London' });
 
-      if (lastReminderDateSent === tomorrowDate) {
-        // Already dispatched for tomorrow
+      // Check persisted state to ensure we only dispatch ONCE per day (even if server restarts)
+      const reminderState = readJson('reminder_state.json', {});
+      if (reminderState.lastReminderDateSent === tomorrowDate) {
         return;
       }
 
       const allSchedule = getSchedule() || [];
       const tomorrowJobs = allSchedule.filter(j => j.date === tomorrowDate && j.status !== 'cancelled');
 
-      if (tomorrowJobs.length > 0) {
-        console.log(`\n[AutoReminder] ⏰ ${tomorrowDate} tarihli ${tomorrowJobs.length} randevu için otomatik Telegram bildirimi iletiliyor...`);
-        await sendTelegramDailyAppointmentReminder(tomorrowJobs, tomorrowDate, botToken, chatId);
-        lastReminderDateSent = tomorrowDate;
-      }
+      console.log(`\n[AutoReminder] ⏰ ${tomorrowDate} tarihi için otomatik Telegram bildirimi iletiliyor (İş sayısı: ${tomorrowJobs.length})...`);
+      await sendTelegramDailyAppointmentReminder(tomorrowJobs, tomorrowDate, botToken, chatId);
+
+      // Persist state to prevent repeated notifications on subsequent checks or restarts
+      writeJson('reminder_state.json', {
+        lastReminderDateSent: tomorrowDate,
+        sentAt: new Date().toISOString(),
+        jobCount: tomorrowJobs.length
+      });
+      console.log(`[AutoReminder] ✅ ${tomorrowDate} hatırlatması başarıyla tamamlandı ve kaydedildi.`);
     }
   } catch (err) {
     console.error('[AutoReminder Error]:', err.message);
   }
 }
 
-setInterval(checkAndSendAppointmentReminders, 30 * 60 * 1000);
+setInterval(checkAndSendAppointmentReminders, 15 * 60 * 1000);
 setTimeout(checkAndSendAppointmentReminders, 5000);
 
 // Client-side SPA routing fallback (serves index.html for non-API routes in production)

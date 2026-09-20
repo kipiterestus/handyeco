@@ -443,7 +443,11 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
       const data = await res.json();
       if (res.ok && data.success) {
         if (data.delivered) {
-          setReminderStatus({ type: 'success', message: `✅ ${data.count} adet randevu Telegram'a başarıyla iletildi!` });
+          if (data.count === 0) {
+            setReminderStatus({ type: 'info', message: `ℹ️ ${data.message || 'Yarın için planlanmış iş olmadığı Telegram\'a iletildi.'}` });
+          } else {
+            setReminderStatus({ type: 'success', message: `✅ ${data.count} adet randevu Telegram'a başarıyla iletildi!` });
+          }
         } else {
           setReminderStatus({ type: 'info', message: `ℹ️ ${data.message || 'Yarın için randevu bulunamadı.'}` });
         }

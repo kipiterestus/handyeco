@@ -86,12 +86,49 @@ export async function sendTelegramDailyAppointmentReminder(jobs, targetDate, tok
     };
   }
 
+  let formattedDate = targetDate;
+  try {
+    const [y, m, d] = targetDate.split('-');
+    if (y && m && d) {
+      formattedDate = `${d}/${m}/${y}`;
+    }
+  } catch (e) {
+    formattedDate = targetDate;
+  }
+
+  // If there are NO jobs scheduled for tomorrow
   if (!jobs || jobs.length === 0) {
-    return {
-      success: true,
-      delivered: false,
-      reason: `No jobs scheduled for ${targetDate}`
-    };
+    const emptyMessage = [
+      `🔔 <b>YARINKİ İŞ & RANDEVU BİLGİLENDİRMESİ</b>`,
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `📅 <b>Tarih:</b> ${formattedDate} (Yarın)`,
+      `☕ <b>Durum:</b> Yarın için takvimde planlanmış herhangi bir iş veya randevu kaydı bulunmamaktadır.`,
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `⏱️ <i>Handyeco Edinburgh Otomatik Ajanda Asistanı</i>`
+    ].join('\n');
+
+    const telegramApiUrl = `https://api.telegram.org/bot${token}/sendMessage`;
+
+    const response = await fetch(telegramApiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: emptyMessage,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+      })
+    });
+
+    const result = await response.json();
+
+    if (!result.ok) {
+      console.error('[Telegram] Hatırlatıcı Gönderme Hatası:', result);
+      throw new Error(result.description || 'Telegram reminder notification failed');
+    }
+
+    console.log(`[Telegram] 🔔 ${targetDate} tarihi için iş olmadığı bilgisi Telegram ile iletildi.`);
+    return { success: true, delivered: true, count: 0, empty: true, messageId: result.result?.message_id };
   }
 
   const jobItems = jobs.map((job, idx) => {
@@ -113,7 +150,7 @@ export async function sendTelegramDailyAppointmentReminder(jobs, targetDate, tok
   const message = [
     `🔔 <b>YARINKİ İŞ & RANDEVU HATIRLATMASI</b>`,
     `━━━━━━━━━━━━━━━━━━━━`,
-    `📅 <b>Tarih:</b> ${targetDate} (Yarın)`,
+    `📅 <b>Tarih:</b> ${formattedDate} (Yarın)`,
     `📋 <b>Planlanan İş Sayısı:</b> ${jobs.length} Randevu`,
     `━━━━━━━━━━━━━━━━━━━━`,
     jobItems,
