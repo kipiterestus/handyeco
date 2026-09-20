@@ -1,100 +1,227 @@
 export const GALLERY_ITEMS = [
   {
-    id: "gal-1",
-    title: "IKEA PAX 3-Door Wardrobe Assembly",
-    category: "assembly",
-    location: "Morningside, Edinburgh",
-    uploadedBy: "Customer: Sarah M.",
-    date: "September 2026",
-    isBeforeAfter: false,
-    image: "https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=1000&auto=format&fit=crop&q=80",
-    badge: "Verified Client Upload",
-    description: "Full flat-pack assembly including interior mesh drawers, pull-out shoe racks, soft-close hinges, and safe wall anchoring."
+    "id": "gal-1789908319761",
+    "title": "Solid Wood Kitchen Worktop Sanding & Re-Oiling",
+    "location": "Morningside, Edinburgh (EH10)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2459_jpg_jpeg_1789908341602.webp",
+    "description": "Solid oak kitchen counter deep cleaned, sanded down to bare wood and treated with food-safe protective oil."
   },
   {
-    id: "gal-2",
-    title: "75-inch OLED TV Wall Mount & Cable Concealment",
-    category: "mounting",
-    location: "New Town, Edinburgh",
-    uploadedBy: "Customer: Callum B.",
-    date: "September 2026",
-    isBeforeAfter: false,
-    image: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=1000&auto=format&fit=crop&q=80",
-    badge: "Precision Laser Level",
-    description: "Heavy-duty ultra-slim bracket mounted into historic Edinburgh stone masonry with discreet paintable cable trunking."
+    "id": "gal-1789908318699",
+    "title": "Custom Bay Window Bench & Meter Enclosure",
+    "location": "New Town, Edinburgh (EH3)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2441_jpg_jpeg_1789908340026.webp",
+    "description": "Bespoke carpentry window bay seat box concealing electric and gas meters with durable hardwood finish."
   },
   {
-    id: "gal-3",
-    title: "Bathroom Silicone Mould Removal & Re-Sealing",
-    category: "repairs",
-    location: "Leith, Edinburgh",
-    uploadedBy: "Customer: David R.",
-    date: "September 2026",
-    isBeforeAfter: true,
-    beforeImage: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&auto=format&fit=crop&q=80",
-    image: "https://images.unsplash.com/photo-1620626011761-996317b8d101?w=1000&auto=format&fit=crop&q=80",
-    badge: "Before & After",
-    description: "Old black mould sealant stripped, surface sanitised, and new industrial anti-fungal silicone applied with pristine tooling."
+    "id": "gal-1789908302850",
+    "title": "Bathroom Accent Feature Wall & Trim Painting",
+    "location": "Leith, Edinburgh (EH6)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2280_jpg_jpeg_1789908309145.webp",
+    "description": "Modern terracotta accent wall painting with sharp laser-straight tape lines and clean door trim."
   },
   {
-    id: "gal-4",
-    title: "Living Room Accent Wall & Skirting Painting",
-    category: "painting",
-    location: "Stockbridge, Edinburgh",
-    uploadedBy: "Customer: Heather P.",
-    date: "August 2026",
-    isBeforeAfter: false,
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&auto=format&fit=crop&q=80",
-    badge: "Flawless Finish",
-    description: "Pre-paint crack filling, sanding, two coats of Farrow & Ball paint, and high-gloss white finish on baseboards and radiator."
+    "id": "gal-1789908302437",
+    "title": "Garden Timber Gate & Fence Panel Replacement",
+    "location": "Stockbridge, Edinburgh (EH4)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2415_jpg_jpeg_1789908313870.webp",
+    "description": "Storm-damaged rear gate and fence removed, replaced with heavy-duty braced timber gate and black hardware."
   },
   {
-    id: "gal-5",
-    title: "Kitchen Cabinet Modern Vinyl Wrap",
-    category: "kitchen",
-    location: "Musselburgh, East Lothian",
-    uploadedBy: "Customer: Gillian W.",
-    date: "August 2026",
-    isBeforeAfter: true,
-    beforeImage: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=80",
-    image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=1000&auto=format&fit=crop&q=80",
-    badge: "Kitchen Renovation",
-    description: "High-grade heat-resistant architectural vinyl wrap applied to tired beech cabinets, transforming into a contemporary matte finish."
+    "id": "gal-1789908272266",
+    "title": "Outdoor Deck Balustrade & Safety Railing Repair",
+    "location": "Bruntsfield, Edinburgh (EH10)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2242_jpg_jpeg_1789908283270.webp",
+    "description": "Rotten balcony trellis removed and replaced with sturdy structural timber handrail and sage green finish."
   },
   {
-    id: "gal-6",
-    title: "Storm-Damaged Garden Fence Repair & New Gate",
-    category: "outdoor",
-    location: "Balerno, Edinburgh",
-    uploadedBy: "Customer: Fraser K.",
-    date: "August 2026",
-    isBeforeAfter: false,
-    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1000&auto=format&fit=crop&q=80",
-    badge: "Weatherproof Outdoor",
-    description: "Reinforced 4x4 treated timber posts with post-crete, replaced snapped horizontal cross-rails, and hung a heavy-duty latched gate."
+    "id": "gal-1789908271938",
+    "title": "Bathroom Ceiling Water Leak Plaster Repair",
+    "location": "Haymarket, Edinburgh (EH12)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2244_jpg_jpeg_1789908284799.webp",
+    "description": "Watermark stain blocking, plaster skim repair, and anti-mould moisture-resistant white ceiling paint."
   },
   {
-    id: "gal-7",
-    title: "Solid Oak Floating Shelves & Tenement Alcove",
-    category: "mounting",
-    location: "Bruntsfield, Edinburgh",
-    uploadedBy: "Customer: Fiona & Iain",
-    date: "July 2026",
-    isBeforeAfter: false,
-    image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=1000&auto=format&fit=crop&q=80",
-    badge: "Heavy Duty Concealed Brackets",
-    description: "Custom fitted heavy oak shelves into historic tenement alcove, tested to comfortably hold 30kg+ of books and decor."
+    "id": "gal-1789908271041",
+    "title": "Storm-Damaged Fence Repair with Concrete Spurs",
+    "location": "Corstorphine, Edinburgh (EH12)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2245_jpg_jpeg_1789908287717.webp",
+    "description": "Gale-force wind damaged timber fence straightened and permanently anchored with reinforced concrete repair spurs."
   },
   {
-    id: "gal-8",
-    title: "Tenement Internal Door Trimming Over Thick Carpet",
-    category: "repairs",
-    location: "Marchmont, Edinburgh",
-    uploadedBy: "Customer: Ross N.",
-    date: "July 2026",
-    isBeforeAfter: false,
-    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1000&auto=format&fit=crop&q=80",
-    badge: "Odd Jobs & Repairs",
-    description: "Doors unhung, planed precisely with electric planer, edges smoothed and re-hung with zero floor drag."
+    "id": "gal-1789908270716",
+    "title": "Kitchen Cabinet Makeover & Mixer Tap Installation",
+    "location": "Portobello, Edinburgh (EH15)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2246_jpg_jpeg_1789908291998.webp",
+    "description": "Cabinet doors painted clean white, new stainless steel mixer tap plumbed in, and rich walnut worktop fitted."
+  },
+  {
+    "id": "gal-1789908270343",
+    "title": "Shower Tray Silicone Sealant Strip & Re-Seal",
+    "location": "Southside, Edinburgh (EH8)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2274_jpg_jpeg_1789908297219.webp",
+    "description": "Old black-mould silicone stripped cleanly, tray sanitized, and fresh sanitary silicone applied for 100% watertight seal."
+  },
+  {
+    "id": "gal-1789908269505",
+    "title": "Multi-Bed Flat-Pack Assembly for Guest House",
+    "location": "City Centre, Edinburgh (EH1)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2275_jpg_jpeg_1789908298401.webp",
+    "description": "Assembly of 6 luxury upholstered tufted single beds and matching nightstands for hospitality property."
+  },
+  {
+    "id": "gal-1789908126417",
+    "title": "Horizontal Timber Boundary Fence Installation",
+    "location": "Musselburgh, East Lothian (EH21)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2238_jpg_jpeg_1789908132242.webp",
+    "description": "Old weathered panels replaced with brand-new horizontal pressure-treated timber privacy fencing."
+  },
+  {
+    "id": "gal-1789908125816",
+    "title": "Bathroom Waterproof Vinyl Flooring Installation",
+    "location": "Dalkeith, Midlothian (EH22)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2239_jpg_jpeg_1789908139782.webp",
+    "description": "Damaged lino removed, subfloor prepared, and new grey wood-grain waterproof vinyl planks laid with white skirting."
+  },
+  {
+    "id": "gal-1789908124865",
+    "title": "Driveway Timber Picket Fence Installation",
+    "location": "Livingston, West Lothian (EH54)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2241_jpg_jpeg_1789908142267.webp",
+    "description": "Post holes dug with Postcrete and long timber boundary picket fence installed in modern charcoal grey finish."
+  },
+  {
+    "id": "gal-1789908113552",
+    "title": "Custom Airing Cupboard Storage Shelving",
+    "location": "Trinity, Edinburgh (EH6)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2211_jpg_jpeg_1789908118132.webp",
+    "description": "Laser-level precision installation of heavy-duty white storage shelving around hot water cylinder pipes."
+  },
+  {
+    "id": "gal-1789908112791",
+    "title": "3-Door Sliding Mirrored Wardrobe Assembly",
+    "location": "Grange, Edinburgh (EH9)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2212_jpg_jpeg_1789908120374.webp",
+    "description": "Complex 3-door oak wardrobe frame assembled with smooth-gliding full-length mirrored doors and safe wall bracket."
+  },
+  {
+    "id": "gal-1789908111675",
+    "title": "Garden Picket Fence Painting & Weatherproofing",
+    "location": "South Queensferry (EH30)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2234_jpg_jpeg_1789908123215.webp",
+    "description": "Mossy faded picket fence power washed, sanded, and refreshed with two coats of exterior slate grey wood preserver."
+  },
+  {
+    "id": "gal-1789908095566",
+    "title": "Tenement Pine Kitchen Floor Sanding & Varnishing",
+    "location": "Marchmont, Edinburgh (EH9)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2061_jpg_jpeg_1789908103978.webp",
+    "description": "Original Victorian tenement pine floorboards sanded back to natural grain and finished in high-gloss polyurethane."
+  },
+  {
+    "id": "gal-1789908095012",
+    "title": "Storm-Damaged Picket Fence Re-Alignment & Repair",
+    "location": "Colinton, Edinburgh (EH13)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2111_jpg_jpeg_1789908106734.webp",
+    "description": "Blown-over garden picket fence dismantled, broken posts replaced, and entire boundary securely re-anchored."
+  },
+  {
+    "id": "gal-1789908092966",
+    "title": "Garden Decking Board Repair & Staining",
+    "location": "Kirkliston, Edinburgh (EH29)",
+    "date": "September 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_2197_jpg_jpeg_1789908108844.webp",
+    "description": "Rotten decking boards and steps replaced, timber pressure-treated and coated in rich dark oak protective stain."
+  },
+  {
+    "id": "gal-1",
+    "title": "Patio Garden Privacy Fence Rebuild & Staining",
+    "location": "Broughton, Edinburgh (EH7)",
+    "date": "August 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_1728_jpg_jpeg_1789907708512.webp",
+    "description": "Garden patio boundary fence rebuilt with vertical treated timber slats and warm cedar-brown preservative."
+  },
+  {
+    "id": "gal-2",
+    "title": "Children's Bunk Bed with Storage Assembly",
+    "location": "Inverleith, Edinburgh (EH3)",
+    "date": "August 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_1763_jpg_jpeg_1789907713130.webp",
+    "description": "White flat-pack bunk bed assembled with built-in storage cubbies, step ladder, and safety rail anchoring."
+  },
+  {
+    "id": "gal-3",
+    "title": "Garden Retaining Wall Fence & Capping Build",
+    "location": "Balerno, Edinburgh (EH14)",
+    "date": "August 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_1764_jpg_jpeg_1789907717509.webp",
+    "description": "Raised rockery garden border fenced with vertical timber palisade, treated post, and weather-protective capping."
+  },
+  {
+    "id": "gal-4",
+    "title": "Exterior Masonry Graffiti Removal & Wall Painting",
+    "location": "Old Town, Edinburgh (EH1)",
+    "date": "August 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_1820_jpg_jpeg_1789907724539.webp",
+    "description": "Unsightly street graffiti removed from exterior stone facade and repainted in smooth weatherproof white finish."
+  },
+  {
+    "id": "gal-5",
+    "title": "Tenement Street Entrance Exterior Masonry Refresh",
+    "location": "Dickson Street, Edinburgh (EH6)",
+    "date": "August 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_1822_jpg_jpeg_1789907727682.webp",
+    "description": "Ground floor tenement facade repainted in brilliant white with clean border masking and window surround clean."
+  },
+  {
+    "id": "gal-6",
+    "title": "Shower Cubicle Tile Grout & Anti-Mould Sealing",
+    "location": "Newington, Edinburgh (EH8)",
+    "date": "July 2026",
+    "isBeforeAfter": false,
+    "image": "/uploads/img_1839_jpg_jpeg_1789907730170.webp",
+    "description": "Mouldy stained grout scrubbed and sanitized, old silicone peeled, and premium anti-fungal silicone applied."
   }
 ];
