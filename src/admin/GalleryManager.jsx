@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Save, CheckCircle2, Plus, Trash2, Upload, Camera, MapPin, Repeat, Image as ImageIcon } from 'lucide-react';
+import { Save, CheckCircle2, Plus, Trash2, Upload, Camera, MapPin, Repeat, Image as ImageIcon, ArrowUp, ArrowDown } from 'lucide-react';
 
 export default function GalleryManager({ data, onSave, token }) {
   const [items, setItems] = useState(data || []);
@@ -22,7 +22,18 @@ export default function GalleryManager({ data, onSave, token }) {
       isBeforeAfter: false,
       image: 'https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=1000&auto=format&fit=crop&q=80'
     };
-    setItems(prev => [newItem, ...prev]);
+    setItems(prev => [...prev, newItem]);
+    setSaved(false);
+  };
+
+  const handleMove = (index, dir) => {
+    const target = dir === 'up' ? index - 1 : index + 1;
+    if (target < 0 || target >= items.length) return;
+    const copy = [...items];
+    const temp = copy[index];
+    copy[index] = copy[target];
+    copy[target] = temp;
+    setItems(copy);
     setSaved(false);
   };
 
@@ -216,9 +227,30 @@ export default function GalleryManager({ data, onSave, token }) {
               </div>
             </div>
 
-            {/* Bottom Actions */}
+            {/* Bottom Actions: Reordering & Delete */}
             <div className="pt-3 border-t border-zinc-800 flex items-center justify-between">
-              <span className="text-[10px] text-zinc-500 font-mono">ID: {item.id}</span>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  disabled={index === 0}
+                  onClick={() => handleMove(index, 'up')}
+                  className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
+                  title="Sıralamada öne / sola al"
+                >
+                  <ArrowUp className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  disabled={index === items.length - 1}
+                  onClick={() => handleMove(index, 'down')}
+                  className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
+                  title="Sıralamada arkaya / sağa al"
+                >
+                  <ArrowDown className="w-4 h-4" />
+                </button>
+                <span className="text-[10px] text-zinc-500 font-mono ml-1">#{index + 1}</span>
+              </div>
+
               <button
                 type="button"
                 onClick={() => handleDeleteItem(item.id)}
