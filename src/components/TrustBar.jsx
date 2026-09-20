@@ -13,7 +13,7 @@ export default function TrustBar() {
       iconColor: "text-amber-500",
       bgColor: "bg-amber-50",
       title: "5.0 / 5.0 Rated",
-      subtitle: "Verified Google & MyBuilder Reviews",
+      subtitle: "Verified Google Reviews",
       link: siteConfig.googleProfileUrl || BUSINESS_INFO.googleProfileUrl
     },
     {

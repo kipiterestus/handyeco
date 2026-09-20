@@ -624,76 +624,76 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
       </div>
 
       {/* 5 Finansal KPI Kartı (OLED Siyah) */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-4">
         
         {/* Toplam Gelir / Ciro */}
-        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-3 sm:p-4 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">{periodLabel} Ciro / Gelir</span>
-            <span className="p-1.5 rounded-lg bg-blue-950/60 text-blue-400 border border-blue-900/60">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{periodLabel} Ciro</span>
+            <span className="p-1.5 rounded-lg bg-blue-950/60 text-blue-400 border border-blue-900/60 shrink-0">
               <PoundSterling className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-white mt-2">
+          <div className="text-xl sm:text-2xl lg:text-3xl font-black text-white mt-2 truncate">
             £{totalRevenue.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">{jobFinances.length} müşteri işi</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block truncate">{jobFinances.length} müşteri işi</span>
         </div>
 
         {/* İş Malzemesi Gideri */}
-        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-3 sm:p-4 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">{periodLabel} Malzeme</span>
-            <span className="p-1.5 rounded-lg bg-rose-950/60 text-rose-400 border border-rose-900/60">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{periodLabel} Malzeme</span>
+            <span className="p-1.5 rounded-lg bg-rose-950/60 text-rose-400 border border-rose-900/60 shrink-0">
               <TrendingDown className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-rose-400 mt-2">
+          <div className="text-xl sm:text-2xl lg:text-3xl font-black text-rose-400 mt-2 truncate">
             -£{totalMaterial.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Dübel, vida, sarf malzeme</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block truncate">Sarf malzeme</span>
         </div>
 
         {/* Genel Şirket Masrafları */}
-        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-3 sm:p-4 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">{periodLabel} Şirket Masrafı</span>
-            <span className="p-1.5 rounded-lg bg-amber-950/60 text-amber-400 border border-amber-900/60">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{periodLabel} Masraf</span>
+            <span className="p-1.5 rounded-lg bg-amber-950/60 text-amber-400 border border-amber-900/60 shrink-0">
               <Receipt className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-amber-400 mt-2">
+          <div className="text-xl sm:text-2xl lg:text-3xl font-black text-amber-400 mt-2 truncate">
             -£{totalOverhead.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">{overheadFinances.length} gider (yakıt, sigorta vb.)</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block truncate">{overheadFinances.length} gider (yakıt vb.)</span>
         </div>
 
         {/* Net Kâr */}
-        <div className="bg-[#0b0e14] border border-emerald-900/40 rounded-2xl p-4 shadow-md shadow-emerald-950/20 relative overflow-hidden">
+        <div className="bg-[#0b0e14] border border-emerald-900/40 rounded-2xl p-3 sm:p-4 shadow-md shadow-emerald-950/20 relative overflow-hidden">
           <div className="flex items-center justify-between text-emerald-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">{periodLabel} Net Kâr</span>
-            <span className="p-1.5 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{periodLabel} Net Kâr</span>
+            <span className="p-1.5 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800 shrink-0">
               <TrendingUp className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-emerald-400 mt-2">
+          <div className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-400 mt-2 truncate">
             £{netProfit.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-emerald-500/80 font-semibold mt-1 block">Ciro - Tüm Masraflar</span>
+          <span className="text-[10px] text-emerald-500/80 font-semibold mt-1 block truncate">Ciro - Giderler</span>
         </div>
 
         {/* Kâr Marjı */}
-        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 shadow-sm col-span-2 lg:col-span-1">
+        <div className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-3 sm:p-4 shadow-sm col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Kâr Marjı</span>
-            <span className="p-1.5 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-900/60 font-black text-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Kâr Marjı</span>
+            <span className="p-1.5 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-900/60 font-black text-xs shrink-0">
               %
             </span>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-indigo-300 mt-2">
+          <div className="text-xl sm:text-2xl lg:text-3xl font-black text-indigo-300 mt-2 truncate">
             %{profitMargin}
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Net kârlılık oranı</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block truncate">Net kârlılık oranı</span>
         </div>
 
       </div>
@@ -972,8 +972,8 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
 
       {/* MODAL: YENİ GELİR / GİDER EKLE VEYA DÜZENLE */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-[#0b0e14] border border-zinc-800 rounded-3xl max-w-xl w-full p-6 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-xl w-full p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
@@ -1193,8 +1193,8 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
 
       {/* MODAL: ŞİRKET MASRAFI EKLE VEYA DÜZENLE */}
       {isOverheadModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-[#0b0e14] border border-zinc-800 rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-zinc-800">

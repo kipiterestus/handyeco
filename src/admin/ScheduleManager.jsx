@@ -550,57 +550,57 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
       )}
 
       {/* 4 Weekly Quick Stat Cards (Screen Only) */}
-      <div className="print:hidden grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-4 shadow-sm">
+      <div className="print:hidden grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-3 sm:p-4 shadow-sm">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Haftalık İş</span>
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Haftalık İş</span>
             <span className="p-1.5 rounded-lg bg-blue-950/60 text-blue-400 border border-blue-900/60">
               <CalendarDays className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-2xl font-black text-white mt-1">
+          <div className="text-xl sm:text-2xl font-black text-white mt-1 truncate">
             {schedule.filter(j => j.date >= weekStartIso && j.date <= weekEndIso).length} Randevu
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">{weekStartIso} - {weekEndIso}</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block truncate">{weekStartIso} - {weekEndIso}</span>
         </div>
 
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-4 shadow-sm">
+        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-3 sm:p-4 shadow-sm">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Bugün</span>
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Bugün</span>
             <span className="p-1.5 rounded-lg bg-amber-950/60 text-amber-400 border border-amber-900/60">
               <Clock className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-2xl font-black text-amber-400 mt-1">
+          <div className="text-xl sm:text-2xl font-black text-amber-400 mt-1 truncate">
             {schedule.filter(j => j.date === todayIso).length} Müşteri
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Gidilecek işler</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block truncate">Gidilecek işler</span>
         </div>
 
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-4 shadow-sm">
+        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-3 sm:p-4 shadow-sm">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Müsaitlik</span>
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Müsaitlik</span>
             <span className="p-1.5 rounded-lg bg-emerald-950/60 text-emerald-400 border border-emerald-900/60">
               <Sparkles className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-2xl font-black text-emerald-400 mt-1">
-            🟢 Boş Saatler Var
+          <div className="text-lg sm:text-2xl font-black text-emerald-400 mt-1 truncate">
+            🟢 Boş Saatler
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Teklif alınabilir</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block truncate">Teklif alınabilir</span>
         </div>
 
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-4 shadow-sm">
+        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-3 sm:p-4 shadow-sm">
           <div className="flex items-center justify-between text-zinc-400 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Bekleyen Talepler</span>
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Bekleyen Talepler</span>
             <span className="p-1.5 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-900/60">
               <Briefcase className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-2xl font-black text-indigo-300 mt-1">
+          <div className="text-xl sm:text-2xl font-black text-indigo-300 mt-1 truncate">
             {quotes.filter(q => q.status === 'new' || !q.status).length} Talep
           </div>
-          <span className="text-[10px] text-zinc-500 mt-1 block">Randevuya planla</span>
+          <span className="text-[10px] text-zinc-500 mt-1 block truncate">Randevuya planla</span>
         </div>
       </div>
 
@@ -935,8 +935,8 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                           </div>
 
                           {/* Contact and Actions Row */}
-                          <div className="flex items-center justify-between gap-2 pt-1">
-                            <div className="flex items-center gap-2">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-2 border-t border-zinc-800/60">
+                            <div className="flex items-center gap-2 flex-wrap">
                               {job.customerPhone && (
                                 <>
                                   <a
@@ -961,7 +961,7 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                               )}
                             </div>
 
-                            <div className="print:hidden flex items-center gap-1">
+                            <div className="print:hidden flex items-center justify-between sm:justify-end gap-1.5 pt-1 sm:pt-0 border-t sm:border-t-0 border-zinc-800/40">
                               {/* Accounting Link Status & Warning */}
                               {(() => {
                                 const linkedFinance = getLinkedFinanceForJob(job);
@@ -1012,23 +1012,25 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                                 }
                               })()}
 
-                              <button
-                                type="button"
-                                onClick={() => handleEditJob(job)}
-                                className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
-                                title="Düzenle"
-                              >
-                                <Edit3 className="w-3.5 h-3.5" />
-                              </button>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => handleEditJob(job)}
+                                  className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+                                  title="Düzenle"
+                                >
+                                  <Edit3 className="w-3.5 h-3.5" />
+                                </button>
 
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteJob(job.id)}
-                                className="p-1.5 text-zinc-500 hover:text-rose-400 rounded-lg hover:bg-rose-950/40 transition-colors cursor-pointer"
-                                title="Sil"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteJob(job.id)}
+                                  className="p-1.5 text-zinc-500 hover:text-rose-400 rounded-lg hover:bg-rose-950/40 transition-colors cursor-pointer"
+                                  title="Sil"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
                             </div>
                           </div>
 
@@ -1156,8 +1158,8 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
 
       {/* MODAL: ADD / EDIT SCHEDULE JOB */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-[#0b0e14] border border-zinc-800 rounded-3xl max-w-xl w-full p-6 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-xl w-full p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-zinc-800">

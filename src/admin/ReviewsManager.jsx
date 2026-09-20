@@ -226,12 +226,8 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs font-bold text-zinc-500">#{index + 1}</span>
-                <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-bold uppercase ${
-                  rev.platform === 'google' 
-                    ? 'bg-blue-950 text-blue-400 border border-blue-800' 
-                    : 'bg-amber-950 text-amber-400 border border-amber-800'
-                }`}>
-                  {rev.platform === 'google' ? 'Google Maps' : 'MyBuilder'}
+                <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold uppercase bg-blue-950 text-blue-400 border border-blue-800">
+                  Google Maps
                 </span>
                 <div className="flex text-amber-400">
                   {[...Array(rev.rating || 5)].map((_, i) => (

@@ -90,7 +90,6 @@ export default function GoogleReviews() {
   const reviewsList = content.reviews && content.reviews.length > 0 ? content.reviews : FALLBACK_REVIEWS;
   const siteConfig = content.siteConfig || BUSINESS_INFO;
 
-  const [selectedPlatform, setSelectedPlatform] = useState("all"); // 'all' | 'google' | 'mybuilder'
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest"); // 'newest' (Tarihe göre - en yeni ilk) | 'oldest' | 'helpful'
   const [searchQuery, setSearchQuery] = useState("");
@@ -104,13 +103,12 @@ export default function GoogleReviews() {
   // Filter & Sort reviews chronologically by date
   const filteredReviews = useMemo(() => {
     return reviewsList.filter(rev => {
-      const matchesPlatform = selectedPlatform === "all" || rev.platform === selectedPlatform;
       const matchesCategory = selectedFilter === "all" || rev.category === selectedFilter;
       const matchesSearch = searchQuery === "" || 
         rev.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
         rev.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (rev.location && rev.location.toLowerCase().includes(searchQuery.toLowerCase()));
-      return matchesPlatform && matchesCategory && matchesSearch;
+      return matchesCategory && matchesSearch;
     }).sort((a, b) => {
       if (sortBy === 'oldest') {
         return getReviewTimestamp(a) - getReviewTimestamp(b);
@@ -121,7 +119,7 @@ export default function GoogleReviews() {
       // Varsayılan: newest (Tarihe göre en yeni en üstte)
       return getReviewTimestamp(b) - getReviewTimestamp(a);
     });
-  }, [reviewsList, selectedPlatform, selectedFilter, searchQuery, sortBy, likes]);
+  }, [reviewsList, selectedFilter, searchQuery, sortBy, likes]);
 
   const handleLike = (id, e) => {
     e.stopPropagation();
@@ -144,35 +142,30 @@ export default function GoogleReviews() {
     <section id="reviews" className="pt-4 sm:pt-8 pb-14 sm:pb-20 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         
-        {/* Header with Google & MyBuilder Verification */}
+        {/* Header with 100% Real Google Reviews Verification */}
         <div className="text-center max-w-3xl mx-auto mb-8">
           <div className="inline-flex items-center gap-2.5 px-4 sm:px-6 py-2 rounded-full bg-emerald-50 border-2 border-emerald-300/80 text-emerald-900 text-xs sm:text-sm md:text-base font-extrabold shadow-xs mb-3">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-            <span>100% Real Feedback &bull; Verified Google & MyBuilder Profiles</span>
+            <span>100% Real Feedback &bull; Verified Google Reviews Profile</span>
           </div>
           
           <p className="text-sm sm:text-base text-slate-600 mt-1 max-w-2xl mx-auto leading-relaxed">
-            Authentic reviews from Edinburgh homeowners and tenants on Google Maps and MyBuilder. Pure honest feedback on craftsmanship, punctuality, and spotless tidy&nbsp;work.
+            Authentic reviews from Edinburgh homeowners and tenants on Google Maps. Pure honest feedback on craftsmanship, punctuality, and spotless tidy&nbsp;work.
           </p>
         </div>
 
-        {/* Combined Dual Platform Review Banner at Top */}
+        {/* 100% Official Google Reviews Banner at Top */}
         <div className="max-w-4xl mx-auto w-full mb-8">
-          <div className="bg-gradient-to-r from-blue-50/90 via-white to-amber-50/90 border border-slate-200 rounded-3xl p-5 sm:p-7 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6 text-center lg:text-left">
+          <div className="bg-gradient-to-r from-blue-50/90 via-white to-indigo-50/90 border border-slate-200 rounded-3xl p-5 sm:p-7 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6 text-center lg:text-left">
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
-              {/* Overlapping Brand Badges */}
-              <div className="flex -space-x-2.5 shrink-0">
-                <div className="w-12 h-12 rounded-2xl bg-white shadow-xs border border-slate-200 flex items-center justify-center shrink-0">
-                  <svg className="w-6 h-6" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                  </svg>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white shadow-xs border-2 border-white flex items-center justify-center shrink-0 font-black text-sm">
-                  MB
-                </div>
+              {/* Google Brand Badge */}
+              <div className="w-14 h-14 rounded-2xl bg-white shadow-xs border border-slate-200 flex items-center justify-center shrink-0">
+                <svg className="w-8 h-8" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                </svg>
               </div>
               
               <div className="space-y-1">
@@ -187,89 +180,49 @@ export default function GoogleReviews() {
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-600 font-medium">
-                  Verified across Google Maps & MyBuilder UK Edinburgh Directory
+                  Verified Google Business Profile &bull; Edinburgh & Lothians Handyman
                 </p>
               </div>
             </div>
 
-            {/* Action Buttons */}
+            {/* Google Reviews Direct Action Button */}
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto shrink-0">
               <a
-                href={siteConfig.googleProfileUrl || BUSINESS_INFO.googleProfileUrl}
+                href={siteConfig.googleProfileUrl || 'https://maps.google.com/?cid=14359767137015043852'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-xs transition-all active:scale-95 whitespace-nowrap"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/20 transition-all active:scale-95 whitespace-nowrap"
               >
                 <span>Google Reviews ({siteConfig.googleReviewCount || 48})</span>
-                <ExternalLink className="w-3.5 h-3.5 shrink-0" />
-              </a>
-
-              <a
-                href={siteConfig.myBuilderUrl || BUSINESS_INFO.myBuilderUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-900 bg-amber-400 hover:bg-amber-300 shadow-xs transition-all active:scale-95 whitespace-nowrap"
-              >
-                <span>MyBuilder Profile ({siteConfig.myBuilderRating || '100%'})</span>
-                <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                <ExternalLink className="w-4 h-4 shrink-0" />
               </a>
             </div>
           </div>
         </div>
 
-        {/* Platform Tabs & Search Bar */}
+        {/* Category Filters, Search Bar & Chronological Sort */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6">
           
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
-            {/* Platform Selector */}
-            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl shrink-0">
+          {/* Category Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+            {categories.map(cat => (
               <button
-                onClick={() => setSelectedPlatform("all")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  selectedPlatform === "all" ? "bg-white text-slate-900 shadow-2xs" : "text-slate-600 hover:text-slate-900"
+                key={cat.id}
+                onClick={() => setSelectedFilter(cat.id)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  selectedFilter === cat.id
+                    ? "bg-slate-900 text-white shadow-xs"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
-                All (Google & MyBuilder)
+                {cat.label}
               </button>
-              <button
-                onClick={() => setSelectedPlatform("google")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  selectedPlatform === "google" ? "bg-white text-blue-600 shadow-2xs" : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                Google Only
-              </button>
-              <button
-                onClick={() => setSelectedPlatform("mybuilder")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  selectedPlatform === "mybuilder" ? "bg-white text-amber-700 shadow-2xs" : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                MyBuilder Only
-              </button>
-            </div>
-
-            {/* Category Pills */}
-            <div className="hidden sm:flex items-center gap-1.5 pl-2 border-l border-slate-200">
-              {categories.map(cat => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedFilter(cat.id)}
-                  className={`px-2.5 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                    selectedFilter === cat.id
-                      ? "bg-slate-900 text-white"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
+            ))}
           </div>
 
           {/* Right Side: Sort & Search Bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-            {/* Sort Dropdown / Pills */}
+            {/* Sort Pills */}
             <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl shrink-0">
               <div className="flex items-center gap-1 px-2 text-[11px] font-bold text-slate-500">
                 <ArrowUpDown className="w-3 h-3 text-slate-400" />
@@ -313,15 +266,15 @@ export default function GoogleReviews() {
               </button>
             </div>
 
-            {/* Search reviews input */}
-            <div className="relative w-full sm:w-56">
+            {/* Search Input */}
+            <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search reviews..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                className="w-full sm:w-48 pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
               />
             </div>
           </div>
@@ -350,17 +303,10 @@ export default function GoogleReviews() {
                       </p>
                     </div>
 
-                    {isGoogle ? (
-                      <div className="flex items-center gap-1 text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 shrink-0">
-                        <CheckCircle2 className="w-3 h-3 text-blue-600" />
-                        <span>Google Verified</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1 text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 shrink-0">
-                        <Award className="w-3 h-3 text-amber-600" />
-                        <span>MyBuilder Verified</span>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 shrink-0">
+                      <CheckCircle2 className="w-3 h-3 text-blue-600" />
+                      <span>Google Verified</span>
+                    </div>
                   </div>
 
                   {/* Stars & Relative Date */}
@@ -389,8 +335,9 @@ export default function GoogleReviews() {
 
                 {/* Bottom Source & Helpful Counter */}
                 <div className="mt-5 pt-3.5 border-t border-slate-200/60 flex items-center justify-between text-xs text-slate-500">
-                  <span className="text-[11px] font-medium text-slate-500">
-                    {isGoogle ? "Posted on Google Maps" : "Posted on MyBuilder"}
+                  <span className="text-[11px] font-medium text-slate-500 flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-blue-500" />
+                    <span>Posted on Google Maps</span>
                   </span>
                   <button
                     onClick={(e) => handleLike(review.id, e)}
@@ -413,10 +360,10 @@ export default function GoogleReviews() {
           <div className="text-center py-12 bg-slate-50 rounded-2xl border border-slate-200 mt-6">
             <p className="text-slate-600 text-sm">No reviews found matching "{searchQuery}".</p>
             <button
-              onClick={() => { setSearchQuery(""); setSelectedFilter("all"); setSelectedPlatform("all"); }}
+              onClick={() => { setSearchQuery(""); setSelectedFilter("all"); }}
               className="mt-2 text-xs font-bold text-blue-600 hover:underline cursor-pointer"
             >
-              Reset filters
+              Reset Filters
             </button>
           </div>
         )}

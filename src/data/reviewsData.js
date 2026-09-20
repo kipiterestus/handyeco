@@ -2,9 +2,8 @@ export const REVIEWS_STATS = {
   averageRating: 5.0,
   totalReviews: 48,
   fiveStarPercentage: 100,
-  myBuilderRating: "100%",
-  googleProfileUrl: "https://share.google/lvtbFBvznf3dICSPB",
-  myBuilderProfileUrl: "https://www.mybuilder.com/profile/handyeco"
+  googleProfileUrl: "https://maps.google.com/?cid=14359767137015043852",
+  googlePlaceId: "14359767137015043852"
 };
 
 export const REVIEWS = [
@@ -31,8 +30,8 @@ export const REVIEWS = [
     rating: 5,
     relativeTime: "5 days ago",
     date: "2026-09-10",
-    platform: "mybuilder",
-    verifiedBadge: "MyBuilder Verified",
+    platform: "google",
+    verifiedBadge: "Google Verified",
     service: "Bathroom Re-Sealing & Hallway Painting",
     category: "repairs",
     text: "Eko sorted out a bad black mould silicone issue around our walk-in shower tray and painted our entire entrance hall. The silicone bead is laser-straight and completely waterproof. He takes immense pride in his craft, charges very reasonable rates, and is exceptionally polite. 10/10 service.",
@@ -61,8 +60,8 @@ export const REVIEWS = [
     rating: 5,
     relativeTime: "2 weeks ago",
     date: "2026-09-01",
-    platform: "mybuilder",
-    verifiedBadge: "MyBuilder Verified",
+    platform: "google",
+    verifiedBadge: "Google Verified",
     service: "Multiple Tenement Handyman Jobs",
     category: "repairs",
     text: "Booked Handyeco for a full day of odd jobs in our newly purchased tenement: trimmed 3 sticking Victorian doors over new wool carpet, hung heavy antique brass mirrors, fitted Venetian blinds, and installed child safety gates. Fast, methodical, and didn't leave a single speck of dust.",
@@ -91,8 +90,8 @@ export const REVIEWS = [
     rating: 5,
     relativeTime: "1 month ago",
     date: "2026-08-16",
-    platform: "mybuilder",
-    verifiedBadge: "MyBuilder Verified",
+    platform: "google",
+    verifiedBadge: "Google Verified",
     service: "TV Mounting & Floating Shelves",
     category: "mounting",
     text: "Mounted 3 heavy mirrors and 4 oak floating shelves on tricky plasterboard walls. Perfectly levelled with laser measure, no visible wiring, and solid as a rock. Ekrem is trustworthy, friendly, and great value for money.",

@@ -412,7 +412,7 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
 
         <div 
           onClick={() => handleStatusChange('archived')}
-          className={`p-3 rounded-2xl border transition-all cursor-pointer ${
+          className={`p-3 rounded-2xl border transition-all cursor-pointer col-span-2 sm:col-span-1 ${
             statusFilter === 'archived' 
               ? 'bg-zinc-700/30 border-zinc-500 text-white shadow-md' 
               : 'bg-[#0b0e14] border-zinc-800 text-zinc-400 hover:border-zinc-700'
@@ -704,8 +704,8 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
 
     {/* 📅 Randevu Planla Modalı (Sayfa değiştirmeden) */}
     {schedulingLead && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-3xl p-6 max-w-lg w-full shadow-2xl text-left space-y-4 animate-in fade-in zoom-in-95">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto">
+        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl text-left space-y-4 animate-in fade-in zoom-in-95">
           
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
@@ -852,8 +852,8 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
 
     {/* 💰 Muhasebeye Ekle Modalı (Sayfa değiştirmeden) */}
     {accountingLead && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-3xl p-6 max-w-lg w-full shadow-2xl text-left space-y-4 animate-in fade-in zoom-in-95">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto">
+        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl text-left space-y-4 animate-in fade-in zoom-in-95">
           
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-zinc-800">

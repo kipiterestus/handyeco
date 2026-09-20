@@ -1,4 +1,4 @@
-﻿import fs from 'fs';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -35,7 +35,9 @@ export async function syncReviews() {
 
     if (apiKey && placeId) {
       try {
-        const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,rating,reviews,user_ratings_total&key=${apiKey}`;
+        const isNumericCid = /^\d+$/.test(String(placeId).trim());
+        const idParam = isNumericCid ? `cid=${placeId}` : `place_id=${placeId}`;
+        const url = `https://maps.googleapis.com/maps/api/place/details/json?${idParam}&fields=name,rating,reviews,user_ratings_total&key=${apiKey}`;
         const res = await fetch(url);
         const data = await res.json();
         if (data.result && Array.isArray(data.result.reviews)) {
@@ -77,7 +79,7 @@ export async function syncReviews() {
         rating: 5,
         relativeTime: '5 days ago',
         service: 'Kitchen Cabinet & Drawer Repair',
-        platform: 'mybuilder',
+        platform: 'google',
         likes: 11,
         text: 'Ekrem fixed our sagging kitchen drawer runners and re-aligned all our cupboard doors that had been wonky for months. Fast, polite, and very reasonable pricing. Will definitely be keeping his number for future jobs!'
       },

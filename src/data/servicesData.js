@@ -90,21 +90,21 @@ export const SERVICES = [
     rating: "5.0 (22+ reviews)"
   },
   {
-    id: "garden-outdoor",
-    title: "Garden & Outdoor Maintenance",
-    badge: "Weatherproof",
+    id: "garden-fencing",
+    title: "Garden Fencing Repair & Installation",
+    badge: "Storm & Timber Pro",
     iconName: "ShieldCheck",
-    shortDesc: "Fence panel replacements, garden gate repairs, shed roofing felt, and patio pressure washing.",
-    fullDesc: "Protect your outdoor boundaries against harsh Scottish winds and rains. We repair broken fence posts, install new treated wooden slats, re-hinge sagging garden gates, and pressure wash moss-covered stone patios and driveways.",
+    shortDesc: "Fence post repairs, storm damage fixes, new timber fencing installation, and garden gates.",
+    fullDesc: "Protect your outdoor boundaries against harsh Scottish weather. We replace broken or rotted fence posts with solid concrete spurs, install brand-new pressure-treated timber panels or bespoke featheredge fencing, and hang or re-align heavy-duty garden gates.",
     features: [
-      "Storm-damaged fence panel & post repair",
-      "Garden gate latch & hinge restoration",
-      "Pressure washing patios, driveways & decking",
-      "Shed felt roofing replacement & weatherproofing",
-      "Gutter clearing & downpipe re-attachment"
+      "Storm-damaged fence panel & post replacement",
+      "New timber boundary fencing & featheredge installation",
+      "Garden gate repairs, heavy-duty hinges & latches",
+      "Rot-resistant pressure-treated wood & post supports",
+      "Site clearing & old damaged fence panel removal"
     ],
-    priceGuide: "From £50 / project",
-    typicalTime: "2 - 5 hours",
-    rating: "5.0 (14+ reviews)"
+    priceGuide: "From £50 / post or fixed project quote",
+    typicalTime: "Half-day to 2 days",
+    rating: "5.0 (20+ reviews)"
   }
 ];

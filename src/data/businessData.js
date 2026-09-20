@@ -11,9 +11,9 @@ export const BUSINESS_INFO = {
   whatsappNumber: "447760696723",
   whatsappUrl: "https://wa.me/447760696723?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20quote%20for%20a%20handyman%20job%20in%20Edinburgh.",
   email: "ekremguran@gmail.com",
-  googleProfileUrl: "https://share.google/lvtbFBvznf3dICSPB",
-  googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=Handyeco+-+Edinburgh+Handyman+Services",
-  myBuilderUrl: "https://www.mybuilder.com/profile/handyeco",
+  googleProfileUrl: "https://maps.google.com/?cid=14359767137015043852",
+  googlePlaceId: "14359767137015043852",
+  googleMapsUrl: "https://maps.google.com/?cid=14359767137015043852",
   facebookUrl: "https://www.facebook.com/people/Handyeco-Edinburgh-Handyman-Services/100092524458321/",
   rating: 5.0,
   reviewCount: 48,
@@ -22,7 +22,7 @@ export const BUSINESS_INFO = {
   primaryLocation: "Edinburgh, Midlothian & Surrounding Areas, Scotland",
   postcodesCovered: ["EH1", "EH2", "EH3", "EH4", "EH5", "EH6", "EH7", "EH8", "EH9", "EH10", "EH11", "EH12", "EH13", "EH14", "EH15", "EH16", "EH17", "EH21", "EH22", "EH29", "EH30", "EH54"],
   features: [
-    "5.0 Star Rated on Google & MyBuilder",
+    "5.0 Star Rated on Google Maps",
     "Free Transparent Estimates",
     "Punctual, Clean & Respectful of Your Home",
     "Direct WhatsApp Booking & Photo Assessment"

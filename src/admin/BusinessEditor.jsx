@@ -296,16 +296,18 @@ export default function BusinessEditor({ data, onSave, token }) {
                 type="url"
                 value={form.googleProfileUrl || ''}
                 onChange={e => handleChange('googleProfileUrl', e.target.value)}
+                placeholder="https://maps.google.com/?cid=..."
                 className="w-full px-3.5 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1">MyBuilder Profil Linki</label>
+              <label className="block text-xs font-semibold text-zinc-300 mb-1">Google Place ID / CID</label>
               <input
-                type="url"
-                value={form.myBuilderUrl || ''}
-                onChange={e => handleChange('myBuilderUrl', e.target.value)}
+                type="text"
+                value={form.googlePlaceId || ''}
+                onChange={e => handleChange('googlePlaceId', e.target.value)}
+                placeholder="Örn: 14359767137015043852"
                 className="w-full px-3.5 py-2 text-xs sm:text-sm bg-zinc-900 border border-zinc-700 rounded-xl text-white focus:border-blue-500 outline-none"
               />
             </div>

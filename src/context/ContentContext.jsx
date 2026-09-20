@@ -28,7 +28,7 @@ const DEFAULT_CONTENT = {
   },
   hero: {
     ratingScore: '5.0 / 5.0',
-    ratingPlatform: 'Google & MyBuilder',
+    ratingPlatform: 'Google Verified Reviews',
     headlineStart: "Edinburgh's Trusted Handyman for",
     headlineHighlight: 'Repairs, Assembly',
     headlineEnd: '& Home Renovations.',

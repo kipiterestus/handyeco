@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Lock, ArrowRight, ShieldCheck, AlertCircle, Sparkles, KeyRound, QrCode, RefreshCw } from "lucide-react";
 
 // Login steps: "password" | "totp_setup" | "totp_verify"
@@ -83,13 +83,13 @@ export default function AdminLogin({ onLoginSuccess }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] flex items-center justify-center p-4 relative overflow-hidden text-zinc-100">
+    <div className="min-h-screen bg-[#07090e] flex items-center justify-center p-3 sm:p-4 relative overflow-hidden text-zinc-100">
       {/* Background Glows */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-md w-full relative z-10">
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6">
+        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 shadow-2xl text-center space-y-6">
 
           {/* === STEP 1: Password === */}
           {step === "password" && (

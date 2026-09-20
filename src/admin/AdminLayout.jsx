@@ -245,44 +245,45 @@ export default function AdminLayout() {
       )}
 
       {/* Üst Bar (OLED Siyah) */}
-      <header className="print:hidden h-16 bg-[#0b0e14]/95 backdrop-blur-md border-b border-zinc-800/90 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40 shadow-md">
-        <div className="flex items-center gap-3">
+      <header className="print:hidden h-16 bg-[#0b0e14]/95 backdrop-blur-md border-b border-zinc-800/90 px-3 sm:px-6 flex items-center justify-between sticky top-0 z-40 shadow-md">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 md:hidden cursor-pointer"
+            className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 md:hidden cursor-pointer shrink-0"
+            aria-label="Menüyü Aç/Kapat"
           >
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          <a href="/admin" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-sm shadow-sm shadow-blue-600/25">
+          <a href="/admin" className="flex items-center gap-2 sm:gap-2.5 group min-w-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-xs sm:text-sm shadow-sm shadow-blue-600/25 shrink-0">
               H
             </div>
-            <div className="text-left">
-              <span className="font-extrabold text-sm text-white tracking-tight block leading-none">
-                Handyeco Yönetici Paneli
+            <div className="text-left min-w-0">
+              <span className="font-extrabold text-xs sm:text-sm text-white tracking-tight block leading-tight truncate">
+                Handyeco Panel
               </span>
-              <span className="text-[10px] text-blue-400 font-bold tracking-wider uppercase">
+              <span className="text-[9px] sm:text-[10px] text-blue-400 font-bold tracking-wider uppercase block truncate">
                 Edinburgh Kontrol Merkezi
               </span>
             </div>
           </a>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <a
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-bold border border-zinc-800 transition-all"
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-bold border border-zinc-800 transition-all"
           >
-            <span>Siteyi Gör</span>
+            <span className="hidden sm:inline">Siteyi Gör</span>
             <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
           </a>
 
           <button
             onClick={handleLogout}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 border border-rose-900/60 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 border border-rose-900/60 transition-colors cursor-pointer"
             title="Oturumu Kapat"
           >
             <LogOut className="w-4 h-4" />
@@ -293,9 +294,17 @@ export default function AdminLayout() {
 
       {/* Ana Çalışma Düzeni */}
       <div className="flex-1 flex overflow-hidden relative">
-        
+        {/* Mobile Backdrop Overlay */}
+        {sidebarOpen && (
+          <div 
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 bg-black/70 backdrop-blur-xs z-45 md:hidden transition-opacity"
+            aria-hidden="true"
+          />
+        )}
+
         {/* Sol Menü (OLED Siyah) */}
-        <aside className={`print:hidden fixed inset-y-16 left-0 z-30 w-64 bg-[#0b0e14] border-r border-zinc-800/90 p-3 space-y-4 overflow-y-auto transform transition-transform duration-200 md:relative md:inset-auto md:translate-x-0 shadow-lg ${
+        <aside className={`print:hidden fixed inset-y-16 left-0 z-50 w-64 sm:w-72 max-w-[85vw] bg-[#0b0e14] border-r border-zinc-800/90 p-3 space-y-4 overflow-y-auto transform transition-transform duration-200 md:relative md:inset-auto md:translate-x-0 shadow-2xl md:shadow-lg ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
           
@@ -395,7 +404,7 @@ export default function AdminLayout() {
         </aside>
 
         {/* Ana İçerik Bölgesi (OLED Siyah) */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#07090e] print:p-0 print:bg-white print:overflow-visible">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-6 lg:p-8 bg-[#07090e] print:p-0 print:bg-white print:overflow-visible">
           <div className="max-w-6xl mx-auto print:max-w-full">
             {activeTab === 'leads' && (
               <LeadsManager 

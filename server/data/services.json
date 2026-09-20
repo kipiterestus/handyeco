@@ -75,18 +75,18 @@
     ]
   },
   {
-    "id": "general-repairs",
-    "title": "General Tenement Repairs & Odd Jobs",
-    "category": "repairs",
-    "iconName": "Hammer",
-    "badge": "Odd Jobs Specialist",
-    "description": "Small home maintenance jobs that require reliable tools and experience: sticky doors trimmed over new carpet, loose handles, toilet seat replacement, and latch repairs.",
+    "id": "garden-fencing",
+    "title": "Garden Fencing Repair & Installation",
+    "category": "outdoor",
+    "iconName": "ShieldCheck",
+    "badge": "Storm & Timber Pro",
+    "description": "Professional timber fencing repairs, storm-damaged post replacements, and new fence installations. From post spurs and featheredge fencing to garden gates.",
     "popular": false,
     "bullets": [
-      "Internal doors trimmed & planed to clear thick carpet",
-      "Door handles, mortice latches & cabinet hinges adjusted",
-      "Smoke detector, key safe & doorbell installation",
-      "Tackle your multi-item \"to-do list\" in one efficient booking"
+      "Storm-damaged fence panel & post repair / replacement",
+      "New timber boundary fencing & featheredge installation",
+      "Garden gate hanging, heavy-duty hinges, latches & locks",
+      "Rot-resistant pressure-treated wood & concrete spur reinforcement"
     ]
   }
 ]

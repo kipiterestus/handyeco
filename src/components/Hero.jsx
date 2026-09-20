@@ -35,7 +35,7 @@ export default function Hero({ onOpenQuote }) {
               >
                 <span className="flex items-center gap-1 bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-emerald-200 text-[10px] sm:text-xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                  <span>{hero.ratingPlatform || 'Google & MyBuilder'}</span>
+                  <span>{hero.ratingPlatform || 'Google Verified Reviews'}</span>
                 </span>
                 <div className="flex items-center text-amber-500 font-bold">
                   <div className="flex mr-1">

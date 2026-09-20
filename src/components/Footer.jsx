@@ -31,7 +31,7 @@ export default function Footer() {
                 ))}
               </div>
               <span className="text-white font-bold">5.0 Star</span>
-              <span className="text-slate-500">&bull; Verified Google & MyBuilder</span>
+              <span className="text-slate-500">&bull; Verified Google Reviews</span>
             </div>
           </div>
 
@@ -105,17 +105,7 @@ export default function Footer() {
                 className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold transition-colors"
               >
                 <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
-                <span>Google Profile (5.0 ★)</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-              <a
-                href={siteConfig.myBuilderUrl || BUSINESS_INFO.myBuilderUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 font-bold transition-colors"
-              >
-                <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
-                <span>MyBuilder Profile (100% ★)</span>
+                <span>Google Profile & Reviews (5.0 ★)</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
