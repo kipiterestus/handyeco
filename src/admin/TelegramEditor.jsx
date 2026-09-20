@@ -265,7 +265,7 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 <input
                   type="text"
                   placeholder="Örn: 8755482733"
@@ -277,7 +277,7 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
                   type="button"
                   onClick={handleDetectChatId}
                   disabled={detecting}
-                  className="px-3.5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-zinc-200 border border-zinc-700 transition-all shrink-0 cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-3.5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-zinc-200 border border-zinc-700 transition-all shrink-0 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5 whitespace-nowrap"
                   title="Botunuza gönderdiğiniz son mesajdan Chat ID numaranızı otomatik çeker"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 text-sky-400 ${detecting ? 'animate-spin' : ''}`} />
@@ -292,24 +292,25 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
             </div>
 
             {/* Test Button */}
-            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="pt-2 grid grid-cols-2 gap-2.5 sm:flex sm:items-center sm:gap-3">
               <button
                 type="button"
                 onClick={handleTestNotification}
                 disabled={testing}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 active:scale-98 text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 active:scale-98 text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer disabled:opacity-50 whitespace-nowrap"
               >
-                <Send className="w-4 h-4" />
-                <span>{testing ? 'Gönderiliyor...' : 'Test Bildirimi Gönder'}</span>
+                <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                <span className="hidden sm:inline">{testing ? 'Gönderiliyor...' : 'Test Bildirimi Gönder'}</span>
+                <span className="sm:hidden">{testing ? 'Test...' : 'Test Gönder'}</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleSave}
                 disabled={saving}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs sm:text-sm font-bold border border-zinc-700 transition-all cursor-pointer"
+                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs sm:text-sm font-bold border border-zinc-700 transition-all cursor-pointer whitespace-nowrap"
               >
-                <Save className="w-4 h-4" />
+                <Save className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Kaydet</span>
               </button>
             </div>

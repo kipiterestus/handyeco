@@ -499,38 +499,41 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+        <div className="grid grid-cols-3 gap-1.5 sm:flex sm:items-center sm:gap-2.5 w-full sm:w-auto">
           {/* Telegram Reminder Button */}
           <button
             type="button"
             onClick={handleSendTomorrowReminder}
             disabled={sendingReminder}
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-sky-950/60 hover:bg-sky-900/60 text-sky-300 hover:text-white border border-sky-800/60 text-xs font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50"
+            className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-2 sm:py-2.5 rounded-xl bg-sky-950/60 hover:bg-sky-900/60 text-sky-300 hover:text-white border border-sky-800/60 text-[11px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50 whitespace-nowrap"
             title="Yarınki işleri Telegram'a bildirim olarak gönder"
           >
-            <Bell className={`w-3.5 h-3.5 text-sky-400 ${sendingReminder ? 'animate-bounce' : ''}`} />
-            <span>{sendingReminder ? 'Gönderiliyor...' : 'Yarınki İşleri Gönder'}</span>
+            <Bell className={`w-3.5 h-3.5 text-sky-400 shrink-0 ${sendingReminder ? 'animate-bounce' : ''}`} />
+            <span className="hidden sm:inline">{sendingReminder ? 'Gönderiliyor...' : 'Yarınki İşleri Gönder'}</span>
+            <span className="sm:hidden">{sendingReminder ? '...' : 'Yarınki İşler'}</span>
           </button>
 
           {/* PDF Download Button */}
           <button
             type="button"
             onClick={handlePrintPDF}
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-800 text-xs font-bold transition-all cursor-pointer shadow-sm"
+            className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-2 sm:py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-800 text-[11px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm whitespace-nowrap"
             title="PDF İndir / Yazdır"
           >
-            <Printer className="w-3.5 h-3.5 text-blue-400" />
-            <span>PDF İndir</span>
+            <Printer className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+            <span className="hidden sm:inline">PDF İndir</span>
+            <span className="sm:hidden">PDF</span>
           </button>
 
           {/* Add Job Button */}
           <button
             type="button"
             onClick={() => handleOpenAddModal()}
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer"
+            className="flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-[11px] sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer whitespace-nowrap"
           >
-            <Plus className="w-4 h-4" />
-            <span>Yeni Randevu</span>
+            <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+            <span className="hidden sm:inline">Yeni Randevu</span>
+            <span className="sm:hidden">+ Randevu</span>
           </button>
         </div>
       </div>
@@ -982,11 +985,12 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                                   return (
                                     <div className="flex items-center gap-1">
                                       <span 
-                                        className="p-1 px-2 rounded-lg bg-amber-950/40 border border-amber-800/70 text-amber-300 text-[10px] font-bold flex items-center gap-1"
+                                        className="p-1 px-2 rounded-lg bg-amber-950/40 border border-amber-800/70 text-amber-300 text-[10px] font-bold flex items-center gap-1 shrink-0 whitespace-nowrap"
                                         title="Bu randevu henüz muhasebeye kâr/gelir olarak işlenmedi"
                                       >
                                         <AlertCircle className="w-3 h-3 text-amber-400 shrink-0" />
-                                        <span>Muhasebeye Eklenmedi</span>
+                                        <span className="hidden sm:inline">Muhasebeye Eklenmedi</span>
+                                        <span className="sm:hidden">Muhasebesiz</span>
                                       </span>
                                       {onLogJobToAccounting && (
                                         <button
@@ -1158,20 +1162,20 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
 
       {/* MODAL: ADD / EDIT SCHEDULE JOB */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-xl w-full p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm overflow-hidden animate-in fade-in">
+          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-xl w-full flex flex-col max-h-[92dvh] sm:max-h-[90vh] shadow-2xl relative">
             
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+            {/* Modal Header (Fixed) */}
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-zinc-800 shrink-0">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-blue-950 text-blue-400 border border-blue-800 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-blue-950 text-blue-400 border border-blue-800 flex items-center justify-center shrink-0">
                   <CalendarIcon className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-white">
-                    {editingId ? 'Randevuyu / İşi Düzenle' : 'Yeni Müşteri Randevusu Planla'}
+                    {editingId ? 'Randevuyu / İşi Düzenle' : 'Yeni Randevu Planla'}
                   </h3>
-                  <p className="text-xs text-zinc-400">Tarih, saat aralığı, müşteri adresi ve iş kapsamı</p>
+                  <p className="text-xs text-zinc-400">Tarih, saat ve adres bilgileri</p>
                 </div>
               </div>
 
@@ -1184,181 +1188,184 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
               </button>
             </div>
 
-            {/* Quick Autofill from Leads Dropdown */}
-            {!editingId && quotes.length > 0 && (
-              <div className="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800 space-y-1.5">
-                <label className="text-[11px] font-bold text-blue-400 uppercase tracking-wider block">
-                  ⚡ Gelen Tekliflerden Hızlı Doldur (Live Leads)
-                </label>
-                <select
-                  onChange={handleSelectLeadToAutofill}
-                  className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-xs text-zinc-200 focus:outline-none focus:border-blue-500 cursor-pointer"
-                >
-                  <option value="">Bir teklif seçin (Müşteri bilgileri otomatik dolar)...</option>
-                  {quotes.map(q => (
-                    <option key={q.id} value={q.id}>
-                      {q.name} ({q.postcode}) - {q.service} - {new Date(q.createdAt || Date.now()).toLocaleDateString('tr-TR')}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+            {/* Form with scrollable body & pinned footer */}
+            <form onSubmit={handleSaveForm} className="flex flex-col flex-1 overflow-hidden min-h-0">
+              <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
+                {/* Quick Autofill from Leads Dropdown */}
+                {!editingId && quotes.length > 0 && (
+                  <div className="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800 space-y-1.5">
+                    <label className="text-[11px] font-bold text-blue-400 uppercase tracking-wider block">
+                      ⚡ Gelen Tekliflerden Hızlı Doldur (Live Leads)
+                    </label>
+                    <select
+                      onChange={handleSelectLeadToAutofill}
+                      className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-xs text-zinc-200 focus:outline-none focus:border-blue-500 cursor-pointer"
+                    >
+                      <option value="">Bir teklif seçin (Müşteri bilgileri otomatik dolar)...</option>
+                      {quotes.map(q => (
+                        <option key={q.id} value={q.id}>
+                          {q.name} ({q.postcode}) - {q.service} - {new Date(q.createdAt || Date.now()).toLocaleDateString('tr-TR')}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
-            <form onSubmit={handleSaveForm} className="space-y-4">
-              {/* Date & Time Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* Date & Time Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Tarih *</label>
+                    <input
+                      type="date"
+                      required
+                      value={formData.date}
+                      onChange={e => setFormData({ ...formData, date: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Başlangıç Saati *</label>
+                    <input
+                      type="time"
+                      required
+                      value={formData.startTime}
+                      onChange={e => handleStartTimeChange(e.target.value)}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Tahmini Süre</label>
+                    <select
+                      value={formData.durationMinutes}
+                      onChange={e => handleDurationChange(e.target.value)}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none cursor-pointer"
+                    >
+                      <option value="60">1 Saat</option>
+                      <option value="90">1.5 Saat</option>
+                      <option value="120">2 Saat</option>
+                      <option value="150">2.5 Saat</option>
+                      <option value="180">3 Saat</option>
+                      <option value="240">4 Saat (Yarım Gün)</option>
+                      <option value="480">8 Saat (Tam Gün)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Customer Name & Phone */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Müşteri Adı *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Örn: Callum Robertson"
+                      value={formData.customerName}
+                      onChange={e => setFormData({ ...formData, customerName: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Telefon Numarası</label>
+                    <input
+                      type="tel"
+                      placeholder="Örn: +44 7760 123456"
+                      value={formData.customerPhone}
+                      onChange={e => setFormData({ ...formData, customerPhone: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Address & Postcode */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="sm:col-span-2 space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Açık Adres / Sokak</label>
+                    <input
+                      type="text"
+                      placeholder="Örn: 14 St Stephen Street, Stockbridge"
+                      value={formData.address}
+                      onChange={e => setFormData({ ...formData, address: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Posta Kodu *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Örn: EH3 9DJ"
+                      value={formData.postcode}
+                      onChange={e => setFormData({ ...formData, postcode: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Service & Price Estimate */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="sm:col-span-2 space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Hizmet / Yapılacak İş *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Örn: TV Duvar Montajı & Avize Takma"
+                      value={formData.service}
+                      onChange={e => setFormData({ ...formData, service: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Fiyat Teklifi (£)</label>
+                    <input
+                      type="number"
+                      placeholder="Örn: 120"
+                      value={formData.priceEstimate}
+                      onChange={e => setFormData({ ...formData, priceEstimate: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none font-bold"
+                    />
+                  </div>
+                </div>
+
+                {/* Notes */}
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Tarih *</label>
-                  <input
-                    type="date"
-                    required
-                    value={formData.date}
-                    onChange={e => setFormData({ ...formData, date: e.target.value })}
+                  <label className="text-xs font-semibold text-zinc-300">İş Notları (Özel gereksinimler, duvar tipi vb.)</label>
+                  <textarea
+                    rows={2}
+                    placeholder="Örn: Taş duvar, Fischer uzun dübel gerekecek. Zile 2 kez basın."
+                    value={formData.notes}
+                    onChange={e => setFormData({ ...formData, notes: e.target.value })}
                     className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
                   />
                 </div>
 
+                {/* Status */}
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Başlangıç Saati *</label>
-                  <input
-                    type="time"
-                    required
-                    value={formData.startTime}
-                    onChange={e => handleStartTimeChange(e.target.value)}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Tahmini Süre</label>
+                  <label className="text-xs font-semibold text-zinc-300">Randevu Durumu</label>
                   <select
-                    value={formData.durationMinutes}
-                    onChange={e => handleDurationChange(e.target.value)}
+                    value={formData.status}
+                    onChange={e => setFormData({ ...formData, status: e.target.value })}
                     className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none cursor-pointer"
                   >
-                    <option value="60">1 Saat</option>
-                    <option value="90">1.5 Saat</option>
-                    <option value="120">2 Saat</option>
-                    <option value="150">2.5 Saat</option>
-                    <option value="180">3 Saat</option>
-                    <option value="240">4 Saat (Yarım Gün)</option>
-                    <option value="480">8 Saat (Tam Gün)</option>
+                    <option value="scheduled">🔵 Planlandı (Takvime Eklendi)</option>
+                    <option value="in_progress">🟡 Yolda / İş Başlandı</option>
+                    <option value="completed">🟢 Tamamlandı</option>
+                    <option value="rescheduled">🟣 Ertelendi</option>
+                    <option value="cancelled">⚪ İptal</option>
                   </select>
                 </div>
               </div>
 
-              {/* Customer Name & Phone */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Müşteri Adı *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Örn: Callum Robertson"
-                    value={formData.customerName}
-                    onChange={e => setFormData({ ...formData, customerName: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Telefon Numarası</label>
-                  <input
-                    type="tel"
-                    placeholder="Örn: +44 7760 123456"
-                    value={formData.customerPhone}
-                    onChange={e => setFormData({ ...formData, customerPhone: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Address & Postcode */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="sm:col-span-2 space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Açık Adres / Sokak</label>
-                  <input
-                    type="text"
-                    placeholder="Örn: 14 St Stephen Street, Stockbridge"
-                    value={formData.address}
-                    onChange={e => setFormData({ ...formData, address: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Posta Kodu *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Örn: EH3 9DJ"
-                    value={formData.postcode}
-                    onChange={e => setFormData({ ...formData, postcode: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Service & Price Estimate */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="sm:col-span-2 space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Hizmet / Yapılacak İş *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Örn: TV Duvar Montajı & Avize Takma"
-                    value={formData.service}
-                    onChange={e => setFormData({ ...formData, service: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Fiyat Teklifi (£)</label>
-                  <input
-                    type="number"
-                    placeholder="Örn: 120"
-                    value={formData.priceEstimate}
-                    onChange={e => setFormData({ ...formData, priceEstimate: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none font-bold"
-                  />
-                </div>
-              </div>
-
-              {/* Notes */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-300">İş Notları (Özel gereksinimler, duvar tipi vb.)</label>
-                <textarea
-                  rows={2}
-                  placeholder="Örn: Taş duvar, Fischer uzun dübel gerekecek. Zile 2 kez basın."
-                  value={formData.notes}
-                  onChange={e => setFormData({ ...formData, notes: e.target.value })}
-                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                />
-              </div>
-
-              {/* Status */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-300">Randevu Durumu</label>
-                <select
-                  value={formData.status}
-                  onChange={e => setFormData({ ...formData, status: e.target.value })}
-                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none cursor-pointer"
-                >
-                  <option value="scheduled">🔵 Planlandı (Takvime Eklendi)</option>
-                  <option value="in_progress">🟡 Yolda / İş Başlandı</option>
-                  <option value="completed">🟢 Tamamlandı</option>
-                  <option value="rescheduled">🟣 Ertelendi</option>
-                  <option value="cancelled">⚪ İptal</option>
-                </select>
-              </div>
-
-              {/* Submit Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-800">
+              {/* Submit Buttons (Fixed Footer) */}
+              <div className="p-3.5 sm:p-5 border-t border-zinc-800 shrink-0 bg-[#0b0e14] flex flex-col-reverse sm:flex-row items-center justify-end gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 cursor-pointer"
+                  className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 cursor-pointer transition-colors text-center"
                 >
                   Vazgeç
                 </button>
@@ -1366,7 +1373,7 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/25 cursor-pointer disabled:opacity-50"
+                  className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 cursor-pointer disabled:opacity-50 transition-all text-center flex items-center justify-center gap-1.5"
                 >
                   {saving ? 'Kaydediliyor...' : editingId ? 'Değişiklikleri Güncelle' : 'Randevuyu Kaydet'}
                 </button>

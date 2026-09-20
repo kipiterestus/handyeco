@@ -308,7 +308,7 @@ export default function AdminLayout() {
         {sidebarOpen && (
           <div 
             onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 bg-black/70 backdrop-blur-xs z-45 md:hidden transition-opacity"
+            className="fixed inset-0 bg-black/70 backdrop-blur-xs z-[45] md:hidden transition-opacity"
             aria-hidden="true"
           />
         )}

@@ -500,32 +500,35 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
+        <div className="grid grid-cols-3 gap-1.5 sm:flex sm:items-center sm:gap-2.5 w-full sm:w-auto">
           <button
             type="button"
             onClick={exportCSV}
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold transition-all cursor-pointer shadow-sm"
+            className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-2 sm:py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-[11px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm whitespace-nowrap"
           >
-            <Download className="w-3.5 h-3.5 text-zinc-400" />
-            <span>Excel / CSV</span>
+            <Download className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+            <span className="hidden sm:inline">Excel / CSV</span>
+            <span className="sm:hidden">CSV</span>
           </button>
 
           <button
             type="button"
             onClick={handleOpenAddOverheadModal}
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-white text-xs sm:text-sm font-bold shadow-lg shadow-rose-600/25 transition-all cursor-pointer"
+            className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-white text-[11px] sm:text-sm font-bold shadow-lg shadow-rose-600/25 transition-all cursor-pointer whitespace-nowrap"
           >
-            <Receipt className="w-4 h-4" />
-            <span>+ Masraf Ekle</span>
+            <Receipt className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+            <span className="hidden sm:inline">+ Masraf Ekle</span>
+            <span className="sm:hidden">+ Masraf</span>
           </button>
 
           <button
             type="button"
             onClick={handleOpenAddModal}
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer"
+            className="flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-[11px] sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer whitespace-nowrap"
           >
-            <Plus className="w-4 h-4" />
-            <span>+ Gelir Ekle</span>
+            <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+            <span className="hidden sm:inline">+ Gelir Ekle</span>
+            <span className="sm:hidden">+ Gelir</span>
           </button>
         </div>
       </div>
@@ -972,20 +975,20 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
 
       {/* MODAL: YENİ GELİR / GİDER EKLE VEYA DÜZENLE */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-xl w-full p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm overflow-hidden animate-in fade-in">
+          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-xl w-full flex flex-col max-h-[92dvh] sm:max-h-[90vh] shadow-2xl relative">
             
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+            {/* Modal Header (Fixed) */}
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-zinc-800 shrink-0">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center justify-center shrink-0">
                   <PoundSterling className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-white">
-                    {editingId ? 'Gelir & Gider Kaydını Düzenle' : 'Yeni İş Gelir & Masraf Kaydı Ekle'}
+                    {editingId ? 'Gelir & Gider Kaydını Düzenle' : 'Yeni İş Gelir & Masraf Kaydı'}
                   </h3>
-                  <p className="text-xs text-zinc-400">Müşteri ücreti, malzeme harcaması ve ödeme yöntemi</p>
+                  <p className="text-xs text-zinc-400">Müşteri ücreti ve malzeme harcaması</p>
                 </div>
               </div>
 
@@ -998,181 +1001,190 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
               </button>
             </div>
 
-            {/* Duplicate Warning if detected */}
-            {duplicateWarning && (
-              <div className="p-3.5 rounded-2xl bg-amber-950/60 border border-amber-800 text-amber-300 text-xs flex items-center gap-2">
-                <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>{duplicateWarning}</span>
-              </div>
-            )}
+            {/* Form with scrollable body & pinned footer */}
+            <form onSubmit={handleSaveForm} className="flex flex-col flex-1 overflow-hidden min-h-0">
+              <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
+                {/* Duplicate Warning if detected */}
+                {duplicateWarning && (
+                  <div className="p-3.5 rounded-2xl bg-amber-950/60 border border-amber-800 text-amber-300 text-xs flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>{duplicateWarning}</span>
+                  </div>
+                )}
 
-            {/* Gelen Tekliflerden Hızlı Bağla */}
-            {!editingId && quotes.length > 0 && (
-              <div className="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800 space-y-1.5">
-                <label className="text-[11px] font-bold text-blue-400 uppercase tracking-wider block">
-                  ⚡ Gelen Tekliflerden (Live Leads) Müşteri Seç & Otomatik Doldur
-                </label>
-                <select
-                  onChange={handleSelectLeadToLink}
-                  className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-xs text-zinc-200 focus:outline-none focus:border-blue-500 cursor-pointer"
-                >
-                  <option value="">Bir müşteri seçin (İsim, telefon ve iş otomatik aktarılır)...</option>
-                  {quotes.map(q => {
-                    const isAlreadyAdded = finances.some(f => f.leadId === q.id);
-                    return (
-                      <option key={q.id} value={q.id} disabled={isAlreadyAdded}>
-                        {isAlreadyAdded ? '🔒 (Zaten Eklendi) ' : ''}{q.name} ({q.postcode}) - {q.service} - {new Date(q.createdAt || Date.now()).toLocaleDateString('tr-TR')}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-            )}
+                {/* Gelen Tekliflerden Hızlı Bağla */}
+                {!editingId && quotes.length > 0 && (
+                  <div className="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800 space-y-1.5">
+                    <label className="text-[11px] font-bold text-blue-400 uppercase tracking-wider block">
+                      ⚡ Gelen Tekliflerden (Live Leads) Müşteri Seç
+                    </label>
+                    <select
+                      onChange={handleSelectLeadToLink}
+                      className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-xs text-zinc-200 focus:outline-none focus:border-blue-500 cursor-pointer"
+                    >
+                      <option value="">Bir müşteri seçin (İsim, telefon ve iş otomatik aktarılır)...</option>
+                      {quotes.map(q => {
+                        const isAlreadyAdded = finances.some(f => f.leadId === q.id);
+                        return (
+                          <option key={q.id} value={q.id} disabled={isAlreadyAdded}>
+                            {isAlreadyAdded ? '🔒 (Zaten Eklendi) ' : ''}{q.name} ({q.postcode}) - {q.service} - {new Date(q.createdAt || Date.now()).toLocaleDateString('tr-TR')}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                )}
 
-            <form onSubmit={handleSaveForm} className="space-y-4">
-              {/* Müşteri Adı & Telefon */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Müşteri Adı & Telefon */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Müşteri Adı *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Örn: Callum Robertson"
+                      value={formData.customerName}
+                      onChange={e => setFormData({ ...formData, customerName: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Telefon</label>
+                    <input
+                      type="tel"
+                      placeholder="Örn: +44 7760 123456"
+                      value={formData.customerPhone}
+                      onChange={e => setFormData({ ...formData, customerPhone: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Posta Kodu, Hizmet ve Tarih */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Posta Kodu</label>
+                    <input
+                      type="text"
+                      placeholder="Örn: EH3 9DJ"
+                      value={formData.postcode}
+                      onChange={e => setFormData({ ...formData, postcode: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Hizmet</label>
+                    <input
+                      type="text"
+                      placeholder="Örn: Gardırop Montajı"
+                      value={formData.service}
+                      onChange={e => setFormData({ ...formData, service: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">Tarih *</label>
+                    <input
+                      type="date"
+                      required
+                      value={formData.date}
+                      onChange={e => setFormData({ ...formData, date: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Finansal Girişler */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-2.5 bg-zinc-900/60 p-2.5 sm:p-3 rounded-2xl border border-zinc-800">
+                  <div className="space-y-1">
+                    <label className="text-[10px] sm:text-xs font-bold text-emerald-400 block truncate">
+                      <span className="hidden sm:inline">Müşteriden Alınan (£) *</span>
+                      <span className="sm:hidden">Alınan (£) *</span>
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      required
+                      placeholder="120"
+                      value={formData.revenue}
+                      onChange={e => setFormData({ ...formData, revenue: e.target.value })}
+                      className="w-full px-2.5 sm:px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-black focus:border-emerald-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] sm:text-xs font-bold text-rose-400 block truncate">Malzeme (£)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="25"
+                      value={formData.materialCost}
+                      onChange={e => setFormData({ ...formData, materialCost: e.target.value })}
+                      className="w-full px-2.5 sm:px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-black focus:border-rose-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] sm:text-xs font-bold text-amber-400 block truncate">
+                      <span className="hidden sm:inline">Diğer Masraf (£)</span>
+                      <span className="sm:hidden">Diğer (£)</span>
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="5"
+                      value={formData.otherExpenses}
+                      onChange={e => setFormData({ ...formData, otherExpenses: e.target.value })}
+                      className="w-full px-2.5 sm:px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-black focus:border-amber-500 outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Sabit Net Kâr Önizlemesi */}
+                <div className="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 flex items-center justify-between">
+                  <span className="text-xs font-bold text-zinc-300">Tahmini Net Kâr:</span>
+                  <span className="text-base font-black text-emerald-400">
+                    £{(Number(formData.revenue || 0) - Number(formData.materialCost || 0) - Number(formData.otherExpenses || 0)).toFixed(2)}
+                  </span>
+                </div>
+
+                {/* Ödeme Durumu */}
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Müşteri Adı *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Örn: Callum Robertson"
-                    value={formData.customerName}
-                    onChange={e => setFormData({ ...formData, customerName: e.target.value })}
+                  <label className="text-xs font-semibold text-zinc-300 block">Ödeme Durumu *</label>
+                  <select
+                    value={formData.paymentStatus}
+                    onChange={e => setFormData({ ...formData, paymentStatus: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-bold focus:border-blue-500 outline-none cursor-pointer"
+                  >
+                    <option value="paid_card">💳 POS / Kredi Kartı</option>
+                    <option value="paid_cash">💵 Nakit</option>
+                    <option value="paid_bank">🏦 Banka Havalesi</option>
+                    <option value="pending">⏳ Ödeme Bekliyor</option>
+                  </select>
+                </div>
+
+                {/* Notlar */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-zinc-300">Notlar</label>
+                  <textarea
+                    rows={2}
+                    placeholder="Örn: 2 adet ağır ayna askı aparatı kullanıldı."
+                    value={formData.notes}
+                    onChange={e => setFormData({ ...formData, notes: e.target.value })}
                     className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
                   />
                 </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Telefon</label>
-                  <input
-                    type="tel"
-                    placeholder="Örn: +44 7760 123456"
-                    value={formData.customerPhone}
-                    onChange={e => setFormData({ ...formData, customerPhone: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                  />
-                </div>
               </div>
 
-              {/* Posta Kodu, Hizmet ve Tarih */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Posta Kodu</label>
-                  <input
-                    type="text"
-                    placeholder="Örn: EH3 9DJ"
-                    value={formData.postcode}
-                    onChange={e => setFormData({ ...formData, postcode: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Hizmet</label>
-                  <input
-                    type="text"
-                    placeholder="Örn: Gardırop Montajı"
-                    value={formData.service}
-                    onChange={e => setFormData({ ...formData, service: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">Tarih *</label>
-                  <input
-                    type="date"
-                    required
-                    value={formData.date}
-                    onChange={e => setFormData({ ...formData, date: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Finansal Girişler (Kısa Başlıklar ve Sabit Yükseklik ile Buton Kaymasını Önler) */}
-              <div className="grid grid-cols-3 gap-2.5 bg-zinc-900/60 p-3 rounded-2xl border border-zinc-800">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-emerald-400 block truncate">Müşteriden Alınan (£) *</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    required
-                    placeholder="120"
-                    value={formData.revenue}
-                    onChange={e => setFormData({ ...formData, revenue: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-sm font-black focus:border-emerald-500 outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-rose-400 block truncate">Malzeme (£)</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="25"
-                    value={formData.materialCost}
-                    onChange={e => setFormData({ ...formData, materialCost: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-sm font-black focus:border-rose-500 outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-amber-400 block truncate">Diğer Masraf (£)</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="5"
-                    value={formData.otherExpenses}
-                    onChange={e => setFormData({ ...formData, otherExpenses: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-sm font-black focus:border-amber-500 outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Sabit Net Kâr Önizlemesi - Her zaman sabit kalarak butonların kaymasını kesin olarak engeller */}
-              <div className="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 flex items-center justify-between">
-                <span className="text-xs font-bold text-zinc-300">Tahmini Net Kâr (Cebinize Kalan):</span>
-                <span className="text-base font-black text-emerald-400">
-                  £{(Number(formData.revenue || 0) - Number(formData.materialCost || 0) - Number(formData.otherExpenses || 0)).toFixed(2)}
-                </span>
-              </div>
-
-              {/* Ödeme Durumu (Sadece POS, Nakit, Banka Havalesi ve Bekleyen) */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-300 block">Ödeme Durumu *</label>
-                <select
-                  value={formData.paymentStatus}
-                  onChange={e => setFormData({ ...formData, paymentStatus: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-bold focus:border-blue-500 outline-none cursor-pointer"
-                >
-                  <option value="paid_card">💳 POS / Kredi Kartı</option>
-                  <option value="paid_cash">💵 Nakit</option>
-                  <option value="paid_bank">🏦 Banka Havalesi</option>
-                  <option value="pending">⏳ Ödeme Bekliyor</option>
-                </select>
-              </div>
-
-              {/* Notlar */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-300">Notlar</label>
-                <textarea
-                  rows={2}
-                  placeholder="Örn: 2 adet ağır ayna askı aparatı kullanıldı."
-                  value={formData.notes}
-                  onChange={e => setFormData({ ...formData, notes: e.target.value })}
-                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-blue-500 outline-none"
-                />
-              </div>
-
-              {/* Butonlar */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-800">
+              {/* Action Buttons (Fixed Footer) */}
+              <div className="p-3.5 sm:p-5 border-t border-zinc-800 shrink-0 bg-[#0b0e14] flex flex-col-reverse sm:flex-row items-center justify-end gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 cursor-pointer"
+                  className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 cursor-pointer transition-colors text-center"
                 >
                   Vazgeç
                 </button>
@@ -1180,7 +1192,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/25 cursor-pointer disabled:opacity-50"
+                  className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 cursor-pointer disabled:opacity-50 transition-all text-center flex items-center justify-center gap-1.5"
                 >
                   {saving ? 'Kaydediliyor...' : editingId ? 'Değişiklikleri Güncelle' : 'Muhasebeye Kaydet'}
                 </button>
@@ -1193,20 +1205,20 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
 
       {/* MODAL: ŞİRKET MASRAFI EKLE VEYA DÜZENLE */}
       {isOverheadModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm overflow-hidden animate-in fade-in">
+          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-lg w-full flex flex-col max-h-[92dvh] sm:max-h-[90vh] shadow-2xl relative">
             
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+            {/* Modal Header (Fixed) */}
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-zinc-800 shrink-0">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-rose-950 text-rose-400 border border-rose-800 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-rose-950 text-rose-400 border border-rose-800 flex items-center justify-center shrink-0">
                   <Receipt className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-white">
                     {editingId ? 'Şirket Masrafını Düzenle' : 'Yeni Şirket Masrafı Ekle'}
                   </h3>
-                  <p className="text-xs text-zinc-400">Araç yakıtı, ekipman, sigorta, reklam ve genel giderler</p>
+                  <p className="text-xs text-zinc-400">Yakıt, ekipman, malzeme ve genel giderler</p>
                 </div>
               </div>
 
@@ -1219,96 +1231,99 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
               </button>
             </div>
 
-            <form onSubmit={handleSaveOverheadForm} className="space-y-4">
-              {/* Masraf Kategorisi */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-300">Masraf Kategorisi *</label>
-                <select
-                  value={overheadFormData.category}
-                  onChange={e => setOverheadFormData({ ...overheadFormData, category: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-semibold focus:border-rose-500 outline-none cursor-pointer"
-                >
-                  {OVERHEAD_CATEGORIES.map(cat => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.icon} {cat.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Masraf Başlığı / Açıklaması */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-300">Masraf Başlığı / Açıklaması *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Örn: BP Shell Dizel Yakıt veya DeWalt Darbeli Matkap"
-                  value={overheadFormData.title}
-                  onChange={e => setOverheadFormData({ ...overheadFormData, title: e.target.value })}
-                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-rose-500 outline-none"
-                />
-              </div>
-
-              {/* Tutar ve Tarih */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Form with scrollable body & pinned footer */}
+            <form onSubmit={handleSaveOverheadForm} className="flex flex-col flex-1 overflow-hidden min-h-0">
+              <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
+                {/* Masraf Kategorisi */}
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-rose-400">Gider Tutarı (£) *</label>
+                  <label className="text-xs font-semibold text-zinc-300">Masraf Kategorisi *</label>
+                  <select
+                    value={overheadFormData.category}
+                    onChange={e => setOverheadFormData({ ...overheadFormData, category: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-semibold focus:border-rose-500 outline-none cursor-pointer"
+                  >
+                    {OVERHEAD_CATEGORIES.map(cat => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.icon} {cat.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Masraf Başlığı / Açıklaması */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-zinc-300">Masraf Başlığı / Açıklaması *</label>
                   <input
-                    type="number"
-                    step="0.01"
+                    type="text"
                     required
-                    placeholder="65.00"
-                    value={overheadFormData.amount}
-                    onChange={e => setOverheadFormData({ ...overheadFormData, amount: e.target.value })}
-                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-sm font-black focus:border-rose-500 outline-none"
+                    placeholder="Örn: BP Shell Dizel Yakıt veya DeWalt Darbeli Matkap"
+                    value={overheadFormData.title}
+                    onChange={e => setOverheadFormData({ ...overheadFormData, title: e.target.value })}
+                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-rose-500 outline-none"
                   />
                 </div>
 
+                {/* Tutar ve Tarih */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-rose-400">Gider Tutarı (£) *</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      required
+                      placeholder="65.00"
+                      value={overheadFormData.amount}
+                      onChange={e => setOverheadFormData({ ...overheadFormData, amount: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-xl text-white text-sm font-black focus:border-rose-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-300">İşlem Tarihi *</label>
+                    <input
+                      type="date"
+                      required
+                      value={overheadFormData.date}
+                      onChange={e => setOverheadFormData({ ...overheadFormData, date: e.target.value })}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-rose-500 outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Ödeme Durumu */}
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-zinc-300">İşlem Tarihi *</label>
-                  <input
-                    type="date"
-                    required
-                    value={overheadFormData.date}
-                    onChange={e => setOverheadFormData({ ...overheadFormData, date: e.target.value })}
+                  <label className="text-xs font-semibold text-zinc-300 block">Ödeme Yöntemi / Durumu *</label>
+                  <select
+                    value={overheadFormData.paymentStatus}
+                    onChange={e => setOverheadFormData({ ...overheadFormData, paymentStatus: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-bold focus:border-rose-500 outline-none cursor-pointer"
+                  >
+                    <option value="paid_card">💳 POS / Kredi Kartı</option>
+                    <option value="paid_cash">💵 Nakit</option>
+                    <option value="paid_bank">🏦 Banka Havalesi</option>
+                    <option value="pending">⏳ Ödeme Bekliyor</option>
+                  </select>
+                </div>
+
+                {/* Fiş / Fatura No & Ek Notlar */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-zinc-300">Fiş / Fatura No & Detay Notu</label>
+                  <textarea
+                    rows={2}
+                    placeholder="Örn: Fiş No: 048291, Screwfix Edinburgh şubesinden alındı."
+                    value={overheadFormData.notes}
+                    onChange={e => setOverheadFormData({ ...overheadFormData, notes: e.target.value })}
                     className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-rose-500 outline-none"
                   />
                 </div>
               </div>
 
-              {/* Ödeme Durumu */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-300 block">Ödeme Yöntemi / Durumu *</label>
-                <select
-                  value={overheadFormData.paymentStatus}
-                  onChange={e => setOverheadFormData({ ...overheadFormData, paymentStatus: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs sm:text-sm font-bold focus:border-rose-500 outline-none cursor-pointer"
-                >
-                  <option value="paid_card">💳 POS / Kredi Kartı</option>
-                  <option value="paid_cash">💵 Nakit</option>
-                  <option value="paid_bank">🏦 Banka Havalesi</option>
-                  <option value="pending">⏳ Ödeme Bekliyor</option>
-                </select>
-              </div>
-
-              {/* Fiş / Fatura No & Ek Notlar */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-300">Fiş / Fatura No & Detay Notu</label>
-                <textarea
-                  rows={2}
-                  placeholder="Örn: Fiş No: 048291, Screwfix Edinburgh şubesinden alındı."
-                  value={overheadFormData.notes}
-                  onChange={e => setOverheadFormData({ ...overheadFormData, notes: e.target.value })}
-                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-xs focus:border-rose-500 outline-none"
-                />
-              </div>
-
-              {/* Butonlar */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-800">
+              {/* Action Buttons (Fixed Footer) */}
+              <div className="p-3.5 sm:p-5 border-t border-zinc-800 shrink-0 bg-[#0b0e14] flex flex-col-reverse sm:flex-row items-center justify-end gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setIsOverheadModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 cursor-pointer"
+                  className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 cursor-pointer transition-colors text-center"
                 >
                   Vazgeç
                 </button>
@@ -1316,7 +1331,7 @@ export default function AccountingManager({ token, initialLeadData = null, onCle
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-md shadow-rose-600/25 cursor-pointer disabled:opacity-50"
+                  className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 active:scale-95 shadow-md shadow-rose-600/25 cursor-pointer disabled:opacity-50 transition-all text-center flex items-center justify-center gap-1.5"
                 >
                   {saving ? 'Kaydediliyor...' : editingId ? 'Değişiklikleri Güncelle' : 'Masrafı Kaydet'}
                 </button>
