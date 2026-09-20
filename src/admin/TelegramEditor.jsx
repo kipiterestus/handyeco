@@ -14,7 +14,8 @@ import {
   Clock,
   MapPin,
   Phone,
-  MessageSquare
+  MessageSquare,
+  RefreshCw
 } from 'lucide-react';
 
 export default function TelegramEditor({ data = {}, onSave, token }) {
@@ -25,9 +26,49 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [testing, setTesting] = useState(false);
+  const [detecting, setDetecting] = useState(false);
   const [testResult, setTestResult] = useState(null);
 
   const isConfigured = Boolean(botToken && chatId);
+
+  const handleDetectChatId = async () => {
+    if (!botToken.trim()) {
+      setTestResult({
+        success: false,
+        message: 'Lütfen önce Telegram Bot Token alanını girin.'
+      });
+      return;
+    }
+    setDetecting(true);
+    setTestResult(null);
+    try {
+      const res = await fetch('/api/telegram/detect-chat-id', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ token: botToken.trim() })
+      });
+      const json = await res.json();
+      if (res.ok && json.success && json.chatId) {
+        setChatId(json.chatId);
+        setTestResult({
+          success: true,
+          message: `🎯 Chat ID başarıyla bulundu ve yazıldı: ${json.chatId} (${json.name} / @${json.username || 'kullanıcı'})`
+        });
+      } else {
+        setTestResult({
+          success: false,
+          message: json.error || 'Chat ID bulunamadı. Lütfen botunuza gidip START veya "merhaba" yazın.'
+        });
+      }
+    } catch (err) {
+      setTestResult({ success: false, message: 'Bağlantı hatası: ' + err.message });
+    } finally {
+      setDetecting(false);
+    }
+  };
 
   const handleSave = async (e) => {
     if (e) e.preventDefault();
@@ -205,20 +246,48 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
               </p>
             </div>
 
-            {/* Chat ID Field */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-300 uppercase tracking-wider block">
-                Telegram Kişisel Chat ID
-              </label>
-              <input
-                type="text"
-                placeholder="Örn: 8755482733"
-                value={chatId}
-                onChange={(e) => setChatId(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 focus:border-blue-500 text-white text-sm font-mono outline-none transition-all"
-              />
+            {/* Chat ID Field with Auto-Detection */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-zinc-300 uppercase tracking-wider block">
+                  Telegram Kişisel Chat ID
+                </label>
+                <div className="flex items-center gap-2">
+                  <a
+                    href="https://t.me/handyecoo_bot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-sky-400 hover:text-sky-300 underline"
+                  >
+                    <span>Botu Aç (@handyecoo_bot)</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Örn: 8755482733"
+                  value={chatId}
+                  onChange={(e) => setChatId(e.target.value)}
+                  className="flex-1 px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 focus:border-blue-500 text-white text-sm font-mono outline-none transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={handleDetectChatId}
+                  disabled={detecting}
+                  className="px-3.5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-zinc-200 border border-zinc-700 transition-all shrink-0 cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                  title="Botunuza gönderdiğiniz son mesajdan Chat ID numaranızı otomatik çeker"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 text-sky-400 ${detecting ? 'animate-spin' : ''}`} />
+                  <span>{detecting ? 'Aranıyor...' : 'Chat ID Otomatik Bul'}</span>
+                </button>
+              </div>
+
               <p className="text-[11px] text-zinc-500">
-                Kişisel sayısal kullanıcı ID numaranız. <a href="https://t.me/userinfobot" target="_blank" rel="noopener noreferrer" className="text-blue-400 underline font-medium">@userinfobot</a> üzerinden anında öğrenebilirsiniz.
+                1) <a href="https://t.me/handyecoo_bot" target="_blank" rel="noopener noreferrer" className="text-sky-400 underline font-bold">@handyecoo_bot</a> linkine tıklayıp <strong>BAŞLAT (START)</strong> deyin.<br />
+                2) Ardından yukarıdaki <strong>Chat ID Otomatik Bul</strong> butonuna tıklayın veya <a href="https://t.me/userinfobot" target="_blank" rel="noopener noreferrer" className="text-blue-400 underline font-medium">@userinfobot</a> üzerinden numaranızı yazın.
               </p>
             </div>
 

@@ -370,6 +370,42 @@ app.post('/api/telegram/test', requireAuth, async (req, res) => {
   }
 });
 
+// Auto-detect Telegram Chat ID from bot updates
+app.post('/api/telegram/detect-chat-id', requireAuth, async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token) {
+      return res.status(400).json({ success: false, error: 'Telegram Bot Token gerekli.' });
+    }
+    const response = await fetch(`https://api.telegram.org/bot${token}/getUpdates`);
+    const data = await response.json();
+    if (!data.ok) {
+      return res.status(400).json({ success: false, error: data.description || 'Bot güncellemeleri alınamadı.' });
+    }
+    if (!data.result || data.result.length === 0) {
+      return res.json({
+        success: false,
+        empty: true,
+        error: 'Henüz bota bir mesaj ulaşmadı. Lütfen Telegram uygulamasında botunuza girip BAŞLAT (START) veya herhangi bir mesaj (ör. "merhaba") gönderin, ardından bu butona tekrar basın.'
+      });
+    }
+    // Get the most recent message / chat update
+    const lastUpdate = data.result[data.result.length - 1];
+    const chat = lastUpdate.message?.chat || lastUpdate.channel_post?.chat || lastUpdate.my_chat_member?.chat;
+    if (!chat || !chat.id) {
+      return res.json({ success: false, error: 'Mesaj bulundu ancak Chat ID ayrıştırılamadı.' });
+    }
+    res.json({
+      success: true,
+      chatId: String(chat.id),
+      name: chat.first_name || chat.title || 'Kullanıcı',
+      username: chat.username || ''
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Send Tomorrow's Appointment Reminder via Telegram (Manual or Automatic Trigger)
 app.post('/api/telegram/reminders', requireAuth, async (req, res) => {
   try {

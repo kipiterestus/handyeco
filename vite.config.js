@@ -297,6 +297,36 @@ const backendApiPlugin = () => ({
           return sendJson(200, tgRes);
         }
 
+        // 11b. Auto-detect Telegram Chat ID from bot updates
+        if (pathname === '/api/telegram/detect-chat-id' && method === 'POST') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const body = await parseBody(req);
+          if (!body.token) return sendJson(400, { success: false, error: 'Token gerekli.' });
+          try {
+            const resp = await fetch(`https://api.telegram.org/bot${body.token}/getUpdates`);
+            const data = await resp.json();
+            if (!data.ok) return sendJson(400, { success: false, error: data.description });
+            if (!data.result || data.result.length === 0) {
+              return sendJson(200, {
+                success: false,
+                empty: true,
+                error: 'Henüz bota bir mesaj ulaşmadı. Lütfen Telegram uygulamasında botunuza girip BAŞLAT (START) veya herhangi bir mesaj (ör. "merhaba") gönderin, ardından bu butona tekrar basın.'
+              });
+            }
+            const lastUpdate = data.result[data.result.length - 1];
+            const chat = lastUpdate.message?.chat || lastUpdate.channel_post?.chat || lastUpdate.my_chat_member?.chat;
+            if (!chat || !chat.id) return sendJson(200, { success: false, error: 'Chat ID ayrıştırılamadı.' });
+            return sendJson(200, {
+              success: true,
+              chatId: String(chat.id),
+              name: chat.first_name || chat.title || 'Kullanıcı',
+              username: chat.username || ''
+            });
+          } catch (e) {
+            return sendJson(500, { success: false, error: e.message });
+          }
+        }
+
         // 12. Sync Google & MyBuilder Reviews
         if (pathname === '/api/reviews/sync' && method === 'POST') {
           if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
