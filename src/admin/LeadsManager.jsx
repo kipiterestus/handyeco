@@ -704,10 +704,10 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
 
     {/* 📅 Randevu Planla Modalı (Sayfa değiştirmeden) */}
     {schedulingLead && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-2 sm:p-4 overflow-hidden">
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-lg w-full flex flex-col max-h-[92dvh] sm:max-h-[90vh] shadow-2xl text-left animate-in fade-in zoom-in-95">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto">
+        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl text-left animate-in fade-in zoom-in-95 my-auto">
           
-          {/* Header (Fixed) */}
+          {/* Header */}
           <div className="flex items-center justify-between p-4 sm:p-5 border-b border-zinc-800 shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-blue-950 text-blue-400 border border-blue-800 flex items-center justify-center shrink-0">
@@ -727,122 +727,119 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
             </button>
           </div>
 
-          {/* Form with scrollable body & pinned footer */}
-          <form onSubmit={handleSaveSchedule} className="flex flex-col flex-1 overflow-hidden min-h-0">
-            {/* Scrollable Content */}
-            <div className="p-4 sm:p-5 overflow-y-auto space-y-3.5 text-xs flex-1">
-              {/* Selected Lead Summary */}
-              <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 text-xs space-y-1 text-zinc-300">
-                <div className="flex justify-between font-bold text-white">
-                  <span className="truncate mr-2">{schedulingLead.name || 'İsimsiz Müşteri'}</span>
-                  <span className="text-blue-400 shrink-0">{schedulingLead.phone || ''}</span>
-                </div>
-                <div className="flex justify-between text-zinc-400 text-[11px]">
-                  <span className="truncate mr-2">{schedulingLead.service || 'Usta Hizmeti'}</span>
-                  <span className="shrink-0">{schedulingLead.postcode || 'Edinburgh'}</span>
-                </div>
+          {/* Form Scrollable Content - Butonlar formun sonunda yer alır, yazı yazarken ekranı ASLA kapatmaz */}
+          <form onSubmit={handleSaveSchedule} className="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+            {/* Selected Lead Summary */}
+            <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 text-xs space-y-1 text-zinc-300">
+              <div className="flex justify-between font-bold text-white">
+                <span className="truncate mr-2">{schedulingLead.name || 'İsimsiz Müşteri'}</span>
+                <span className="text-blue-400 shrink-0">{schedulingLead.phone || ''}</span>
               </div>
+              <div className="flex justify-between text-zinc-400 text-[11px]">
+                <span className="truncate mr-2">{schedulingLead.service || 'Usta Hizmeti'}</span>
+                <span className="shrink-0">{schedulingLead.postcode || 'Edinburgh'}</span>
+              </div>
+            </div>
 
+            <div>
+              <label className="block text-zinc-400 font-semibold mb-1">Randevu Tarihi</label>
+              <input
+                type="date"
+                required
+                value={scheduleForm.date}
+                onChange={e => setScheduleForm(prev => ({ ...prev, date: e.target.value }))}
+                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               <div>
-                <label className="block text-zinc-400 font-semibold mb-1">Randevu Tarihi</label>
+                <label className="block text-zinc-400 font-semibold mb-1">Başlangıç Saati</label>
                 <input
-                  type="date"
+                  type="time"
                   required
-                  value={scheduleForm.date}
-                  onChange={e => setScheduleForm(prev => ({ ...prev, date: e.target.value }))}
+                  value={scheduleForm.startTime}
+                  onChange={e => {
+                    const newStart = e.target.value;
+                    setScheduleForm(prev => ({
+                      ...prev,
+                      startTime: newStart,
+                      endTime: calculateEndTime(newStart, prev.durationMinutes)
+                    }));
+                  }}
                   className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <div>
-                  <label className="block text-zinc-400 font-semibold mb-1">Başlangıç Saati</label>
-                  <input
-                    type="time"
-                    required
-                    value={scheduleForm.startTime}
-                    onChange={e => {
-                      const newStart = e.target.value;
-                      setScheduleForm(prev => ({
-                        ...prev,
-                        startTime: newStart,
-                        endTime: calculateEndTime(newStart, prev.durationMinutes)
-                      }));
-                    }}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-zinc-400 font-semibold mb-1">Süre</label>
-                  <select
-                    value={scheduleForm.durationMinutes}
-                    onChange={e => {
-                      const mins = Number(e.target.value);
-                      setScheduleForm(prev => ({
-                        ...prev,
-                        durationMinutes: mins,
-                        endTime: calculateEndTime(prev.startTime, mins)
-                      }));
-                    }}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none cursor-pointer"
-                  >
-                    <option value={60}>1 Saat</option>
-                    <option value={90}>1.5 Saat</option>
-                    <option value={120}>2 Saat</option>
-                    <option value={180}>3 Saat</option>
-                    <option value={240}>4 Saat</option>
-                    <option value={480}>Tam Gün</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-zinc-400 font-semibold mb-1">Bitiş Saati</label>
-                  <input
-                    type="time"
-                    value={scheduleForm.endTime}
-                    onChange={e => setScheduleForm(prev => ({ ...prev, endTime: e.target.value }))}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
-                  />
-                </div>
+              <div>
+                <label className="block text-zinc-400 font-semibold mb-1">Süre</label>
+                <select
+                  value={scheduleForm.durationMinutes}
+                  onChange={e => {
+                    const mins = Number(e.target.value);
+                    setScheduleForm(prev => ({
+                      ...prev,
+                      durationMinutes: mins,
+                      endTime: calculateEndTime(prev.startTime, mins)
+                    }));
+                  }}
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none cursor-pointer"
+                >
+                  <option value={60}>1 Saat</option>
+                  <option value={90}>1.5 Saat</option>
+                  <option value={120}>2 Saat</option>
+                  <option value={180}>3 Saat</option>
+                  <option value={240}>4 Saat</option>
+                  <option value={480}>Tam Gün</option>
+                </select>
               </div>
 
               <div>
-                <label className="block text-zinc-400 font-semibold mb-1">Tahmini Fiyat / Ücret (£)</label>
+                <label className="block text-zinc-400 font-semibold mb-1">Bitiş Saati</label>
                 <input
-                  type="number"
-                  placeholder="Örn: 85 (Opsiyonel)"
-                  value={scheduleForm.priceEstimate}
-                  onChange={e => setScheduleForm(prev => ({ ...prev, priceEstimate: e.target.value }))}
+                  type="time"
+                  value={scheduleForm.endTime}
+                  onChange={e => setScheduleForm(prev => ({ ...prev, endTime: e.target.value }))}
                   className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-zinc-400 font-semibold mb-1">Özel İş Notu / Hatırlatıcı</label>
-                <textarea
-                  rows={2}
-                  placeholder="İş detayı, alet çantası hazırlığı..."
-                  value={scheduleForm.notes}
-                  onChange={e => setScheduleForm(prev => ({ ...prev, notes: e.target.value }))}
-                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none leading-relaxed"
                 />
               </div>
             </div>
 
-            {/* Action Buttons (Fixed Footer) */}
-            <div className="p-3.5 sm:p-5 border-t border-zinc-800 shrink-0 bg-[#0b0e14] flex flex-col-reverse sm:flex-row items-center justify-end gap-2 sm:gap-2.5">
+            <div>
+              <label className="block text-zinc-400 font-semibold mb-1">Tahmini Fiyat / Ücret (£)</label>
+              <input
+                type="number"
+                placeholder="Örn: 85 (Opsiyonel)"
+                value={scheduleForm.priceEstimate}
+                onChange={e => setScheduleForm(prev => ({ ...prev, priceEstimate: e.target.value }))}
+                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-zinc-400 font-semibold mb-1">Özel İş Notu / Hatırlatıcı</label>
+              <textarea
+                rows={2}
+                placeholder="İş detayı, alet çantası hazırlığı..."
+                value={scheduleForm.notes}
+                onChange={e => setScheduleForm(prev => ({ ...prev, notes: e.target.value }))}
+                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none leading-relaxed"
+              />
+            </div>
+
+            {/* Action Buttons (Form Akışı İçinde, Mobilde Tek Satırda 2 Eşit Sütun - Yazı Alanlarını Asla Kapatmaz) */}
+            <div className="pt-3 pb-1 border-t border-zinc-800 grid grid-cols-2 gap-2.5 sm:flex sm:items-center sm:justify-end sm:gap-3">
               <button
                 type="button"
                 onClick={() => setSchedulingLead(null)}
-                className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 cursor-pointer transition-colors text-center"
+                className="w-full sm:w-auto py-2.5 px-4 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 cursor-pointer transition-colors text-center"
               >
                 Vazgeç
               </button>
               <button
                 type="submit"
                 disabled={savingModal}
-                className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/30 cursor-pointer transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 text-center"
+                className="w-full sm:w-auto py-2.5 px-5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/30 cursor-pointer transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 text-center"
               >
                 <span>{savingModal ? 'Kaydediliyor...' : 'Randevuyu Kaydet'}</span>
               </button>
@@ -855,10 +852,10 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
 
     {/* 💰 Muhasebeye Ekle Modalı (Sayfa değiştirmeden) */}
     {accountingLead && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-2 sm:p-4 overflow-hidden">
-        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-lg w-full flex flex-col max-h-[92dvh] sm:max-h-[90vh] shadow-2xl text-left animate-in fade-in zoom-in-95">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto">
+        <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl text-left animate-in fade-in zoom-in-95 my-auto">
           
-          {/* Header (Fixed) */}
+          {/* Header */}
           <div className="flex items-center justify-between p-4 sm:p-5 border-b border-zinc-800 shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center justify-center shrink-0">
@@ -878,124 +875,121 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
             </button>
           </div>
 
-          {/* Form with scrollable body & pinned footer */}
-          <form onSubmit={handleSaveAccounting} className="flex flex-col flex-1 overflow-hidden min-h-0">
-            {/* Scrollable Content */}
-            <div className="p-4 sm:p-5 overflow-y-auto space-y-3.5 text-xs flex-1">
-              {/* Selected Lead Summary */}
-              <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 text-xs space-y-1 text-zinc-300">
-                <div className="flex justify-between font-bold text-white">
-                  <span className="truncate mr-2">{accountingLead.name || 'İsimsiz Müşteri'}</span>
-                  <span className="text-emerald-400 shrink-0">{accountingLead.phone || ''}</span>
-                </div>
-                <div className="flex justify-between text-zinc-400 text-[11px]">
-                  <span className="truncate mr-2">{accountingLead.service || 'Usta Hizmeti'}</span>
-                  <span className="shrink-0">{accountingLead.postcode || 'Edinburgh'}</span>
-                </div>
+          {/* Form Scrollable Content - Butonlar formun sonunda yer alır, yazı yazarken ekranı ASLA kapatmaz */}
+          <form onSubmit={handleSaveAccounting} className="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+            {/* Selected Lead Summary */}
+            <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 text-xs space-y-1 text-zinc-300">
+              <div className="flex justify-between font-bold text-white">
+                <span className="truncate mr-2">{accountingLead.name || 'İsimsiz Müşteri'}</span>
+                <span className="text-emerald-400 shrink-0">{accountingLead.phone || ''}</span>
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                <div>
-                  <label className="block text-zinc-400 font-semibold mb-1">Tarih</label>
-                  <input
-                    type="date"
-                    required
-                    value={accountingForm.date}
-                    onChange={e => setAccountingForm(prev => ({ ...prev, date: e.target.value }))}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-zinc-400 font-semibold mb-1 truncate">
-                    <span className="hidden sm:inline">Müşteriden Alınan Ücret / Ciro (£) *</span>
-                    <span className="sm:hidden">Alınan Ücret / Ciro (£) *</span>
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    placeholder="Örn: 120"
-                    value={accountingForm.revenue}
-                    onChange={e => setAccountingForm(prev => ({ ...prev, revenue: e.target.value }))}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-emerald-400 font-bold focus:border-emerald-500 outline-none"
-                  />
-                </div>
+              <div className="flex justify-between text-zinc-400 text-[11px]">
+                <span className="truncate mr-2">{accountingLead.service || 'Usta Hizmeti'}</span>
+                <span className="shrink-0">{accountingLead.postcode || 'Edinburgh'}</span>
               </div>
+            </div>
 
-              <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
-                <div>
-                  <label className="block text-zinc-400 font-semibold mb-1 truncate">Malzeme (£)</label>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    value={accountingForm.materialCost}
-                    onChange={e => setAccountingForm(prev => ({ ...prev, materialCost: e.target.value }))}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-zinc-400 font-semibold mb-1 truncate">Diğer Masraf (£)</label>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    value={accountingForm.otherExpenses}
-                    onChange={e => setAccountingForm(prev => ({ ...prev, otherExpenses: e.target.value }))}
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
-                  />
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+              <div>
+                <label className="block text-zinc-400 font-semibold mb-1">Tarih</label>
+                <input
+                  type="date"
+                  required
+                  value={accountingForm.date}
+                  onChange={e => setAccountingForm(prev => ({ ...prev, date: e.target.value }))}
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+                />
               </div>
 
               <div>
-                <label className="block text-zinc-400 font-semibold mb-1.5">Ödeme Durumu</label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {[
-                    { id: 'paid_card', label: '💳 POS / Kart' },
-                    { id: 'paid_cash', label: '💵 Nakit' },
-                    { id: 'paid_bank', label: '🏦 Havale' },
-                    { id: 'pending', label: '⏳ Bekleniyor' }
-                  ].map(pm => (
-                    <button
-                      key={pm.id}
-                      type="button"
-                      onClick={() => setAccountingForm(prev => ({ ...prev, paymentStatus: pm.id }))}
-                      className={`py-2 px-1 rounded-xl border text-[11px] font-bold transition-all cursor-pointer text-center whitespace-nowrap ${
-                        accountingForm.paymentStatus === pm.id
-                          ? 'bg-emerald-950 border-emerald-600 text-emerald-300 shadow-sm'
-                          : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'
-                      }`}
-                    >
-                      {pm.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-zinc-400 font-semibold mb-1">Açıklama / Not</label>
-                <textarea
-                  rows={2}
-                  placeholder="İş ve ödeme notları..."
-                  value={accountingForm.notes}
-                  onChange={e => setAccountingForm(prev => ({ ...prev, notes: e.target.value }))}
-                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none leading-relaxed"
+                <label className="block text-zinc-400 font-semibold mb-1 truncate">
+                  <span className="hidden sm:inline">Müşteriden Alınan Ücret / Ciro (£) *</span>
+                  <span className="sm:hidden">Alınan Ücret / Ciro (£) *</span>
+                </label>
+                <input
+                  type="number"
+                  required
+                  placeholder="Örn: 120"
+                  value={accountingForm.revenue}
+                  onChange={e => setAccountingForm(prev => ({ ...prev, revenue: e.target.value }))}
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-emerald-400 font-bold focus:border-emerald-500 outline-none"
                 />
               </div>
             </div>
 
-            {/* Action Buttons (Fixed Footer) */}
-            <div className="p-3.5 sm:p-5 border-t border-zinc-800 shrink-0 bg-[#0b0e14] flex flex-col-reverse sm:flex-row items-center justify-end gap-2 sm:gap-2.5">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+              <div>
+                <label className="block text-zinc-400 font-semibold mb-1 truncate">Malzeme (£)</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={accountingForm.materialCost}
+                  onChange={e => setAccountingForm(prev => ({ ...prev, materialCost: e.target.value }))}
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 font-semibold mb-1 truncate">Diğer Masraf (£)</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={accountingForm.otherExpenses}
+                  onChange={e => setAccountingForm(prev => ({ ...prev, otherExpenses: e.target.value }))}
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-zinc-400 font-semibold mb-1.5">Ödeme Durumu</label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { id: 'paid_card', label: '💳 POS / Kart' },
+                  { id: 'paid_cash', label: '💵 Nakit' },
+                  { id: 'paid_bank', label: '🏦 Havale' },
+                  { id: 'pending', label: '⏳ Bekleniyor' }
+                ].map(pm => (
+                  <button
+                    key={pm.id}
+                    type="button"
+                    onClick={() => setAccountingForm(prev => ({ ...prev, paymentStatus: pm.id }))}
+                    className={`py-2 px-1 rounded-xl border text-[11px] font-bold transition-all cursor-pointer text-center whitespace-nowrap ${
+                      accountingForm.paymentStatus === pm.id
+                        ? 'bg-emerald-950 border-emerald-600 text-emerald-300 shadow-sm'
+                        : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    {pm.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-zinc-400 font-semibold mb-1">Açıklama / Not</label>
+              <textarea
+                rows={2}
+                placeholder="İş ve ödeme notları..."
+                value={accountingForm.notes}
+                onChange={e => setAccountingForm(prev => ({ ...prev, notes: e.target.value }))}
+                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-white font-medium focus:border-blue-500 outline-none leading-relaxed"
+              />
+            </div>
+
+            {/* Action Buttons (Form Akışı İçinde, Mobilde Tek Satırda 2 Eşit Sütun - Yazı Alanlarını Asla Kapatmaz) */}
+            <div className="pt-3 pb-1 border-t border-zinc-800 grid grid-cols-2 gap-2.5 sm:flex sm:items-center sm:justify-end sm:gap-3">
               <button
                 type="button"
                 onClick={() => setAccountingLead(null)}
-                className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 cursor-pointer transition-colors text-center"
+                className="w-full sm:w-auto py-2.5 px-4 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 cursor-pointer transition-colors text-center"
               >
                 Vazgeç
               </button>
               <button
                 type="submit"
                 disabled={savingModal}
-                className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 shadow-md shadow-emerald-600/30 cursor-pointer transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 text-center"
+                className="w-full sm:w-auto py-2.5 px-5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 shadow-md shadow-emerald-600/30 cursor-pointer transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 text-center"
               >
                 <span>{savingModal ? 'Kaydediliyor...' : 'Muhasebeye Kaydet'}</span>
               </button>

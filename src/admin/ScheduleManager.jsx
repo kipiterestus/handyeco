@@ -1162,8 +1162,8 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
 
       {/* MODAL: ADD / EDIT SCHEDULE JOB */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm overflow-hidden animate-in fade-in">
-          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-xl w-full flex flex-col max-h-[92dvh] sm:max-h-[90vh] shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto animate-in fade-in">
+          <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl sm:rounded-3xl max-w-xl w-full flex flex-col max-h-[90vh] shadow-2xl relative my-auto">
             
             {/* Modal Header (Fixed) */}
             <div className="flex items-center justify-between p-4 sm:p-5 border-b border-zinc-800 shrink-0">
@@ -1358,25 +1358,25 @@ export default function ScheduleManager({ token, initialLeadData = null, onClear
                     <option value="cancelled">⚪ İptal</option>
                   </select>
                 </div>
-              </div>
 
-              {/* Submit Buttons (Fixed Footer) */}
-              <div className="p-3.5 sm:p-5 border-t border-zinc-800 shrink-0 bg-[#0b0e14] flex flex-col-reverse sm:flex-row items-center justify-end gap-2 sm:gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 cursor-pointer transition-colors text-center"
-                >
-                  Vazgeç
-                </button>
+                {/* Submit Buttons (Form Akışı İçinde, Mobilde Tek Satırda 2 Eşit Sütun - Yazı Alanlarını Asla Kapatmaz) */}
+                <div className="pt-3 pb-2 border-t border-zinc-800 grid grid-cols-2 gap-2.5 sm:flex sm:items-center sm:justify-end sm:gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 cursor-pointer transition-colors text-center"
+                  >
+                    Vazgeç
+                  </button>
 
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 cursor-pointer disabled:opacity-50 transition-all text-center flex items-center justify-center gap-1.5"
-                >
-                  {saving ? 'Kaydediliyor...' : editingId ? 'Değişiklikleri Güncelle' : 'Randevuyu Kaydet'}
-                </button>
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-600/25 cursor-pointer disabled:opacity-50 transition-all text-center flex items-center justify-center gap-1.5"
+                  >
+                    {saving ? 'Kaydediliyor...' : editingId ? 'Değişiklikleri Güncelle' : 'Randevuyu Kaydet'}
+                  </button>
+                </div>
               </div>
             </form>
 
