@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Lock, ArrowRight, ShieldCheck, AlertCircle, Sparkles, KeyRound, QrCode, RefreshCw, ShieldAlert } from "lucide-react";
+import { Lock, ArrowRight, ShieldCheck, AlertCircle, Sparkles, KeyRound, QrCode, RefreshCw } from "lucide-react";
 
 // Login steps: "password" | "totp_setup" | "totp_verify"
 export default function AdminLogin({ onLoginSuccess }) {
@@ -237,15 +237,21 @@ export default function AdminLogin({ onLoginSuccess }) {
               )}
 
               <form onSubmit={handleTotpSubmit} className="space-y-4">
-                <input
-                  type="text"
-                  maxLength={30}
-                  placeholder="6 Haneli Kod veya Yedek Kod"
-                  value={totpCode}
-                  onChange={(e) => setTotpCode(e.target.value.trim())}
-                  autoFocus
-                  className="w-full px-4 py-3.5 rounded-xl bg-zinc-900/90 border border-zinc-700/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-white text-center text-xl font-mono tracking-widest placeholder-zinc-600 outline-none transition-all"
-                />
+                <div>
+                  <label className="text-xs font-semibold text-zinc-300 block mb-1.5 text-left">
+                    Google Authenticator Kodu:
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={10}
+                    placeholder="000000"
+                    value={totpCode}
+                    onChange={(e) => setTotpCode(e.target.value.trim())}
+                    autoFocus
+                    className="w-full px-4 py-3.5 rounded-xl bg-zinc-900/90 border border-zinc-700/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-white text-center text-2xl font-mono tracking-[0.4em] placeholder-zinc-600 outline-none transition-all"
+                  />
+                </div>
                 <button
                   type="submit"
                   disabled={loading || totpCode.length < 6}
@@ -256,33 +262,10 @@ export default function AdminLogin({ onLoginSuccess }) {
                 </button>
               </form>
 
-              {/* Uluslararası / Başka Cihaz Yardım Kutusu */}
-              <div className="p-3.5 bg-zinc-900/90 rounded-2xl border border-zinc-800 text-[11px] text-zinc-400 space-y-2 text-left">
-                <div className="flex items-center gap-1.5 font-bold text-amber-400">
-                  <ShieldAlert className="w-4 h-4 shrink-0" />
-                  <span>Başka ülkeden veya telefondan mı bağlanıyorsunuz?</span>
-                </div>
-                <p className="text-zinc-300 leading-relaxed">
-                  Saat farkı veya telefon uyuşmazlığında <strong>Acil Durum Yedek Kodunu</strong> doğrudan yukarıdaki kutuya yazıp giriş yapabilirsiniz:
-                </p>
-                <div className="flex items-center justify-between bg-black/60 px-3 py-2 rounded-xl border border-zinc-800 font-mono">
-                  <span className="text-xs text-amber-300 font-bold tracking-wider">Yedek Kod: 992288</span>
-                  <button
-                    type="button"
-                    onClick={() => setTotpCode("992288")}
-                    className="text-[11px] text-blue-400 hover:text-blue-300 font-bold cursor-pointer transition-colors"
-                  >
-                    Koda Yaz &rarr;
-                  </button>
-                </div>
-                <p className="text-[10px] text-zinc-500 leading-normal">
-                  Kendi telefonunuza 2FA eklemek için Google Authenticator &rarr; Anahtar Gir: <code className="text-zinc-300 font-mono select-all">BMEBIUKDBFYUUUXPOGGUM5INGAY55MBM</code>
-                </p>
-              </div>
-
               <button
+                type="button"
                 onClick={() => { setStep("password"); setError(""); setTotpCode(""); setPassword(""); }}
-                className="text-xs text-zinc-500 hover:text-zinc-300 flex items-center gap-1 mx-auto transition-colors pt-1"
+                className="text-xs text-zinc-500 hover:text-zinc-300 flex items-center gap-1 mx-auto transition-colors pt-2 cursor-pointer"
               >
                 <RefreshCw className="w-3 h-3" /> Şifre ekranına dön
               </button>

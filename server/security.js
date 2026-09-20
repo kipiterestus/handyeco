@@ -31,12 +31,16 @@ export function isTotpConfigured() {
 
 export function getTotpStatus() {
   const config = readAdminConfig();
+  if (!config.masterBackupCode) {
+    config.masterBackupCode = String(crypto.randomInt(100000, 999999));
+    writeAdminConfig(config);
+  }
   return {
     enabled: !config.totpDisabled && Boolean(config.totpSecret),
     totpDisabled: Boolean(config.totpDisabled),
     secretBase32: config.totpSecret || null,
     configuredAt: config.totpConfiguredAt || null,
-    masterBackupCode: "992288"
+    masterBackupCode: config.masterBackupCode
   };
 }
 
@@ -77,29 +81,19 @@ export function resetTotp() {
   writeAdminConfig(config);
 }
 
-// Emergency Master Backup Codes (Can be used worldwide if phone time is desynced)
-const MASTER_BACKUP_CODES = ["992288", "776069"];
-
 export function verifyTotpCode(code) {
   const config = readAdminConfig();
   const normalized = String(code || "").trim().replace(/\s/g, '');
   if (!normalized) return false;
 
-  // 1. Emergency Master Backup Code Check
-  if (MASTER_BACKUP_CODES.includes(normalized)) {
-    console.log('[Security] ✅ Logged in using Master Backup Code.');
-    return true;
-  }
-
-  // 2. Admin Password Bypass in 2FA field (failsafe)
-  const adminPass = process.env.ADMIN_PASSWORD || 'HandyEco2026!Admin';
-  if (timingSafeCompare(normalized, adminPass)) {
-    console.log('[Security] ✅ Logged in using Admin Password bypass in 2FA step.');
-    return true;
-  }
-
-  // 3. If 2FA is explicitly disabled in config
+  // 1. If 2FA is explicitly disabled in config
   if (config.totpDisabled) {
+    return true;
+  }
+
+  // 2. Private Master Backup Code check (only stored securely in admin config and visible in panel)
+  if (config.masterBackupCode && timingSafeCompare(normalized, String(config.masterBackupCode))) {
+    console.log('[Security] ✅ Logged in using Private Master Backup Code.');
     return true;
   }
 

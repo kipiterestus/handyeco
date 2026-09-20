@@ -141,7 +141,7 @@ export default function SecurityEditor({ token }) {
 
           <div className="flex items-center justify-between bg-zinc-900/90 border border-zinc-700/80 p-3 rounded-xl">
             <code className="text-xs font-mono text-indigo-300 select-all font-bold tracking-wider">
-              {status?.secretBase32 || 'BMEBIUKDBFYUUUXPOGGUM5INGAY55MBM'}
+              {status?.secretBase32 || '—'}
             </code>
             <button
               onClick={handleCopyKey}
@@ -171,7 +171,7 @@ export default function SecurityEditor({ token }) {
 
           <div className="flex items-center justify-between bg-zinc-900/90 border border-zinc-700/80 p-3 rounded-xl">
             <code className="text-sm font-mono text-amber-300 select-all font-bold tracking-widest">
-              {status?.masterBackupCode || '992288'}
+              {status?.masterBackupCode || '—'}
             </code>
             <button
               onClick={handleCopyBackup}
