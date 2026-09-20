@@ -6,6 +6,7 @@ import {
   CheckCircle2, 
   Sparkles, 
   ArrowRight, 
+  ArrowDown, 
   Clock 
 } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
@@ -15,6 +16,27 @@ export default function Hero({ onOpenQuote }) {
   const { content } = useContent();
   const hero = content.hero || {};
   const config = content.siteConfig || {};
+
+  const handymanVisualCard = (
+    <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[16/11] sm:aspect-[4/3] lg:aspect-[4/5] bg-slate-900">
+      <img
+        src={hero.heroImage || '/hero-handyman-edinburgh.jpg'}
+        alt="Edinburgh Handyman assembling furniture with cordless drill in a home apartment"
+        className="w-full h-full object-cover object-[center_16%] sm:object-top"
+      />
+      
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/20" />
+
+      <div className="absolute bottom-3 left-3.5 right-3.5 sm:bottom-5 sm:left-5 sm:right-5 text-white text-left">
+        <h3 className="text-sm sm:text-lg lg:text-xl font-bold leading-snug">
+          {hero.completedCount || 'Over 500+ Edinburgh Homes Maintained'}
+        </h3>
+        <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5">
+          {hero.completedSubtext || 'From Morningside flats to New Town tenements.'}
+        </p>
+      </div>
+    </div>
+  );
 
   return (
     <section className="relative pt-24 pb-12 sm:pt-32 sm:pb-16 md:pt-36 md:pb-20 overflow-hidden bg-gradient-to-b from-blue-50/60 via-slate-50 to-white">
@@ -27,29 +49,26 @@ export default function Hero({ onOpenQuote }) {
           {/* Left Column: Copy, Badges & CTAs */}
           <div className="lg:col-span-7 space-y-4 sm:space-y-6 text-left">
             
-            {/* Trust Badges Bar - Centered on Mobile, Clickable anchor linking to #reviews */}
+            {/* Trust Badges Bar - Single line on mobile, arrow next to rating */}
             <div className="flex justify-center sm:justify-start">
               <a
                 href="#reviews"
-                className="inline-flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 pr-3 sm:pr-4 rounded-full bg-white hover:bg-blue-50/50 border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all text-[11px] sm:text-xs text-slate-700 cursor-pointer group"
+                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-white hover:bg-blue-50/50 border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all text-[11px] sm:text-xs text-slate-700 cursor-pointer group whitespace-nowrap"
               >
-                <span className="flex items-center gap-1 bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-emerald-200 text-[10px] sm:text-xs">
+                <span className="flex items-center gap-1 bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200 text-[10px] sm:text-xs shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                  <span>{hero.ratingPlatform || 'Google Verified Reviews'}</span>
+                  <span>Google Verified</span>
                 </span>
-                <div className="flex items-center text-amber-500 font-bold">
+                <div className="flex items-center text-amber-500 font-bold shrink-0">
                   <div className="flex mr-1">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <span>{hero.ratingScore || '5.0 / 5.0'}</span>
+                  <span>{hero.ratingScore || '5.0'}</span>
+                  <span className="text-slate-400 text-[10px] sm:text-xs font-normal ml-0.5">(73)</span>
+                  <ArrowDown className="w-3 h-3 ml-1 text-blue-600 transition-transform group-hover:translate-y-0.5 shrink-0" />
                 </div>
-                <span className="text-slate-300">|</span>
-                <span className="font-bold text-blue-600 group-hover:text-blue-800 flex items-center gap-0.5">
-                  <span>Verified Reviews</span>
-                  <span>&darr;</span>
-                </span>
               </a>
             </div>
 
@@ -66,6 +85,11 @@ export default function Hero({ onOpenQuote }) {
             <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-2xl font-normal">
               {hero.description || "Specialist in flat-pack furniture assembly, TV wall mounting into Edinburgh stone walls, interior painting, and mould-free bathroom silicone sealing. Fast, reliable, and exceptionally tidy workmanship."}
             </p>
+
+            {/* Handyman Image - Pulled up directly under description on Mobile */}
+            <div className="block lg:hidden my-3 max-w-md mx-auto">
+              {handymanVisualCard}
+            </div>
 
             {/* Key Bullet Checklist */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs sm:text-sm text-slate-700 font-medium">
@@ -110,30 +134,10 @@ export default function Hero({ onOpenQuote }) {
             </div>
           </div>
 
-          {/* Right Column: Visual Showcase */}
-          <div className="lg:col-span-5 relative mt-4 lg:mt-0">
+          {/* Right Column: Visual Showcase (Desktop) */}
+          <div className="hidden lg:block lg:col-span-5 relative mt-0">
             <div className="relative mx-auto max-w-md lg:max-w-none">
-              
-              {/* Main Visual Image Card */}
-              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[4/3] sm:aspect-[4/5] bg-slate-900">
-                <img
-                  src={hero.heroImage || '/hero-handyman-edinburgh.jpg'}
-                  alt="Edinburgh Handyman assembling furniture with cordless drill in a home apartment"
-                  className="w-full h-full object-cover object-top"
-                />
-                
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/20" />
-
-                <div className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 text-white text-left">
-                  <h3 className="text-base sm:text-xl font-bold leading-snug">
-                    {hero.completedCount || 'Over 500+ Edinburgh Homes Maintained'}
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5">
-                    {hero.completedSubtext || 'From Morningside flats to New Town tenements.'}
-                  </p>
-                </div>
-              </div>
-
+              {handymanVisualCard}
             </div>
           </div>
 

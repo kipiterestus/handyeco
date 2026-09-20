@@ -32,23 +32,19 @@ export default function ServiceAreas() {
                 <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
                   Full coverage across Edinburgh &amp; Lothians
                 </p>
-                <p className="text-[11px] sm:text-xs font-bold text-slate-800 mt-0.5 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
-                  <span>{callOutText}</span>
-                </p>
               </div>
             </div>
 
             <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-900 bg-emerald-100/80 px-3 py-1.5 rounded-xl border border-emerald-300 shadow-2xs self-start sm:self-auto">
               <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Free Quotes &amp; Zero Call-Out Charges</span>
+              <span>Free Quotes &amp; Minimum Job £65</span>
             </div>
           </div>
 
-          {/* Area Postcode Chips Grid - 2 steps reduced, balanced sizing */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5 pt-4 sm:pt-5 text-left">
+          {/* Area Postcode Chips Grid - Static informational chips, not clickable */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5 pt-4 sm:pt-5 text-left select-none">
             {areaGroups.map((group, idx) => (
-              <div key={idx} className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all">
+              <div key={idx} className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all pointer-events-none">
                 <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-blue-600 block">
                   {group.zone}
                 </span>

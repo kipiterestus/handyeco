@@ -180,6 +180,13 @@ export function updateQuoteStatus(id, updates) {
   return quotes[index];
 }
 
+export function deleteQuoteRecord(id) {
+  const quotes = getQuotes();
+  const filtered = quotes.filter(q => q.id !== id);
+  fs.writeFileSync(quotesFile, JSON.stringify(filtered, null, 2), 'utf-8');
+  return true;
+}
+
 // Authentication handling with Timing-Safe comparison and 24-hour Token TTL
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'handyeco2026!';
 const tokenManager = new TokenManager(24 * 60 * 60 * 1000);

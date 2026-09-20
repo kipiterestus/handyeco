@@ -10,6 +10,7 @@ import {
   getQuotes, 
   saveQuoteRecord, 
   updateQuoteStatus, 
+  deleteQuoteRecord, 
   verifyAdminPassword, 
   createAdminToken, 
   isValidToken, 
@@ -330,6 +331,18 @@ app.patch('/api/quotes/:id', requireAuth, (req, res) => {
     res.json({ success: true, quote: updated });
   } catch (err) {
     console.error('[API] Update quote error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Delete quote lead
+app.delete('/api/quotes/:id', requireAuth, (req, res) => {
+  try {
+    const { id } = req.params;
+    deleteQuoteRecord(id);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[API] Delete quote error:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 });
