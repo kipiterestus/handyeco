@@ -57,7 +57,7 @@ export default function App() {
             {/* 4. Quality Home Repairs & Assembly Done Right */}
             <Services onSelectService={(srv) => scrollToQuote(srv)} />
 
-            {/* 5. Verified Customer Reviews (Google & MyBuilder) */}
+            {/* 5. Verified Customer Reviews (100% Real Google Reviews) */}
             <GoogleReviews />
 
             {/* 6. Recent Completed Work (Minimalist Apple-style Photo Gallery) */}

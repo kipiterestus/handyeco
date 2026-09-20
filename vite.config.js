@@ -98,9 +98,15 @@ const backendApiPlugin = () => ({
       const clientIp = req.socket?.remoteAddress || '127.0.0.1';
 
       const sendJson = (status, obj) => {
+        const allowedOrigin = req.headers.origin && (
+          req.headers.origin.startsWith('http://localhost') ||
+          req.headers.origin.startsWith('http://127.0.0.1') ||
+          req.headers.origin.endsWith('handyeco.co.uk')
+        ) ? req.headers.origin : 'http://localhost:5173';
         res.writeHead(status, {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': allowedOrigin,
+          'Vary': 'Origin',
           ...SECURITY_HEADERS
         });
         res.end(JSON.stringify(obj));

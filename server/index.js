@@ -57,7 +57,10 @@ function getClientIp(req) {
 
 // Standard OWASP Security Headers middleware
 app.use((req, res, next) => {
+  const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
   for (const [header, val] of Object.entries(SECURITY_HEADERS)) {
+    // HSTS must only be sent on HTTPS connections to avoid breaking HTTP dev sessions
+    if (header === 'Strict-Transport-Security' && !isHttps) continue;
     res.setHeader(header, val);
   }
   next();
@@ -116,7 +119,7 @@ app.get('/api/content', (req, res) => {
 
 // 3. Customer quote submission with Telegram dispatch & Rate Limiting
 app.post('/api/quote', async (req, res) => {
-  const clientIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
+  const clientIp = getClientIp(req); // Use Cloudflare-aware IP extraction
   const rateLimit = quoteRateLimiter.check(clientIp);
   if (!rateLimit.allowed) {
     return res.status(429).json({

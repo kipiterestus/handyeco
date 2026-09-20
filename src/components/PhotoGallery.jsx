@@ -66,13 +66,13 @@ export default function PhotoGallery({ onOpenLightbox }) {
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold mb-2">
               <Camera className="w-3.5 h-3.5" />
-              <span>{galleryItems.length} Proje Fotoğrafı</span>
+              <span>{galleryItems.length} Project Photos</span>
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
               Recent Completed Work
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-xl">
-              Pristine results across Edinburgh tenements and Lothians homes. Sağa doğru kaydırarak tüm işlerimizi inceleyebilirsiniz.
+              Pristine results across Edinburgh tenements and Lothians homes. Scroll right to browse all our work.
             </p>
           </div>
 
@@ -105,37 +105,18 @@ export default function PhotoGallery({ onOpenLightbox }) {
           </div>
         </div>
 
-        {/* Carousel Container with Floating Edge Navigation Buttons */}
-        <div className="relative group/slider">
+        {/* Carousel Container */}
+        <div className="relative">
           
-          {/* Floating Left Arrow (Visible on hover on desktop, or when scrolled) */}
-          {canScrollLeft && (
-            <button
-              onClick={() => scroll('left')}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/95 text-slate-900 shadow-xl border border-slate-200 flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95 transition-all backdrop-blur-md"
-              aria-label="Scroll left"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-          )}
-
-          {/* Floating Right Arrow (Always prominent to encourage scrolling forward/right) */}
-          {canScrollRight && (
-            <button
-              onClick={() => scroll('right')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-blue-600 text-white shadow-xl flex items-center justify-center cursor-pointer hover:bg-blue-700 hover:scale-110 active:scale-95 transition-all"
-              aria-label="Scroll right"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          )}
-
-          {/* Horizontal Smooth Scroll Track */}
+          {/* Horizontal Smooth Scroll Track with Mobile Snap-Center */}
           <div 
             ref={scrollRef}
             onScroll={checkScroll}
-            className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth scrollbar-none pb-4 pt-1 px-1 -mx-4 px-4 sm:mx-0 sm:px-0 touch-pan-x"
-            style={{ WebkitOverflowScrolling: 'touch' }}
+            className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth scrollbar-none pb-4 pt-1 snap-x snap-mandatory px-[7vw] xs:px-[6vw] sm:px-0 -mx-4 sm:mx-0 touch-pan-x"
+            style={{ 
+              WebkitOverflowScrolling: 'touch',
+              scrollSnapType: 'x mandatory'
+            }}
           >
             {galleryItems.map((item, index) => {
               const showBefore = item.isBeforeAfter && beforeAfterStates[item.id];
@@ -151,7 +132,8 @@ export default function PhotoGallery({ onOpenLightbox }) {
                     location: item.location,
                     uploadedBy: item.uploadedBy
                   })}
-                  className="min-w-[280px] xs:min-w-[320px] sm:min-w-[350px] md:min-w-[370px] max-w-[380px] shrink-0 group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer border border-slate-200/90 aspect-[4/3]"
+                  className="w-[86vw] xs:w-[340px] sm:w-[350px] md:w-[370px] max-w-[380px] shrink-0 snap-center snap-always group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer border border-slate-200/90 aspect-[4/3]"
+                  style={{ scrollSnapAlign: 'center', scrollSnapStop: 'always' }}
                 >
                   {/* Full-bleed Photo */}
                   <img
@@ -216,7 +198,7 @@ export default function PhotoGallery({ onOpenLightbox }) {
           </div>
 
           <span className="text-[11px] font-bold text-slate-500 shrink-0">
-            Toplam {galleryItems.length} Fotoğraf &bull; Sağa kaydırın &rarr;
+            {galleryItems.length} Photos Total &bull; Scroll right &rarr;
           </span>
         </div>
 

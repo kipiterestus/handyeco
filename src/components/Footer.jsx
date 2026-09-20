@@ -17,7 +17,7 @@ export default function Footer() {
             <a href="#" className="inline-block">
               <img 
                 src="/logo-dark.png" 
-                alt="Handyeco" 
+                alt="Handyeco - Edinburgh Handyman Services" 
                 className="h-12 w-auto object-contain" 
               />
             </a>

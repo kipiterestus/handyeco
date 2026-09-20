@@ -26,9 +26,9 @@ export default function ServiceAreas() {
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base md:text-lg font-black text-slate-900 leading-tight tracking-tight">
-                  Where We Work in Scotland
-                </h3>
+                <h2 className="text-sm sm:text-base md:text-lg font-black text-slate-900 leading-tight tracking-tight">
+                  Edinburgh Handyman Service Areas
+                </h2>
                 <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
                   Full coverage across Edinburgh &amp; Lothians
                 </p>

@@ -5,8 +5,8 @@
     <link rel="icon" type="image/svg+xml" href="/logo-emblem.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
-    <title>Handyeco | Edinburgh Handyman Services | Flat Pack Assembly & Property Repairs</title>
-    <meta name="description" content="5-star rated handyman services in Edinburgh & Lothians. Specialists in IKEA flat-pack furniture assembly, TV wall mounting into Edinburgh stone walls, sanitary silicone sealing, painting, and property repairs. Free quotes upfront & £65 minimum job booking." />
+    <title>Edinburgh Handyman Services | Flat-Pack Assembly & Repairs | Handyeco</title>
+    <meta name="description" content="5-star Edinburgh handyman — flat-pack assembly, TV mounting into stone walls, silicone sealing & painting. Free upfront quotes, £65 minimum. Book via WhatsApp." />
     <meta name="keywords" content="handyman edinburgh, edinburgh handyman, handyeco, flat pack assembly edinburgh, ikea assembly edinburgh, tv wall mounting edinburgh, tv mounting stone walls edinburgh, silicone sealing edinburgh, property maintenance edinburgh, tenement repairs edinburgh, painters edinburgh, odd jobs edinburgh, lothians handyman" />
     <link rel="canonical" href="https://handyeco.co.uk/" />
 
@@ -18,14 +18,18 @@
 
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="business.business" />
+    <meta property="og:site_name" content="Handyeco" />
     <meta property="og:title" content="Handyeco | Edinburgh Handyman Services" />
-    <meta property="og:description" content="Trusted 5-star rated handyman in Edinburgh & Lothians. Flat-pack assembly, TV wall mounting into tenement stone walls, painting & home repairs." />
+    <meta property="og:description" content="Trusted 5-star rated handyman in Edinburgh &amp; Lothians. Flat-pack assembly, TV wall mounting into tenement stone walls, painting &amp; home repairs." />
     <meta property="og:url" content="https://handyeco.co.uk/" />
     <meta property="og:image" content="https://handyeco.co.uk/hero-handyman-edinburgh.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Handyeco | Edinburgh Handyman Services" />
     <meta name="twitter:description" content="Trusted 5-star rated handyman in Edinburgh & Lothians. Fast quotes via WhatsApp." />
     <meta name="twitter:image" content="https://handyeco.co.uk/hero-handyman-edinburgh.jpg" />
+    <meta name="twitter:image:alt" content="Edinburgh handyman assembling flat-pack furniture with a cordless drill" />
 
     <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,16 +42,22 @@
       "@context": "https://schema.org",
       "@type": ["HandymanService", "HomeAndConstructionBusiness", "LocalBusiness"],
       "name": "Handyeco - Edinburgh Handyman Services",
-      "image": "https://handyeco.co.uk/hero-handyman-edinburgh.jpg",
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://handyeco.co.uk/hero-handyman-edinburgh.jpg",
+        "width": 1200,
+        "height": 630,
+        "caption": "Handyeco Edinburgh Handyman Services"
+      },
       "telephone": "+447760696723",
       "email": "ekremguran@gmail.com",
-      "url": "https://handyeco.co.uk",
+      "url": "https://handyeco.co.uk/",
       "priceRange": "££",
       "currenciesAccepted": "GBP",
       "paymentAccepted": "Cash, Bank Transfer",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Edinburgh",
+        "streetAddress": "Edinburgh City Centre",
         "addressLocality": "Edinburgh",
         "addressRegion": "City of Edinburgh",
         "postalCode": "EH1",
@@ -62,11 +72,13 @@
         { "@type": "AdministrativeArea", "name": "Edinburgh (EH1-EH17)" },
         { "@type": "AdministrativeArea", "name": "Musselburgh (EH21)" },
         { "@type": "AdministrativeArea", "name": "Dalkeith (EH22)" },
+        { "@type": "AdministrativeArea", "name": "Kirkliston (EH29)" },
         { "@type": "AdministrativeArea", "name": "South Queensferry (EH30)" },
         { "@type": "AdministrativeArea", "name": "Livingston (EH54)" }
       ],
       "sameAs": [
-        "https://maps.google.com/?cid=14359767137015043852"
+        "https://maps.google.com/?cid=14359767137015043852",
+        "https://www.facebook.com/people/Handyeco-Edinburgh-Handyman-Services/100092524458321/"
       ],
       "aggregateRating": {
         "@type": "AggregateRating",
@@ -94,7 +106,7 @@
             "itemOffered": {
               "@type": "Service",
               "name": "Flat-Pack Furniture Assembly",
-              "description": "Assembly of IKEA PAX, beds, wardrobes, tables and flat-pack furnishings."
+              "description": "Assembly of IKEA PAX, beds, wardrobes, tables and flat-pack furnishings from IKEA, Argos, Wayfair, and John Lewis."
             }
           },
           {
@@ -102,7 +114,7 @@
             "itemOffered": {
               "@type": "Service",
               "name": "TV & Heavy Mirror Wall Mounting",
-              "description": "Secure mounting into historic Edinburgh sandstone tenement walls and studs."
+              "description": "Secure mounting into historic Edinburgh sandstone tenement walls and stud partitions."
             }
           },
           {
@@ -112,9 +124,26 @@
               "name": "Anti-Mould Bathroom Silicone Sealing",
               "description": "Precision sanitary silicone sealing for baths, showers and basins."
             }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Painting & Decorating",
+              "description": "Interior painting and decorating for Edinburgh homes and rental properties."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Garden Fencing Repair & Installation",
+              "description": "Fence panel repair, replacement and new garden fence installation across Edinburgh and Lothians."
+            }
           }
         ]
       },
+      "openingHours": "Mo-Sa 08:00-18:00",
       "openingHoursSpecification": [
         {
           "@type": "OpeningHoursSpecification",
@@ -125,8 +154,83 @@
       ]
     }
     </script>
+
+    <!-- FAQPage Schema: Rich results (accordion) directly in Google SERPs -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does your pricing work? Is there a call-out fee?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Quotes are 100% free with zero call-out fees. You can send us photos or a video on WhatsApp to receive a fixed upfront price before booking. Our minimum job booking size is £65 across the Edinburgh area, which covers smaller odd jobs or initial assembly/repairs with no surprise charges."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How quickly can you attend to a job in Edinburgh?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We regularly accommodate same-week and even next-day emergency appointments for urgent jobs like leaking silicone or pre-tenancy move-out repairs. Average response time on WhatsApp is 15-30 minutes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can you mount heavy items into traditional Edinburgh sandstone or tenement walls?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, absolutely. Edinburgh tenement walls require specialist masonry drill bits and heavy-duty Fischer DuoPower anchors to prevent crumbling. We routinely secure heavy 75-85 inch TVs, solid oak bookshelves, and heavy ornate mirrors into both historic stone and stud partitions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to supply tools or hardware fixings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, we bring a comprehensive kit of professional 18V cordless power tools, laser levels, and industrial-grade fixings. For flat-pack furniture, all assembly hardware is included in your boxes; if any screws are missing, we carry spares in our kit."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can you assemble IKEA PAX wardrobes and other flat-pack furniture?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, we specialize in IKEA PAX systems, sliding doors, bed frames, dining sets, and flat-pack furniture from Argos, Next, Wayfair, and John Lewis. We bring all specialized power tools to build your items securely and perfectly aligned."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What payment methods do you accept, and when do I pay?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You only pay after the job is completed and you have inspected our work to your complete satisfaction. We accept direct bank transfer, debit/credit cards, and cash upon completion with an immediate digital receipt provided."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can you handle multiple small odd jobs in a single visit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Absolutely. Many Edinburgh clients book a 2-3 hour session where we tackle a punch-list of small repairs all at once: hanging curtain poles, adjusting sticky doors, resealing baths, hanging art, and building furniture in one convenient visit."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What areas around Edinburgh do you cover?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We cover all of Edinburgh (EH1 through EH17) as well as the surrounding Lothians including Musselburgh (EH21), Dalkeith (EH22), South Queensferry (EH30), and Livingston (EH54) with zero extra travel surcharge within standard zones."
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white">
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

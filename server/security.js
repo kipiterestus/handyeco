@@ -56,15 +56,26 @@ export function resetTotp() {
   writeAdminConfig(config);
 }
 
+// Replay protection: track recently used TOTP tokens (cleared after 90s)
+const usedTotpTokens = new Map();
+
 export function verifyTotpCode(code) {
   const config = readAdminConfig();
   if (!config.totpSecret) return false;
+  const normalized = String(code).trim();
+  // Reject replayed tokens (same code used twice within the same window)
+  if (usedTotpTokens.has(normalized)) return false;
   const totp = new OTPAuth.TOTP({
     algorithm: "SHA1", digits: 6, period: 30,
     secret: OTPAuth.Secret.fromBase32(config.totpSecret),
   });
-  const delta = totp.validate({ token: String(code).trim(), window: 2 });
-  return delta !== null;
+  // window: 1 = ±30s clock drift tolerance (was 2 = ±60s, which accepts 4 extra codes)
+  const delta = totp.validate({ token: normalized, window: 1 });
+  if (delta === null) return false;
+  // Mark token as used; clean up after 90 seconds
+  usedTotpTokens.set(normalized, Date.now());
+  setTimeout(() => usedTotpTokens.delete(normalized), 90_000);
+  return true;
 }
 
 export function timingSafeCompare(userInput, expectedSecret) {
@@ -116,7 +127,8 @@ export function sanitizeInput(input, maxLength = 500) {
     .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
     .replace(/javascript:/gi, "")
     .replace(/on\w+="[^"]*"/gi, "")
-    .replace(/on\w+="[^"]*"/gi, "")
+    .replace(/on\w+='[^']*'/gi, "")
+    .replace(/on\w+=\S+/gi, "")
     .trim();
 }
 
@@ -179,12 +191,15 @@ export function getAllowedOrigins() {
 export function corsMiddleware(req, res, next) {
   const origin = req.headers.origin;
   const allowed = getAllowedOrigins();
-  if (origin && (allowed.has(origin) || origin.endsWith('.railway.app') || origin.endsWith('handyeco.co.uk') || !process.env.ALLOWED_ORIGIN)) {
+  if (!process.env.ALLOWED_ORIGIN) {
+    console.warn("[Security] WARNING: ALLOWED_ORIGIN env var is not set. CORS is restrictive (localhost only).");
+  }
+  if (origin && allowed.has(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
-  } else if (!origin) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
   }
+  // Non-browser requests (no Origin header) are allowed but without CORS headers
+  // This is safe because browsers always send Origin for cross-origin requests
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Max-Age", "86400");

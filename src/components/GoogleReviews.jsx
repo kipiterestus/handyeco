@@ -40,35 +40,35 @@ export function getReviewTimestamp(review) {
   const MONTH = 30 * DAY;
   const YEAR = 365 * DAY;
 
-  if (rel.includes('hour') || rel.includes('saat')) {
+  if (rel.includes('hour')) {
     const match = rel.match(/(\d+)/);
     const count = match ? parseInt(match[1], 10) : 1;
     return now - count * HOUR;
   }
-  if (rel.includes('yesterday') || rel.includes('dün')) {
+  if (rel.includes('yesterday')) {
     return now - DAY;
   }
-  if (rel.includes('day') || rel.includes('gün')) {
+  if (rel.includes('day')) {
     const match = rel.match(/(\d+)/);
     const count = match ? parseInt(match[1], 10) : 1;
     return now - count * DAY;
   }
-  if (rel.includes('week') || rel.includes('hafta')) {
+  if (rel.includes('week')) {
     const match = rel.match(/(\d+)/);
     const count = match ? parseInt(match[1], 10) : 1;
     return now - count * WEEK;
   }
-  if (rel.includes('month') || rel.includes('ay')) {
+  if (rel.includes('month')) {
     const match = rel.match(/(\d+)/);
     const count = match ? parseInt(match[1], 10) : 1;
     return now - count * MONTH;
   }
-  if (rel.includes('year') || rel.includes('yıl')) {
+  if (rel.includes('year')) {
     const match = rel.match(/(\d+)/);
     const count = match ? parseInt(match[1], 10) : 1;
     return now - count * YEAR;
   }
-  if (rel.includes('recently') || rel.includes('yakın zamanda') || rel.includes('yeni')) {
+  if (rel.includes('recently') || rel.includes('new')) {
     return now - 2 * DAY;
   }
 
@@ -144,6 +144,9 @@ export default function GoogleReviews() {
         
         {/* Header with 100% Real Google Reviews Verification */}
         <div className="text-center max-w-3xl mx-auto mb-8">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight mb-3">
+            Edinburgh Handyman Reviews — 5.0 Stars on Google
+          </h2>
           <div className="inline-flex items-center gap-2.5 px-4 sm:px-6 py-2 rounded-full bg-emerald-50 border-2 border-emerald-300/80 text-emerald-900 text-xs sm:text-sm md:text-base font-extrabold shadow-xs mb-3">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
             <span>100% Real Feedback &bull; Verified Google Reviews Profile</span>
@@ -236,7 +239,7 @@ export default function GoogleReviews() {
                     ? "bg-white text-blue-600 shadow-2xs"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
-                title="Tarihe göre en yeni yorumlar önce"
+                title="Sort by newest reviews first"
               >
                 Newest First
               </button>
@@ -248,7 +251,7 @@ export default function GoogleReviews() {
                     ? "bg-white text-slate-900 shadow-2xs"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
-                title="En eski yorumlar önce"
+                title="Sort by oldest reviews first"
               >
                 Oldest
               </button>
@@ -260,7 +263,7 @@ export default function GoogleReviews() {
                     ? "bg-white text-slate-900 shadow-2xs"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
-                title="En çok beğenilenler"
+                title="Sort by most helpful reviews"
               >
                 Helpful
               </button>

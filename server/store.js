@@ -111,6 +111,13 @@ export async function saveBase64Image(dataUrl, customFilename = '') {
     throw new Error('Invalid base64 image data URL');
   }
 
+  // SECURITY: Only accept genuine image MIME types (defence-in-depth before Sharp)
+  const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif', 'image/heic', 'image/heif']);
+  const detectedMime = matches[1].toLowerCase();
+  if (!ALLOWED_IMAGE_TYPES.has(detectedMime)) {
+    throw new Error(`Unsupported image type: ${detectedMime}. Only JPEG, PNG, WebP, GIF, AVIF, and HEIC are accepted.`);
+  }
+
   const buffer = Buffer.from(matches[2], 'base64');
   const timestamp = Date.now();
   const cleanName = customFilename 
@@ -188,6 +195,16 @@ export function deleteQuoteRecord(id) {
 }
 
 // Authentication handling with Timing-Safe comparison and 24-hour Token TTL
+try {
+  if (typeof process.loadEnvFile === 'function') {
+    process.loadEnvFile();
+  }
+} catch (e) {}
+
+if (!process.env.ADMIN_PASSWORD && process.env.NODE_ENV === 'production') {
+  console.error('[FATAL] ADMIN_PASSWORD environment variable is not set. Production server refusing to start.');
+  process.exit(1);
+}
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'handyeco2026!';
 const tokenManager = new TokenManager(24 * 60 * 60 * 1000);
 
