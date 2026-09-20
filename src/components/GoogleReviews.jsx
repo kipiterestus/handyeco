@@ -188,7 +188,7 @@ export default function GoogleReviews() {
             {/* Google Reviews Direct Action Button */}
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto shrink-0">
               <a
-                href={siteConfig.googleProfileUrl || 'https://maps.google.com/?cid=14359767137015043852'}
+                href={siteConfig.googleProfileUrl || 'https://maps.app.goo.gl/jQH6GXAotpV1oXG78'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/20 transition-all active:scale-95 whitespace-nowrap"
