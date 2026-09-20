@@ -39,6 +39,21 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust reverse proxy (Railway, Cloudflare, Nginx)
+app.set('trust proxy', 1);
+
+// Resolve real client IP behind Cloudflare and proxies
+function getClientIp(req) {
+  return (
+    req.headers['cf-connecting-ip'] ||
+    req.headers['x-real-ip'] ||
+    (req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : null) ||
+    req.ip ||
+    req.socket?.remoteAddress ||
+    '127.0.0.1'
+  );
+}
+
 // Standard OWASP Security Headers middleware
 app.use((req, res, next) => {
   for (const [header, val] of Object.entries(SECURITY_HEADERS)) {
@@ -144,10 +159,10 @@ app.post('/api/quote', async (req, res) => {
 // On success → return the real session token
 
 // Temporary pass-through store for confirmed-password sessions pending TOTP
-const pendingTotpSessions = new Map(); // tempToken -> { ip, expiresAt }
+const pendingTotpSessions = new Map(); // tempToken -> { expiresAt, setupSecret }
 
 app.post('/api/auth/login', async (req, res) => {
-  const clientIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
+  const clientIp = getClientIp(req);
   const rateLimit = loginRateLimiter.check(clientIp);
   if (!rateLimit.allowed) {
     return res.status(429).json({
@@ -171,7 +186,7 @@ app.post('/api/auth/login', async (req, res) => {
     const setup = await generateTotpSetup();
     // Issue a short-lived temp token so the TOTP confirm endpoint knows the password was verified
     const tempToken = Buffer.from(crypto.randomBytes(24)).toString('hex');
-    pendingTotpSessions.set(tempToken, { ip: clientIp, expiresAt: Date.now() + 5 * 60 * 1000, setupSecret: setup.secretBase32 });
+    pendingTotpSessions.set(tempToken, { expiresAt: Date.now() + 15 * 60 * 1000, setupSecret: setup.secretBase32 });
     return res.json({
       success: true,
       needsTotpSetup: true,
@@ -184,14 +199,14 @@ app.post('/api/auth/login', async (req, res) => {
 
   // 2FA configured: issue temp token requiring TOTP confirmation
   const tempToken = Buffer.from(crypto.randomBytes(24)).toString('hex');
-  pendingTotpSessions.set(tempToken, { ip: clientIp, expiresAt: Date.now() + 5 * 60 * 1000 });
+  pendingTotpSessions.set(tempToken, { expiresAt: Date.now() + 15 * 60 * 1000 });
   console.log('[Auth] Password OK. Awaiting TOTP verification...');
   return res.json({ success: true, needsTotp: true, tempToken });
 });
 
 // Confirm 6-digit TOTP code (also used for initial QR setup confirmation)
 app.post('/api/auth/totp', async (req, res) => {
-  const clientIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
+  const clientIp = getClientIp(req);
   const rateLimit = loginRateLimiter.check(clientIp);
   if (!rateLimit.allowed) {
     return res.status(429).json({
@@ -200,15 +215,15 @@ app.post('/api/auth/totp', async (req, res) => {
     });
   }
 
-  const { tempToken, code, setupSecret } = req.body;
+  const { tempToken, code } = req.body;
   if (!tempToken || !code) {
     return res.status(400).json({ success: false, error: 'tempToken and code are required.' });
   }
 
   const session = pendingTotpSessions.get(tempToken);
-  if (!session || session.ip !== clientIp || Date.now() > session.expiresAt) {
+  if (!session || Date.now() > session.expiresAt) {
     pendingTotpSessions.delete(tempToken);
-    return res.status(401).json({ success: false, error: 'Session expired. Please start login again.' });
+    return res.status(401).json({ success: false, error: 'Session expired. Please click "Şifre ekranına dön" and login again.' });
   }
 
   // If this is first-time setup, we need to save the secret first then verify
@@ -220,7 +235,7 @@ app.post('/api/auth/totp', async (req, res) => {
   if (!verifyTotpCode(code)) {
     // If setup failed, remove the saved secret so they have to restart
     if (session.setupSecret) resetTotp();
-    return res.status(401).json({ success: false, error: 'Invalid or expired 2FA code. Please try again.' });
+    return res.status(401).json({ success: false, error: 'Invalid or expired 2FA code. Please check the code on your phone and try again.' });
   }
 
   pendingTotpSessions.delete(tempToken);

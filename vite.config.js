@@ -188,7 +188,7 @@ const backendApiPlugin = () => ({
             return sendJson(400, { success: false, error: 'tempToken and code are required.' });
           }
           const session = pendingTotpSessions.get(tempToken);
-          if (!session || session.ip !== clientIp || Date.now() > session.expiresAt) {
+          if (!session || Date.now() > session.expiresAt) {
             pendingTotpSessions.delete(tempToken);
             return sendJson(401, { success: false, error: 'Session expired. Please start login again.' });
           }

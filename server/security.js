@@ -63,7 +63,7 @@ export function verifyTotpCode(code) {
     algorithm: "SHA1", digits: 6, period: 30,
     secret: OTPAuth.Secret.fromBase32(config.totpSecret),
   });
-  const delta = totp.validate({ token: String(code).trim(), window: 1 });
+  const delta = totp.validate({ token: String(code).trim(), window: 2 });
   return delta !== null;
 }
 
