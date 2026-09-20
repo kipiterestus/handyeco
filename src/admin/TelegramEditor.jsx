@@ -382,7 +382,7 @@ export default function TelegramEditor({ data = {}, onSave, token }) {
                 </p>
                 <p>👤 <strong>Müşteri:</strong> Sarah Jenkins</p>
                 <p>📞 <strong>Telefon:</strong> +44 7760 123456</p>
-                <p>✉️ <strong>E-posta:</strong> sarah.j@gmail.com</p>
+                <p>✉️ <strong>E-posta:</strong> sarah.j@example.com</p>
                 <p>📍 <strong>Posta Kodu / Konum:</strong> EH3 9DJ (Stockbridge)</p>
                 <p>🛠️ <strong>Hizmet:</strong> Flat-Pack Furniture Assembly</p>
                 <p>⚡ <strong>Aciliyet:</strong> Normal (Bu Hafta)</p>

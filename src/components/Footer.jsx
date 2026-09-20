@@ -87,8 +87,11 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-slate-400 shrink-0" />
-                <a href={"mailto:" + (siteConfig.email || BUSINESS_INFO.email)} className="hover:text-white text-slate-300">
-                  {siteConfig.email || BUSINESS_INFO.email}
+                <a 
+                  href={`mailto:${(siteConfig.email && siteConfig.email !== 'ekremguran@gmail.com') ? siteConfig.email : 'info@handyeco.co.uk'}`} 
+                  className="hover:text-white text-slate-300"
+                >
+                  {(siteConfig.email && siteConfig.email !== 'ekremguran@gmail.com') ? siteConfig.email : 'info@handyeco.co.uk'}
                 </a>
               </li>
               <li className="flex items-start gap-2 pt-1 text-slate-400">

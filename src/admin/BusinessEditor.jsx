@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { Save, CheckCircle2, Phone, MessageSquare, Mail, Clock, PoundSterling, MapPin, ExternalLink, Bell, AlertCircle, Send } from 'lucide-react';
 
 export default function BusinessEditor({ data, onSave, token }) {
-  const [form, setForm] = useState(data || {});
+  const [form, setForm] = useState(() => ({
+    ...(data || {}),
+    email: (data?.email && data.email !== 'ekremguran@gmail.com') ? data.email : 'info@handyeco.co.uk'
+  }));
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [testingTelegram, setTestingTelegram] = useState(false);

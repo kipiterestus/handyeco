@@ -44,12 +44,37 @@ if (!fs.existsSync(quotesFile) && fs.existsSync(legacyQuotesFile)) {
   }
 }
 
+// Ensure persistent volume siteConfig.json has the updated email address
+function migrateSiteConfigEmail() {
+  try {
+    const siteConfigFile = path.join(dataDir, 'siteConfig.json');
+    if (fs.existsSync(siteConfigFile)) {
+      const cfg = JSON.parse(fs.readFileSync(siteConfigFile, 'utf-8'));
+      if (cfg && (cfg.email === 'ekremguran@gmail.com' || !cfg.email)) {
+        cfg.email = 'info@handyeco.co.uk';
+        fs.writeFileSync(siteConfigFile, JSON.stringify(cfg, null, 2), 'utf-8');
+        console.log('[Store] Automatically migrated siteConfig email from legacy to info@handyeco.co.uk');
+      }
+    }
+  } catch (err) {
+    console.error('[Store] Error migrating siteConfig email:', err);
+  }
+}
+migrateSiteConfigEmail();
+
 // Read JSON file safely
 export function readJson(filename, defaultValue = {}) {
   const filePath = path.join(dataDir, filename);
   try {
     if (fs.existsSync(filePath)) {
-      return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      const parsed = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      // Defensive guarantee: Never let legacy email slip through anywhere in siteConfig
+      if (filename === 'siteConfig.json' && parsed) {
+        if (parsed.email === 'ekremguran@gmail.com' || !parsed.email) {
+          parsed.email = 'info@handyeco.co.uk';
+        }
+      }
+      return parsed;
     }
   } catch (err) {
     console.error(`[Store] Error reading ${filename}:`, err);
@@ -61,6 +86,9 @@ export function readJson(filename, defaultValue = {}) {
 export function writeJson(filename, data) {
   const filePath = path.join(dataDir, filename);
   try {
+    if (filename === 'siteConfig.json' && data && (data.email === 'ekremguran@gmail.com' || !data.email)) {
+      data.email = 'info@handyeco.co.uk';
+    }
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
     return true;
   } catch (err) {
