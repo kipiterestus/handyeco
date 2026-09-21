@@ -35,7 +35,7 @@ import {
   readJson,
   writeJson
 } from './store.js';
-import { sendTelegramNotification, sendTelegramDailyAppointmentReminder } from './telegram.js';
+import { sendTelegramNotification, sendTelegramDailyAppointmentReminder, sendTelegramUpcomingJobReminder } from './telegram.js';
 import { syncReviews } from './reviewsSync.js';
 import { SECURITY_HEADERS, loginRateLimiter, quoteRateLimiter, corsMiddleware } from './security.js';
 
@@ -468,6 +468,60 @@ app.post('/api/telegram/reminders', requireAuth, async (req, res) => {
   }
 });
 
+// Test 30-Minute Upcoming Job Reminder via Telegram
+app.post('/api/telegram/test-upcoming-reminder', requireAuth, async (req, res) => {
+  try {
+    const siteConfig = getSection('siteConfig') || {};
+    const botToken = siteConfig.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = siteConfig.telegramChatId || process.env.TELEGRAM_CHAT_ID;
+
+    if (!botToken || !chatId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Telegram Bot Token ve Chat ID yapılandırılmamış.'
+      });
+    }
+
+    const allSchedule = getSchedule() || [];
+    // Pick first available job or use realistic test job
+    const sampleJob = allSchedule.find(j => j.status !== 'cancelled') || {
+      id: 'test-job-30min',
+      customerName: 'Claire Henderson (Test)',
+      customerPhone: '+447760696723',
+      address: '15 High Street, Portobello',
+      postcode: 'EH15 1DW',
+      service: 'Mutfak Dolap & Çekmece Tamiri',
+      startTime: '14:30',
+      endTime: '16:00',
+      priceEstimate: 85,
+      notes: 'Test Bildirimi: Yarım saat kala randevu hatırlatması başarıyla aktifleştirildi.'
+    };
+
+    const currentJob = {
+      customerName: 'Alastair Campbell',
+      service: 'Perde & Ayna Montajı'
+    };
+
+    const result = await sendTelegramUpcomingJobReminder({
+      job: sampleJob,
+      minutesRemaining: 30,
+      isCurrentlyOnJob: true,
+      currentJob,
+      token: botToken,
+      chatId: chatId
+    });
+
+    res.json({
+      success: true,
+      ...result,
+      message: '30 dakika kala hatırlatma bildirimi Telegram\'a başarıyla iletildi!'
+    });
+  } catch (err) {
+    console.error('[Telegram] 30-min reminder test error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Sync Google reviews
 app.post('/api/reviews/sync', requireAuth, async (req, res) => {
   try {
@@ -594,6 +648,112 @@ async function checkAndSendAppointmentReminders() {
 
 setInterval(checkAndSendAppointmentReminders, 15 * 60 * 1000);
 setTimeout(checkAndSendAppointmentReminders, 5000);
+
+// Automated Intra-day 30-Minute Job Reminders (Checks every 60 seconds)
+// Dispatches a notification ~30 minutes before any scheduled job starts today,
+// and alerts Ekrem to wrap up if he is currently working on another job.
+async function checkAndSendIntradayJobReminders() {
+  try {
+    const siteConfig = getSection('siteConfig') || {};
+    const botToken = siteConfig.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = siteConfig.telegramChatId || process.env.TELEGRAM_CHAT_ID;
+    if (!botToken || !chatId) return;
+
+    const now = new Date();
+    // UK Date in YYYY-MM-DD
+    const todayUk = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Europe/London',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(now);
+
+    // UK Current time in total minutes from midnight
+    const ukTimeParts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).formatToParts(now);
+
+    const currentHour = parseInt(ukTimeParts.find(p => p.type === 'hour')?.value || '0', 10);
+    const currentMinute = parseInt(ukTimeParts.find(p => p.type === 'minute')?.value || '0', 10);
+    const currentTotalMinutes = currentHour * 60 + currentMinute;
+
+    const allSchedule = getSchedule() || [];
+    // Only today's jobs that are active (not cancelled or completed)
+    const todayJobs = allSchedule.filter(j => 
+      j.date === todayUk && 
+      j.status !== 'cancelled' && 
+      j.status !== 'completed' &&
+      j.startTime
+    );
+
+    if (todayJobs.length === 0) return;
+
+    // Persisted state tracking 30-min reminders
+    const reminderState = readJson('reminder_state.json', {});
+    const sent30MinReminders = reminderState.sent30MinReminders || {};
+
+    // Check if there is currently an ongoing job (in_progress or current time is within its start-end window)
+    const activeJob = todayJobs.find(j => {
+      if (j.status === 'in_progress') return true;
+      if (!j.startTime || !j.endTime) return false;
+      const [sH, sM] = j.startTime.split(':').map(Number);
+      const [eH, eM] = j.endTime.split(':').map(Number);
+      if (isNaN(sH) || isNaN(eH)) return false;
+      const startMin = sH * 60 + sM;
+      const endMin = eH * 60 + eM;
+      return currentTotalMinutes >= startMin && currentTotalMinutes < endMin;
+    });
+
+    for (const job of todayJobs) {
+      // Don't send upcoming reminder for the job that is already active/ongoing
+      if (activeJob && activeJob.id === job.id) continue;
+
+      const [startH, startM] = job.startTime.split(':').map(Number);
+      if (isNaN(startH) || isNaN(startM)) continue;
+      const jobStartTotalMinutes = startH * 60 + startM;
+      const minutesRemaining = jobStartTotalMinutes - currentTotalMinutes;
+
+      // Trigger if job starts in 10 to 35 minutes (target: 30 minutes before)
+      if (minutesRemaining > 0 && minutesRemaining <= 35) {
+        const reminderKey = `${todayUk}_${job.id || job.customerName}_30min`;
+
+        if (!sent30MinReminders[reminderKey]) {
+          const isCurrentlyOnJob = Boolean(activeJob && activeJob.id !== job.id);
+          console.log(`\n[IntradayReminder] ⏰ ${job.customerName || 'Müşteri'} randevusuna ${minutesRemaining} dakika kaldı. Telegram hatırlatması gönderiliyor...`);
+          
+          await sendTelegramUpcomingJobReminder({
+            job,
+            minutesRemaining,
+            isCurrentlyOnJob,
+            currentJob: isCurrentlyOnJob ? activeJob : null,
+            token: botToken,
+            chatId: chatId
+          });
+
+          sent30MinReminders[reminderKey] = {
+            sentAt: new Date().toISOString(),
+            minutesRemaining,
+            customerName: job.customerName,
+            isCurrentlyOnJob
+          };
+
+          reminderState.sent30MinReminders = sent30MinReminders;
+          writeJson('reminder_state.json', reminderState);
+          console.log(`[IntradayReminder] ✅ 30 dk hatırlatması kaydedildi: ${reminderKey}`);
+        }
+      }
+    }
+  } catch (err) {
+    console.error('[IntradayReminder Error]:', err.message);
+  }
+}
+
+// Check every 60 seconds for 30-minute upcoming job reminders
+setInterval(checkAndSendIntradayJobReminders, 60 * 1000);
+setTimeout(checkAndSendIntradayJobReminders, 3000);
 
 // Client-side SPA routing fallback (serves index.html for non-API routes in production)
 app.use((req, res, next) => {

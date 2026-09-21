@@ -30,7 +30,7 @@ import {
   saveTotpSecret,
   resetTotp
 } from './server/store.js';
-import { sendTelegramNotification } from './server/telegram.js';
+import { sendTelegramNotification, sendTelegramDailyAppointmentReminder, sendTelegramUpcomingJobReminder } from './server/telegram.js';
 import { syncReviews } from './server/reviewsSync.js';
 import { SECURITY_HEADERS, loginRateLimiter, quoteRateLimiter } from './server/security.js';
 
@@ -325,6 +325,62 @@ const backendApiPlugin = () => ({
           } catch (e) {
             return sendJson(500, { success: false, error: e.message });
           }
+        }
+
+        // 11c. Tomorrow's Appointment Reminder via Telegram
+        if (pathname === '/api/telegram/reminders' && method === 'POST') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const siteConfig = getSection('siteConfig') || {};
+          const botToken = siteConfig.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+          const chatId = siteConfig.telegramChatId || process.env.TELEGRAM_CHAT_ID;
+          if (!botToken || !chatId) return sendJson(400, { success: false, error: 'Telegram ayarlanmamış.' });
+
+          const d = new Date();
+          d.setDate(d.getDate() + 1);
+          const tomorrowDate = d.toLocaleDateString('en-CA', { timeZone: 'Europe/London' });
+          const allSchedule = getSchedule() || [];
+          const targetJobs = allSchedule.filter(j => j.date === tomorrowDate && j.status !== 'cancelled');
+          const result = await sendTelegramDailyAppointmentReminder(targetJobs, tomorrowDate, botToken, chatId);
+          return sendJson(200, { ...result, targetDate: tomorrowDate, count: targetJobs.length });
+        }
+
+        // 11d. Test 30-Minute Upcoming Job Reminder
+        if (pathname === '/api/telegram/test-upcoming-reminder' && method === 'POST') {
+          if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
+          const siteConfig = getSection('siteConfig') || {};
+          const botToken = siteConfig.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+          const chatId = siteConfig.telegramChatId || process.env.TELEGRAM_CHAT_ID;
+          if (!botToken || !chatId) return sendJson(400, { success: false, error: 'Telegram ayarlanmamış.' });
+
+          const allSchedule = getSchedule() || [];
+          const sampleJob = allSchedule.find(j => j.status !== 'cancelled') || {
+            id: 'test-job-30min',
+            customerName: 'Claire Henderson (Test)',
+            customerPhone: '+447760696723',
+            address: '15 High Street, Portobello',
+            postcode: 'EH15 1DW',
+            service: 'Mutfak Dolap & Çekmece Tamiri',
+            startTime: '14:30',
+            endTime: '16:00',
+            priceEstimate: 85,
+            notes: 'Test Bildirimi: Yarım saat kala randevu hatırlatması başarıyla aktifleştirildi.'
+          };
+
+          const currentJob = {
+            customerName: 'Alastair Campbell',
+            service: 'Perde & Ayna Montajı'
+          };
+
+          const result = await sendTelegramUpcomingJobReminder({
+            job: sampleJob,
+            minutesRemaining: 30,
+            isCurrentlyOnJob: true,
+            currentJob,
+            token: botToken,
+            chatId: chatId
+          });
+
+          return sendJson(200, { success: true, ...result, message: '30 dakika kala hatırlatma bildirimi gönderildi!' });
         }
 
         // 12. Sync Google Reviews

@@ -480,6 +480,35 @@ export default function ScheduleManager({
     }
   };
 
+  // Send 30-Minute Upcoming Job Reminder Test
+  const handleTestUpcomingReminder = async () => {
+    setSendingReminder(true);
+    setReminderStatus(null);
+    try {
+      const res = await fetch('/api/telegram/test-upcoming-reminder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setReminderStatus({ 
+          type: 'success', 
+          message: `✅ 30 Dk Telegram Hatırlatması Test Edildi! Telefonunuza bildirim iletildi.` 
+        });
+      } else {
+        setReminderStatus({ type: 'error', message: `❌ ${data.error || 'Test hatırlatması gönderilemedi.'}` });
+      }
+    } catch (err) {
+      setReminderStatus({ type: 'error', message: `❌ Hata: ${err.message}` });
+    } finally {
+      setSendingReminder(false);
+      setTimeout(() => setReminderStatus(null), 6000);
+    }
+  };
+
   // Print PDF function
   const handlePrintPDF = () => {
     window.print();
@@ -517,29 +546,42 @@ export default function ScheduleManager({
             <h2 className="text-xl font-black text-white tracking-tight">Randevular</h2>
           </div>
           <p className="text-xs text-zinc-400 mt-1">
-            Müşteri randevuları ve boş saat yönetimi.
+            Müşteri randevuları, otomatik 30 dk hatırlatması ve boş saat yönetimi.
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-1.5 sm:flex sm:items-center sm:gap-2.5 w-full sm:w-auto">
-          {/* Telegram Reminder Button */}
+        <div className="grid grid-cols-4 gap-1.5 sm:flex sm:items-center sm:gap-2 w-full sm:w-auto">
+          {/* Telegram Tomorrow Reminder Button */}
           <button
             type="button"
             onClick={handleSendTomorrowReminder}
             disabled={sendingReminder}
-            className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-2 sm:py-2.5 rounded-xl bg-sky-950/60 hover:bg-sky-900/60 text-sky-300 hover:text-white border border-sky-800/60 text-[11px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50 whitespace-nowrap"
+            className="flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-sky-950/60 hover:bg-sky-900/60 text-sky-300 hover:text-white border border-sky-800/60 text-[10px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50 whitespace-nowrap"
             title="Yarınki işleri Telegram'a bildirim olarak gönder"
           >
             <Bell className={`w-3.5 h-3.5 text-sky-400 shrink-0 ${sendingReminder ? 'animate-bounce' : ''}`} />
             <span className="hidden sm:inline">{sendingReminder ? 'Gönderiliyor...' : 'Yarınki İşleri Gönder'}</span>
-            <span className="sm:hidden">{sendingReminder ? '...' : 'Yarınki İşler'}</span>
+            <span className="sm:hidden">{sendingReminder ? '...' : 'Yarın'}</span>
+          </button>
+
+          {/* Telegram 30-Min Test Button */}
+          <button
+            type="button"
+            onClick={handleTestUpcomingReminder}
+            disabled={sendingReminder}
+            className="flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-indigo-950/60 hover:bg-indigo-900/60 text-indigo-300 hover:text-white border border-indigo-800/60 text-[10px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50 whitespace-nowrap"
+            title="30 dakika kala hatırlatmasını Telegram'a test gönder"
+          >
+            <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+            <span className="hidden sm:inline">30 Dk Test</span>
+            <span className="sm:hidden">30 Dk</span>
           </button>
 
           {/* PDF Download Button */}
           <button
             type="button"
             onClick={handlePrintPDF}
-            className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-2 sm:py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-800 text-[11px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm whitespace-nowrap"
+            className="flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-800 text-[10px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm whitespace-nowrap"
             title="PDF İndir / Yazdır"
           >
             <Printer className="w-3.5 h-3.5 text-blue-400 shrink-0" />
@@ -551,7 +593,7 @@ export default function ScheduleManager({
           <button
             type="button"
             onClick={() => handleOpenAddModal()}
-            className="flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-[11px] sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer whitespace-nowrap"
+            className="flex items-center justify-center gap-1 sm:gap-2 px-1.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-[10px] sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer whitespace-nowrap"
           >
             <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
             <span className="hidden sm:inline">Yeni Randevu</span>

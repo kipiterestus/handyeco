@@ -182,3 +182,115 @@ export async function sendTelegramDailyAppointmentReminder(jobs, targetDate, tok
   return { success: true, delivered: true, count: jobs.length, messageId: result.result?.message_id };
 }
 
+/**
+ * Sends a 30-minute upcoming job reminder to Telegram
+ * Handles both standard upcoming jobs and transition from an ongoing job
+ * @param {Object} params
+ * @param {Object} params.job - The upcoming job object
+ * @param {number} params.minutesRemaining - Minutes remaining until job start (default 30)
+ * @param {boolean} params.isCurrentlyOnJob - Whether Ekrem is currently working on another job
+ * @param {Object} params.currentJob - The job currently in progress (if any)
+ * @param {string} params.token - Telegram Bot Token
+ * @param {string} params.chatId - Telegram Chat ID
+ */
+export async function sendTelegramUpcomingJobReminder({
+  job,
+  minutesRemaining = 30,
+  isCurrentlyOnJob = false,
+  currentJob = null,
+  token,
+  chatId
+}) {
+  if (!token || !chatId) {
+    console.warn('\n[Telegram] ⚠️ TELEGRAM_BOT_TOKEN veya TELEGRAM_CHAT_ID ayarlanmamış.');
+    return {
+      success: true,
+      delivered: false,
+      reason: 'Missing Telegram credentials'
+    };
+  }
+
+  if (!job) {
+    throw new Error('Hatırlatılacak randevu bilgisi bulunamadı.');
+  }
+
+  const cleanPhone = (job.customerPhone || '').replace(/[^0-9+]/g, '');
+  const waDirectLink = cleanPhone 
+    ? `https://wa.me/${cleanPhone.replace(/^0/, '44')}?text=${encodeURIComponent(`Merhaba ${job.customerName || ''}, ben Handyeco'dan Ekrem. Saat ${job.startTime || ''} randevumuz için yola çıkıyorum.`)}` 
+    : null;
+  const phoneCallLink = cleanPhone ? `tel:${cleanPhone}` : null;
+  
+  const mapsQuery = encodeURIComponent(`${job.address || ''}, ${job.postcode || ''}, Edinburgh, UK`);
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+
+  const messageLines = [];
+
+  if (isCurrentlyOnJob && currentJob) {
+    messageLines.push(
+      `🔔 <b>BİR SONRAKİ İŞİNİZE ${minutesRemaining} DAKİKA KALDI!</b>`,
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `⚠️ <b>Şu Anki İş:</b> ${escapeHtml(currentJob.customerName || 'Mevcut Müşteri')} (${escapeHtml(currentJob.service || 'İş')})`,
+      `⏳ <i>Mevcut işinizi toparlama ve sıradaki adrese hareket etme vakti!</i>`,
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `📍 <b>SIRADAKİ RANDEVU:</b>`,
+      `👤 <b>Müşteri:</b> ${escapeHtml(job.customerName || 'İsimsiz Müşteri')}`,
+      `⏰ <b>Başlangıç:</b> <b>${escapeHtml(job.startTime || '')}</b>${job.endTime ? ` - ${escapeHtml(job.endTime)}` : ''} <i>(Yaklaşık ${minutesRemaining} dk sonra)</i>`,
+      `📍 <b>Adres:</b> ${escapeHtml(job.address || 'Edinburgh')}`,
+      job.postcode ? `📮 <b>Posta Kodu:</b> <code>${escapeHtml(job.postcode)}</code>` : '',
+      `🛠️ <b>Hizmet:</b> ${escapeHtml(job.service || 'Genel Usta İşi')}`,
+      job.priceEstimate ? `💰 <b>Fiyat:</b> £${escapeHtml(String(job.priceEstimate))}` : '',
+      job.notes ? `📝 <b>Not:</b> <i>${escapeHtml(job.notes)}</i>` : '',
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `🗺️ <a href="${mapsUrl}"><b>Google Haritalar Yol Tarifi ➡️</b></a>`,
+      waDirectLink ? `💬 <a href="${waDirectLink}"><b>Müşteriye WhatsApp'tan "Yoldayım" Yaz ➡️</b></a>` : '',
+      phoneCallLink ? `📞 <a href="${phoneCallLink}"><b>Müşteriyi Ara (${escapeHtml(job.customerPhone)}) ➡️</b></a>` : '',
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `⏱️ <i>Handyeco Edinburgh Otomatik İş Asistanı</i>`
+    );
+  } else {
+    messageLines.push(
+      `⏰ <b>GÜN İÇİ RANDEVU HATIRLATMASI (${minutesRemaining} DK KALDI)</b>`,
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `🚗 <b>Sıradaki randevunuz yaklaşık ${minutesRemaining} dakika sonra başlıyor!</b>`,
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `👤 <b>Müşteri:</b> ${escapeHtml(job.customerName || 'İsimsiz Müşteri')}`,
+      `⏰ <b>Randevu Saati:</b> <b>${escapeHtml(job.startTime || '')}</b>${job.endTime ? ` - ${escapeHtml(job.endTime)}` : ''}`,
+      `📍 <b>Adres:</b> ${escapeHtml(job.address || 'Edinburgh')}`,
+      job.postcode ? `📮 <b>Posta Kodu:</b> <code>${escapeHtml(job.postcode)}</code>` : '',
+      `🛠️ <b>Hizmet:</b> ${escapeHtml(job.service || 'Genel Usta İşi')}`,
+      job.priceEstimate ? `💰 <b>Tahmini Fiyat:</b> £${escapeHtml(String(job.priceEstimate))}` : '',
+      job.notes ? `📝 <b>Özel Not:</b> <i>${escapeHtml(job.notes)}</i>` : '',
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `🗺️ <a href="${mapsUrl}"><b>Google Haritalar Yol Tarifi ➡️</b></a>`,
+      waDirectLink ? `💬 <a href="${waDirectLink}"><b>Müşteriye WhatsApp'tan "Yoldayım" Yaz ➡️</b></a>` : '',
+      phoneCallLink ? `📞 <a href="${phoneCallLink}"><b>Müşteriyi Ara (${escapeHtml(job.customerPhone)}) ➡️</b></a>` : '',
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `⏱️ <i>Handyeco Edinburgh Otomatik İş Asistanı</i>`
+    );
+  }
+
+  const message = messageLines.filter(Boolean).join('\n');
+  const telegramApiUrl = `https://api.telegram.org/bot${token}/sendMessage`;
+
+  const response = await fetch(telegramApiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: message,
+      parse_mode: 'HTML',
+      disable_web_page_preview: true
+    })
+  });
+
+  const result = await response.json();
+
+  if (!result.ok) {
+    console.error('[Telegram] 30 Dk Hatırlatıcı Hatası:', result);
+    throw new Error(result.description || 'Telegram 30-minute reminder failed');
+  }
+
+  console.log(`[Telegram] 🔔 ${job.customerName || 'Müşteri'} randevusu için 30 dk hatırlatması iletildi!`);
+  return { success: true, delivered: true, messageId: result.result?.message_id };
+}
+
