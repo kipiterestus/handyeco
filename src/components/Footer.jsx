@@ -60,10 +60,42 @@ export default function Footer() {
                   TV &amp; Stone Wall Mounting
                 </a>
               </li>
-              <li><a href="/#services" className="hover:text-white transition-colors">Painting &amp; Decorating</a></li>
-              <li><a href="/#services" className="hover:text-white transition-colors">Bathroom Silicone Sealing</a></li>
-              <li><a href="/#services" className="hover:text-white transition-colors">Kitchen Vinyl Wrapping</a></li>
-              <li><a href="/#services" className="hover:text-white transition-colors">General Tenement Repairs</a></li>
+              <li>
+                <a 
+                  href="/services/silicone-sealing-edinburgh" 
+                  onClick={(e) => handleInternalLinkClick(e, '/services/silicone-sealing-edinburgh')} 
+                  className="hover:text-white transition-colors"
+                >
+                  Bathroom Silicone Sealing
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/services/tenement-repairs-edinburgh" 
+                  onClick={(e) => handleInternalLinkClick(e, '/services/tenement-repairs-edinburgh')} 
+                  className="hover:text-white transition-colors"
+                >
+                  Tenement Repairs &amp; Odd Jobs
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/services/painting-decorating-edinburgh" 
+                  onClick={(e) => handleInternalLinkClick(e, '/services/painting-decorating-edinburgh')} 
+                  className="hover:text-white transition-colors"
+                >
+                  Painting &amp; Decorating
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/services/kitchen-vinyl-wrapping-edinburgh" 
+                  onClick={(e) => handleInternalLinkClick(e, '/services/kitchen-vinyl-wrapping-edinburgh')} 
+                  className="hover:text-white transition-colors"
+                >
+                  Kitchen Vinyl Wrapping
+                </a>
+              </li>
               <li><a href="/#services" className="hover:text-white transition-colors">Garden Gate &amp; Fencing</a></li>
             </ul>
           </div>
@@ -74,13 +106,29 @@ export default function Footer() {
               Edinburgh Areas
             </h4>
             <ul className="space-y-2.5 text-xs">
-              <li><span className="text-slate-300">Morningside & Bruntsfield (EH10)</span></li>
-              <li><span className="text-slate-300">Leith & Newhaven (EH6)</span></li>
-              <li><span className="text-slate-300">Stockbridge & New Town (EH3/EH4)</span></li>
-              <li><span className="text-slate-300">Old Town & Southside (EH1/EH8)</span></li>
-              <li><span className="text-slate-300">Portobello & Joppa (EH15)</span></li>
-              <li><span className="text-slate-300">Musselburgh & East Lothian (EH21)</span></li>
-              <li><span className="text-slate-300">Balerno & Midlothian (EH14/EH22)</span></li>
+              <li>
+                <a 
+                  href="/areas/morningside-handyman" 
+                  onClick={(e) => handleInternalLinkClick(e, '/areas/morningside-handyman')} 
+                  className="hover:text-white text-slate-300 transition-colors"
+                >
+                  Morningside &amp; Bruntsfield (EH10)
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/areas/leith-handyman" 
+                  onClick={(e) => handleInternalLinkClick(e, '/areas/leith-handyman')} 
+                  className="hover:text-white text-slate-300 transition-colors"
+                >
+                  Leith &amp; The Shore (EH6)
+                </a>
+              </li>
+              <li><span className="text-slate-300">Stockbridge &amp; New Town (EH3/EH4)</span></li>
+              <li><span className="text-slate-300">Old Town &amp; Southside (EH1/EH8)</span></li>
+              <li><span className="text-slate-300">Portobello &amp; Joppa (EH15)</span></li>
+              <li><span className="text-slate-300">Musselburgh &amp; East Lothian (EH21)</span></li>
+              <li><span className="text-slate-300">Livingston &amp; West Lothian (EH54)</span></li>
             </ul>
           </div>
 

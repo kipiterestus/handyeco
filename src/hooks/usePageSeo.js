@@ -1,10 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * Custom hook to dynamically manage Title, Meta Description, and Canonical URL
  * for high-performance On-Page SEO on dedicated landing pages.
  */
 export function usePageSeo({ title, description, canonical, schema }) {
+  const prevCanonicalRef = useRef(null);
+
+  // Only scroll to top when first mounting or when the actual page URL changes
+  useEffect(() => {
+    if (prevCanonicalRef.current !== canonical) {
+      window.scrollTo(0, 0);
+      prevCanonicalRef.current = canonical;
+    }
+  }, [canonical]);
+
+  const schemaString = schema ? JSON.stringify(schema) : '';
+
   useEffect(() => {
     const prevTitle = document.title;
     if (title) {
@@ -34,15 +46,16 @@ export function usePageSeo({ title, description, canonical, schema }) {
     }
 
     let scriptSchema = null;
-    if (schema) {
+    if (schemaString) {
+      const existing = document.getElementById('page-specific-schema');
+      if (existing) existing.remove();
+
       scriptSchema = document.createElement('script');
       scriptSchema.type = 'application/ld+json';
       scriptSchema.id = 'page-specific-schema';
-      scriptSchema.text = JSON.stringify(schema);
+      scriptSchema.text = schemaString;
       document.head.appendChild(scriptSchema);
     }
-
-    window.scrollTo(0, 0);
 
     return () => {
       document.title = prevTitle;
@@ -52,5 +65,5 @@ export function usePageSeo({ title, description, canonical, schema }) {
         scriptSchema.parentNode.removeChild(scriptSchema);
       }
     };
-  }, [title, description, canonical, schema]);
+  }, [title, description, canonical, schemaString]);
 }

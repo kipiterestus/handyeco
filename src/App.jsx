@@ -14,6 +14,12 @@ import AdminLayout from './admin/AdminLayout';
 import { ContentProvider } from './context/ContentContext';
 import FlatPackAssemblyPage from './pages/FlatPackAssemblyPage';
 import TvWallMountingPage from './pages/TvWallMountingPage';
+import SiliconeSealingPage from './pages/SiliconeSealingPage';
+import TenementRepairsPage from './pages/TenementRepairsPage';
+import PaintingDecoratingPage from './pages/PaintingDecoratingPage';
+import KitchenWrappingPage from './pages/KitchenWrappingPage';
+import MorningsideHandymanPage from './pages/MorningsideHandymanPage';
+import LeithHandymanPage from './pages/LeithHandymanPage';
 
 export default function App() {
   const [selectedService, setSelectedService] = useState(null);
@@ -45,6 +51,24 @@ export default function App() {
     }
     if (currentPath === '/services/tv-wall-mounting-edinburgh') {
       return <TvWallMountingPage />;
+    }
+    if (currentPath === '/services/silicone-sealing-edinburgh') {
+      return <SiliconeSealingPage />;
+    }
+    if (currentPath === '/services/tenement-repairs-edinburgh') {
+      return <TenementRepairsPage />;
+    }
+    if (currentPath === '/services/painting-decorating-edinburgh') {
+      return <PaintingDecoratingPage />;
+    }
+    if (currentPath === '/services/kitchen-vinyl-wrapping-edinburgh') {
+      return <KitchenWrappingPage />;
+    }
+    if (currentPath === '/areas/morningside-handyman') {
+      return <MorningsideHandymanPage />;
+    }
+    if (currentPath === '/areas/leith-handyman') {
+      return <LeithHandymanPage />;
     }
 
     return (
