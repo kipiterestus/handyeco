@@ -324,6 +324,20 @@ export default function ScheduleManager({
     );
   };
 
+  // Helper to check if a job's scheduled time has already passed
+  const isJobTimePassed = (job) => {
+    if (!job?.date) return false;
+    if (job.date < todayIso) return true;
+    if (job.date > todayIso) return false;
+    // For today, compare current local/UK time with job end or start time
+    const now = new Date();
+    const currentHours = String(now.getHours()).padStart(2, '0');
+    const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+    const currentTimeStr = `${currentHours}:${currentMinutes}`;
+    const jobTime = job.endTime || job.startTime || '23:59';
+    return currentTimeStr > jobTime;
+  };
+
   // Quick counts for upcoming vs past
   const activeUpcomingCount = schedule.filter(j => (j.date || '') >= todayIso).length;
   const pastCount = schedule.filter(j => (j.date || '') < todayIso).length;
@@ -357,10 +371,8 @@ export default function ScheduleManager({
         return Boolean(job.date && job.date.startsWith(currentYearMonth));
       } else if (dateFilter === 'next_month') {
         return Boolean(job.date && job.date.startsWith(nextYearMonth));
-      } else if (dateFilter === 'upcoming') {
-        return job.date >= todayIso;
       }
-      return true; // 'all' (günceldeki tüm randevular)
+      return true; // 'all' (güncel ve gelecekteki tüm randevular)
     }
 
     return true;
@@ -543,7 +555,7 @@ export default function ScheduleManager({
           >
             <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
             <span className="hidden sm:inline">Yeni Randevu</span>
-            <span className="sm:hidden">+ Randevu</span>
+            <span className="sm:hidden">Randevu</span>
           </button>
         </div>
       </div>
@@ -706,21 +718,21 @@ export default function ScheduleManager({
           <div className="flex items-center gap-1 overflow-x-auto">
             <button
               type="button"
-              onClick={() => setDateFilter('this_week')}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
-                dateFilter === 'this_week' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              Bu Hafta
-            </button>
-            <button
-              type="button"
               onClick={() => setDateFilter('today')}
               className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
                 dateFilter === 'today' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
               }`}
             >
               Bugün
+            </button>
+            <button
+              type="button"
+              onClick={() => setDateFilter('this_week')}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
+                dateFilter === 'this_week' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              Bu Hafta
             </button>
             <button
               type="button"
@@ -739,15 +751,6 @@ export default function ScheduleManager({
               }`}
             >
               Gelecek Ay
-            </button>
-            <button
-              type="button"
-              onClick={() => setDateFilter('upcoming')}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
-                dateFilter === 'upcoming' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              Gelecek
             </button>
             <button
               type="button"
@@ -894,6 +897,8 @@ export default function ScheduleManager({
                   {/* Jobs List for this day */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                     {jobs.map(job => {
+                      const isPassed = isJobTimePassed(job);
+                      const linkedFinance = getLinkedFinanceForJob(job);
                       const cleanPhone = getCleanPhone(job.customerPhone);
                       const whatsappText = encodeURIComponent(`Merhaba ${job.customerName || ''}, ben Handyeco'dan Ekrem. ${job.date} tarihindeki saat ${job.startTime} randevumuz için yazıyorum.`);
                       const whatsappLink = `https://wa.me/${cleanPhone}?text=${whatsappText}`;
@@ -903,19 +908,33 @@ export default function ScheduleManager({
                       return (
                         <div 
                           key={job.id}
-                          className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 space-y-3 hover:border-zinc-700 transition-all shadow-md relative group print:bg-white print:border-black print:text-black print:p-2"
+                          className={`rounded-2xl p-3 sm:p-4 space-y-2.5 sm:space-y-3 transition-all relative group print:bg-white print:border-black print:text-black print:p-2 ${
+                            isPassed
+                              ? 'bg-[#080a0f]/90 border border-zinc-800/60 opacity-85 hover:opacity-100'
+                              : 'bg-[#0b0e14] border border-zinc-800/90 hover:border-zinc-700 shadow-md'
+                          }`}
                         >
                           {/* Card Header: Time & Status */}
-                          <div className="flex items-start justify-between gap-2 pb-2 border-b border-zinc-800/70 print:border-gray-300">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black bg-rose-950/60 text-rose-300 border border-rose-800/70 print:bg-gray-100 print:text-black">
-                                <Clock className="w-3 h-3 text-rose-400" />
-                                <span>{job.startTime} - {job.endTime} (Dolu)</span>
+                          <div className="flex items-start justify-between gap-1.5 sm:gap-2 pb-2 border-b border-zinc-800/70 print:border-gray-300">
+                            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                              <span className={`inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-black border print:bg-gray-100 print:text-black ${
+                                isPassed 
+                                  ? 'bg-zinc-800/60 text-zinc-400 border-zinc-700/50' 
+                                  : 'bg-rose-950/60 text-rose-300 border-rose-800/70'
+                              }`}>
+                                <Clock className={`w-3 h-3 ${isPassed ? 'text-zinc-400' : 'text-rose-400'}`} />
+                                <span>{job.startTime} - {job.endTime}</span>
                               </span>
 
                               {job.durationMinutes && (
                                 <span className="text-[10px] text-zinc-500 print:text-gray-600 font-semibold">
                                   ({job.durationMinutes} dk)
+                                </span>
+                              )}
+
+                              {isPassed && (
+                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-bold bg-zinc-800/90 text-zinc-400 border border-zinc-700/60">
+                                  ⏱️ Saati Geçti
                                 </span>
                               )}
                             </div>
@@ -924,7 +943,7 @@ export default function ScheduleManager({
                             <select
                               value={job.status || 'scheduled'}
                               onChange={(e) => handleQuickStatusChange(job.id, e.target.value)}
-                              className={`text-[11px] font-bold rounded-lg px-2 py-1 border cursor-pointer focus:outline-none print:hidden ${
+                              className={`text-[10px] sm:text-[11px] font-bold rounded-lg px-1.5 sm:px-2 py-0.5 sm:py-1 border cursor-pointer focus:outline-none shrink-0 print:hidden ${
                                 job.status === 'completed'
                                   ? 'bg-emerald-950/80 border-emerald-800 text-emerald-300'
                                   : job.status === 'in_progress'
@@ -943,31 +962,31 @@ export default function ScheduleManager({
                           </div>
 
                           {/* Customer & Service Info */}
-                          <div className="space-y-1">
+                          <div className="space-y-0.5 sm:space-y-1">
                             <div className="flex items-center justify-between">
-                              <h4 className="text-base font-bold text-white print:text-black">
+                              <h4 className="text-sm sm:text-base font-bold text-white print:text-black">
                                 {job.customerName || 'İsimsiz Müşteri'}
                               </h4>
                               {job.priceEstimate && (
-                                <span className="text-xs font-black text-emerald-400 print:text-black">
+                                <span className="text-xs sm:text-sm font-black text-emerald-400 print:text-black">
                                   £{job.priceEstimate}
                                 </span>
                               )}
                             </div>
 
-                            <p className="text-xs font-semibold text-blue-400 print:text-black">
+                            <p className="text-[11px] sm:text-xs font-semibold text-blue-400 print:text-black">
                               🛠️ {job.service || 'Genel Usta İşi'}
                             </p>
                           </div>
 
                           {/* Address & Navigation */}
-                          <div className="bg-zinc-900/80 print:bg-gray-50 rounded-xl p-2.5 space-y-1 text-xs border border-zinc-800/80 print:border-gray-200">
+                          <div className="bg-zinc-900/80 print:bg-gray-50 rounded-xl p-2 sm:p-2.5 space-y-1 text-xs border border-zinc-800/80 print:border-gray-200">
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex items-start gap-1.5 text-zinc-300 print:text-black">
                                 <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0 mt-0.5" />
                                 <div>
-                                  <span className="font-semibold block">{job.address || 'Adres belirtilmedi'}</span>
-                                  <span className="text-[11px] text-zinc-400 print:text-gray-600 font-bold">{job.postcode}</span>
+                                  <span className="font-semibold block text-xs">{job.address || 'Adres belirtilmedi'}</span>
+                                  <span className="text-[10px] sm:text-[11px] text-zinc-400 print:text-gray-600 font-bold">{job.postcode}</span>
                                 </div>
                               </div>
 
@@ -975,7 +994,7 @@ export default function ScheduleManager({
                                 href={mapsUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="print:hidden inline-flex items-center gap-1 px-2 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-[11px] font-bold text-zinc-200 hover:text-white shrink-0 transition-colors"
+                                className="print:hidden inline-flex items-center gap-1 px-2 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-[10px] sm:text-[11px] font-bold text-zinc-200 hover:text-white shrink-0 transition-colors"
                                 title="Google Haritalar'da yol tarifi aç"
                               >
                                 <Navigation className="w-3 h-3 text-blue-400" />
@@ -984,20 +1003,20 @@ export default function ScheduleManager({
                             </div>
 
                             {job.notes && (
-                              <p className="pt-1 text-[11px] text-zinc-400 print:text-gray-700 italic border-t border-zinc-800 print:border-gray-200">
+                              <p className="pt-1 text-[10px] sm:text-[11px] text-zinc-400 print:text-gray-700 italic border-t border-zinc-800 print:border-gray-200">
                                 📝 {job.notes}
                               </p>
                             )}
                           </div>
 
                           {/* Contact and Actions Row */}
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-2 border-t border-zinc-800/60">
-                            <div className="flex items-center gap-2 flex-wrap">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-zinc-800/60">
+                            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                               {job.customerPhone && (
                                 <>
                                   <a
                                     href={`tel:${job.customerPhone}`}
-                                    className="print:hidden inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-bold text-zinc-300 border border-zinc-800 transition-colors"
+                                    className="print:hidden inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-[11px] sm:text-xs font-bold text-zinc-300 border border-zinc-800 transition-colors"
                                   >
                                     <Phone className="w-3 h-3 text-blue-400" />
                                     <span>{job.customerPhone}</span>
@@ -1007,7 +1026,7 @@ export default function ScheduleManager({
                                     href={whatsappLink}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="print:hidden inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-950/60 hover:bg-emerald-900 text-xs font-bold text-emerald-300 border border-emerald-800/60 transition-colors"
+                                    className="print:hidden inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-emerald-950/60 hover:bg-emerald-900 text-[11px] sm:text-xs font-bold text-emerald-300 border border-emerald-800/60 transition-colors"
                                     title="WhatsApp'tan müşteriye yaz"
                                   >
                                     <MessageSquare className="w-3 h-3" />
@@ -1017,10 +1036,9 @@ export default function ScheduleManager({
                               )}
                             </div>
 
-                            <div className="print:hidden flex items-center justify-between sm:justify-end gap-1.5 pt-1 sm:pt-0 border-t sm:border-t-0 border-zinc-800/40">
-                              {/* Accounting Link Status & Warning */}
+                            <div className="print:hidden flex items-center justify-between sm:justify-end gap-1.5 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-zinc-800/40">
+                              {/* Accounting Link Status & Action */}
                               {(() => {
-                                const linkedFinance = getLinkedFinanceForJob(job);
                                 if (linkedFinance) {
                                   return (
                                     <button
@@ -1032,19 +1050,19 @@ export default function ScheduleManager({
                                           alert(`⚠️ Bu iş zaten muhasebeye eklenmiştir!\n\nMüşteri: ${job.customerName}\nTarih: ${linkedFinance.date}\nAlınan Ciro: £${linkedFinance.revenue}\nNet Kâr: £${linkedFinance.netProfit}\n\nTekrar kayıt yapılamaz.`);
                                         }
                                       }}
-                                      className="p-1.5 px-2 rounded-lg bg-emerald-950/70 border border-emerald-800 hover:border-emerald-600 text-emerald-300 text-[11px] font-bold flex items-center gap-1 cursor-pointer hover:bg-emerald-900 transition-colors"
+                                      className="p-1.5 px-2 rounded-xl bg-emerald-950/70 border border-emerald-800 hover:border-emerald-600 text-emerald-300 text-[10px] sm:text-[11px] font-bold flex items-center gap-1 cursor-pointer hover:bg-emerald-900 transition-colors shrink-0"
                                       title="Muhasebe sayfasına git"
                                     >
-                                      <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                                      <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
                                       <span className="hidden sm:inline">Muhasebeye Eklendi (£{linkedFinance.revenue}) &rarr;</span>
-                                      <span className="sm:hidden">Eklendi &rarr;</span>
+                                      <span className="sm:hidden">Eklendi (£{linkedFinance.revenue}) &rarr;</span>
                                     </button>
                                   );
                                 } else {
                                   return (
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center gap-1.5">
                                       <span 
-                                        className="p-1 px-2 rounded-lg bg-amber-950/40 border border-amber-800/70 text-amber-300 text-[10px] font-bold flex items-center gap-1 shrink-0 whitespace-nowrap"
+                                        className="p-1 px-1.5 sm:px-2 rounded-lg bg-amber-950/40 border border-amber-800/70 text-amber-300 text-[10px] font-bold flex items-center gap-1 shrink-0 whitespace-nowrap"
                                         title="Bu randevu henüz muhasebeye kâr/gelir olarak işlenmedi"
                                       >
                                         <AlertCircle className="w-3 h-3 text-amber-400 shrink-0" />
@@ -1052,23 +1070,45 @@ export default function ScheduleManager({
                                         <span className="sm:hidden">Muhasebesiz</span>
                                       </span>
                                       {onLogJobToAccounting && (
-                                        <button
-                                          type="button"
-                                          onClick={() => onLogJobToAccounting({
-                                            id: job.leadId || `manual-${job.id}`,
-                                            name: job.customerName,
-                                            phone: job.customerPhone,
-                                            postcode: job.postcode,
-                                            service: job.service,
-                                            priceEstimate: job.priceEstimate,
-                                            details: job.notes
-                                          })}
-                                          className="p-1.5 px-2 rounded-lg bg-emerald-950 text-emerald-400 hover:bg-emerald-900 text-xs font-bold flex items-center gap-1 border border-emerald-800 cursor-pointer"
-                                          title="Bu işi doğrudan Muhasebeye Kâr/Gelir olarak işle"
-                                        >
-                                          <PoundSterling className="w-3 h-3" />
-                                          <span className="hidden sm:inline">İşle</span>
-                                        </button>
+                                        isPassed ? (
+                                          /* Saati geçen randevular için öne çıkarılmış, dikkat çekici buton */
+                                          <button
+                                            type="button"
+                                            onClick={() => onLogJobToAccounting({
+                                              id: job.leadId || `manual-${job.id}`,
+                                              name: job.customerName,
+                                              phone: job.customerPhone,
+                                              postcode: job.postcode,
+                                              service: job.service,
+                                              priceEstimate: job.priceEstimate,
+                                              details: job.notes
+                                            })}
+                                            className="py-1 px-2.5 sm:px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 active:scale-95 text-white text-[11px] sm:text-xs font-black flex items-center gap-1 border border-emerald-300 shadow-md shadow-emerald-950/60 cursor-pointer shrink-0 transition-all ring-2 ring-emerald-500/40"
+                                            title="⚠️ Bu işin saati tamamlandı! Şimdi kazancı doğrudan muhasebeye işle"
+                                          >
+                                            <PoundSterling className="w-3.5 h-3.5 text-white shrink-0" />
+                                            <span>Muhasebeye İşle</span>
+                                          </button>
+                                        ) : (
+                                          /* Henüz saati gelmemiş randevular için standart buton */
+                                          <button
+                                            type="button"
+                                            onClick={() => onLogJobToAccounting({
+                                              id: job.leadId || `manual-${job.id}`,
+                                              name: job.customerName,
+                                              phone: job.customerPhone,
+                                              postcode: job.postcode,
+                                              service: job.service,
+                                              priceEstimate: job.priceEstimate,
+                                              details: job.notes
+                                            })}
+                                            className="p-1 px-2 sm:px-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-emerald-400 hover:text-emerald-300 text-[10px] sm:text-[11px] font-bold flex items-center gap-1 border border-zinc-700 hover:border-emerald-700 cursor-pointer shrink-0 transition-colors"
+                                            title="Bu işi Muhasebeye Kâr/Gelir olarak işle"
+                                          >
+                                            <PoundSterling className="w-3 h-3 shrink-0" />
+                                            <span>Muhasebeye İşle</span>
+                                          </button>
+                                        )
                                       )}
                                     </div>
                                   );
@@ -1116,7 +1156,7 @@ export default function ScheduleManager({
               <div>
                 <h3 className="text-base font-bold text-white flex items-center gap-2">
                   <Clock className="w-4 h-4 text-emerald-400" />
-                  <span>Haftalık Çalışma & Boş Saat Analiz Tablosu (08:00 - 18:00)</span>
+                  <span>Haftalık Boş Saatler (08:00 - 18:00)</span>
                 </h3>
                 <p className="text-xs text-zinc-400 mt-0.5">
                   Yeşil kutular randevu alabileceğiniz <strong>boş saat aralıklarını</strong>, kırmızı kutular ise randevulu <strong>dolu saatleri</strong> gösterir. Boş kutuya tıklayarak o saate anında randevu oluşturabilirsiniz.
