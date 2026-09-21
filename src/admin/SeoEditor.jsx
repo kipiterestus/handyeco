@@ -292,7 +292,7 @@ export default function SeoEditor({ data, onSave }) {
           >
             <div>
               <span className="text-xs font-bold text-white block">sitemap.xml</span>
-              <span className="text-[11px] text-emerald-400 font-medium">XML Schema Doğrulandı</span>
+              <span className="text-[11px] text-emerald-400 font-medium">10 Sayfa • XML Schema Doğrulandı</span>
             </div>
             <ExternalLink className="w-3.5 h-3.5 text-zinc-500" />
           </a>
@@ -305,10 +305,118 @@ export default function SeoEditor({ data, onSave }) {
           >
             <div>
               <span className="text-xs font-bold text-white block">llms.txt</span>
-              <span className="text-[11px] text-blue-400 font-medium">AI & Gemini Arama Uyumlu</span>
+              <span className="text-[11px] text-blue-400 font-medium">AI &amp; Gemini Arama Uyumlu</span>
             </div>
             <ExternalLink className="w-3.5 h-3.5 text-zinc-500" />
           </a>
+        </div>
+      </div>
+
+      {/* 5. UK Yerel Dizinleri & Otorite Kayıtları (NAP Citations) */}
+      <div className="bg-[#0b0e14] border border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-md">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div>
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-rose-400" />
+              <span>İngiltere Yerel Dizinleri (UK Citations &amp; Backlinks)</span>
+            </h3>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Google Harita ve yerel sıralamayı 1. sıraya taşımak için resmi İngiltere rehberleri. Tüm kayıtlarda aşağıdaki bilgilerin harfiyen aynı olması zorunludur.
+            </p>
+          </div>
+        </div>
+
+        {/* Master NAP Box */}
+        <div className="p-4 rounded-xl bg-zinc-900/90 border border-zinc-700/80 space-y-2 text-xs">
+          <span className="font-bold text-emerald-400 uppercase tracking-wider text-[11px] block">
+            Kayıtlarda Kullanılacak Resmi NAP (Name / Address / Phone) Verisi:
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 pt-1 text-slate-300">
+            <div className="p-2 rounded-lg bg-zinc-800/80">
+              <span className="text-[10px] text-zinc-500 block uppercase font-bold">Business Name</span>
+              <span className="font-semibold text-white">Handyeco - Edinburgh Handyman Services</span>
+            </div>
+            <div className="p-2 rounded-lg bg-zinc-800/80">
+              <span className="text-[10px] text-zinc-500 block uppercase font-bold">Phone Number</span>
+              <span className="font-semibold text-white">07760 696723</span>
+            </div>
+            <div className="p-2 rounded-lg bg-zinc-800/80">
+              <span className="text-[10px] text-zinc-500 block uppercase font-bold">Website URL</span>
+              <span className="font-semibold text-white">https://handyeco.co.uk/</span>
+            </div>
+            <div className="p-2 rounded-lg bg-zinc-800/80">
+              <span className="text-[10px] text-zinc-500 block uppercase font-bold">Location &amp; Area</span>
+              <span className="font-semibold text-white">Edinburgh &amp; Lothians (EH1–EH17)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Directory Links Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+          {[
+            {
+              name: "Yell.com (Yellow Pages UK)",
+              da: "DA 90",
+              desc: "İngiltere'nin 1 numaralı ticari dizini. Google Haritalar için en kritik referans.",
+              url: "https://www.yell.com/free-listing/"
+            },
+            {
+              name: "Thomson Local",
+              da: "DA 78",
+              desc: "İskoçya genelinde işletme teyidi sağlayan köklü İngiliz dizini.",
+              url: "https://www.thomsonlocal.com/add-a-business"
+            },
+            {
+              name: "FreeIndex UK",
+              da: "DA 68",
+              desc: "Müşterilerin bağımsız yorum bırakabildiği ve Google'da yıldız çıkaran dizin.",
+              url: "https://www.freeindex.co.uk/join.htm"
+            },
+            {
+              name: "Cylex UK",
+              da: "DA 74",
+              desc: "Google botlarının Edinburgh yerel işletmelerini doğrulamak için baktığı dizin.",
+              url: "https://www.cylex-uk.co.uk/register.html"
+            },
+            {
+              name: "Scoot Network UK",
+              da: "DA 76",
+              desc: "The Sun, The Independent ve TouchLocal portallarına aynı anda dağıtır.",
+              url: "https://www.scoot.co.uk/"
+            },
+            {
+              name: "Nextdoor UK (Edinburgh)",
+              da: "DA 88",
+              desc: "Morningside, Stockbridge ve Leith mahalle sakinlerinin en çok baktığı yerel ağ.",
+              url: "https://nextdoor.co.uk/create-business/"
+            }
+          ].map((dir, idx) => (
+            <a
+              key={idx}
+              href={dir.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-blue-500 hover:bg-zinc-800/50 transition-all flex flex-col justify-between group"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
+                    {dir.name}
+                  </span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
+                    {dir.da}
+                  </span>
+                </div>
+                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                  {dir.desc}
+                </p>
+              </div>
+              <div className="mt-3 pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[11px] font-semibold text-blue-400">
+                <span>Ücretsiz Kayıt Ol</span>
+                <ExternalLink className="w-3.5 h-3.5 text-zinc-500 group-hover:text-blue-400 transition-colors" />
+              </div>
+            </a>
+          ))}
         </div>
       </div>
 
