@@ -85,6 +85,30 @@ export function getReviewTimestamp(review) {
   return 0;
 }
 
+/**
+ * Calculates human-readable relative time based on review's explicit date or relativeTime
+ */
+export function formatReviewTime(review) {
+  if (review?.date) {
+    const reviewDate = new Date(review.date);
+    if (!isNaN(reviewDate.getTime())) {
+      const now = new Date();
+      const diffMs = now.getTime() - reviewDate.getTime();
+      const diffDays = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+      
+      if (diffDays === 0) return 'Today';
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays} days ago`;
+      if (diffDays < 14) return '1 week ago';
+      if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+      if (diffDays < 60) return '1 month ago';
+      if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+      return `${Math.floor(diffDays / 365)} year${Math.floor(diffDays / 365) > 1 ? 's' : ''} ago`;
+    }
+  }
+  return review?.relativeTime || 'Recently';
+}
+
 export default function GoogleReviews() {
   const { content } = useContent();
   const reviewsList = content.reviews && content.reviews.length > 0 ? content.reviews : FALLBACK_REVIEWS;
@@ -318,7 +342,7 @@ export default function GoogleReviews() {
                     </div>
                     <span className="text-slate-400 text-[11px] font-medium flex items-center gap-1">
                       <Calendar className="w-3 h-3 text-slate-300" />
-                      {review.relativeTime}
+                      {formatReviewTime(review)}
                     </span>
                   </div>
 
