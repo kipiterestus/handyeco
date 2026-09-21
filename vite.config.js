@@ -327,7 +327,7 @@ const backendApiPlugin = () => ({
           }
         }
 
-        // 12. Sync Google & MyBuilder Reviews
+        // 12. Sync Google Reviews
         if (pathname === '/api/reviews/sync' && method === 'POST') {
           if (!isAuth) return sendJson(401, { success: false, error: 'Unauthorized' });
           const syncResult = await syncReviews();

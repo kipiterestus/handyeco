@@ -23,7 +23,7 @@ export const REVIEWS = [
     text: "Outstanding service! Ekrem arrived right on time, mounted heavy brass curtain tracks and two large Victorian hallway mirrors onto tricky Edinburgh lath and plaster walls. Flawless precision, left zero plaster dust. Couldn't recommend more."
   },
   {
-    id: "rev-mb5",
+    id: "rev-ch1",
     author: "Claire Henderson",
     location: "Portobello, Edinburgh (EH15)",
     initials: "CH",

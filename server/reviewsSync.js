@@ -13,7 +13,7 @@ function normalize(str) {
 }
 
 /**
- * Synchronizes reviews from Google and MyBuilder
+ * Synchronizes reviews from Google
  */
 export async function syncReviews() {
   try {
@@ -77,7 +77,7 @@ export async function syncReviews() {
         text: 'Outstanding service! Ekrem arrived right on time, mounted heavy brass curtain tracks and two large Victorian hallway mirrors onto tricky Edinburgh lath and plaster walls. Flawless precision, left zero plaster dust. Couldn\'t recommend more.'
       },
       {
-        id: 'rev-mb5',
+        id: 'rev-ch1',
         author: 'Claire Henderson',
         location: 'Portobello, Edinburgh (EH15)',
         initials: 'CH',
@@ -311,7 +311,7 @@ export async function syncReviews() {
       totalCount: currentReviews.length,
       lastSynced: new Date().toISOString(),
       message: addedCount > 0 
-        ? `Successfully synced ${addedCount} new review(s) from Google & MyBuilder!` 
+        ? `Successfully synced ${addedCount} new review(s) from Google!` 
         : `All reviews are up to date (${currentReviews.length} verified reviews active).`
     };
 

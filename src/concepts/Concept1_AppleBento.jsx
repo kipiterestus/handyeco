@@ -149,7 +149,7 @@ export default function Concept1_AppleBento({ onOpenQuote }) {
                 5.0<span className="text-amber-500 text-3xl font-bold">★</span>
               </div>
               <p className="text-xs text-slate-500 mt-1 font-medium">
-                100% 5-star Google & MyBuilder feedback
+                100% 5-star Google customer feedback
               </p>
             </div>
             <a

@@ -468,7 +468,7 @@ app.post('/api/telegram/reminders', requireAuth, async (req, res) => {
   }
 });
 
-// Sync Google & MyBuilder reviews
+// Sync Google reviews
 app.post('/api/reviews/sync', requireAuth, async (req, res) => {
   try {
     const result = await syncReviews();
