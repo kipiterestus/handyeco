@@ -20,6 +20,8 @@ import PaintingDecoratingPage from './pages/PaintingDecoratingPage';
 import KitchenWrappingPage from './pages/KitchenWrappingPage';
 import MorningsideHandymanPage from './pages/MorningsideHandymanPage';
 import LeithHandymanPage from './pages/LeithHandymanPage';
+import GardenFencingPage from './pages/GardenFencingPage';
+import StockbridgeNewTownPage from './pages/StockbridgeNewTownPage';
 
 export default function App() {
   const [selectedService, setSelectedService] = useState(null);
@@ -69,6 +71,12 @@ export default function App() {
     }
     if (currentPath === '/areas/leith-handyman') {
       return <LeithHandymanPage />;
+    }
+    if (currentPath === '/services/garden-gate-fencing-edinburgh') {
+      return <GardenFencingPage />;
+    }
+    if (currentPath === '/areas/stockbridge-new-town-handyman') {
+      return <StockbridgeNewTownPage />;
     }
 
     return (

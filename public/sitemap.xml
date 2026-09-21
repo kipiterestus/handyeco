@@ -82,6 +82,17 @@
     </image:image>
   </url>
   <url>
+    <loc>https://handyeco.co.uk/services/garden-gate-fencing-edinburgh</loc>
+    <lastmod>2026-09-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://handyeco.co.uk/hero-handyman-edinburgh.jpg</image:loc>
+      <image:title>Garden Gate &amp; Fence Repairs Edinburgh - Handyeco</image:title>
+      <image:caption>Timber fence and gate storm repairs in Edinburgh</image:caption>
+    </image:image>
+  </url>
+  <url>
     <loc>https://handyeco.co.uk/areas/morningside-handyman</loc>
     <lastmod>2026-09-21</lastmod>
     <changefreq>weekly</changefreq>
@@ -89,6 +100,12 @@
   </url>
   <url>
     <loc>https://handyeco.co.uk/areas/leith-handyman</loc>
+    <lastmod>2026-09-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://handyeco.co.uk/areas/stockbridge-new-town-handyman</loc>
     <lastmod>2026-09-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>

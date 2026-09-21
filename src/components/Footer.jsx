@@ -96,7 +96,15 @@ export default function Footer() {
                   Kitchen Vinyl Wrapping
                 </a>
               </li>
-              <li><a href="/#services" className="hover:text-white transition-colors">Garden Gate &amp; Fencing</a></li>
+              <li>
+                <a 
+                  href="/services/garden-gate-fencing-edinburgh" 
+                  onClick={(e) => handleInternalLinkClick(e, '/services/garden-gate-fencing-edinburgh')} 
+                  className="hover:text-white transition-colors"
+                >
+                  Garden Gate &amp; Fence Repairs
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -124,7 +132,15 @@ export default function Footer() {
                   Leith &amp; The Shore (EH6)
                 </a>
               </li>
-              <li><span className="text-slate-300">Stockbridge &amp; New Town (EH3/EH4)</span></li>
+              <li>
+                <a 
+                  href="/areas/stockbridge-new-town-handyman" 
+                  onClick={(e) => handleInternalLinkClick(e, '/areas/stockbridge-new-town-handyman')} 
+                  className="hover:text-white text-slate-300 transition-colors"
+                >
+                  Stockbridge &amp; New Town (EH3/EH4)
+                </a>
+              </li>
               <li><span className="text-slate-300">Old Town &amp; Southside (EH1/EH8)</span></li>
               <li><span className="text-slate-300">Portobello &amp; Joppa (EH15)</span></li>
               <li><span className="text-slate-300">Musselburgh &amp; East Lothian (EH21)</span></li>
