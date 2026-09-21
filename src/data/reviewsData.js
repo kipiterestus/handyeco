@@ -3,7 +3,7 @@ export const REVIEWS_STATS = {
   totalReviews: 73,
   fiveStarPercentage: 100,
   googleProfileUrl: "https://maps.app.goo.gl/jQH6GXAotpV1oXG78",
-  googlePlaceId: "14359767137015043852"
+  googlePlaceId: "12649811856663906133"
 };
 
 export const REVIEWS = [
