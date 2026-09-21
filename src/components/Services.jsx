@@ -14,6 +14,7 @@ import {
 import { SERVICES as FALLBACK_SERVICES } from '../data/servicesData';
 import { BUSINESS_INFO } from '../data/businessData';
 import { useContent } from '../context/ContentContext';
+import { handleInternalLinkClick } from '../utils/navigation';
 
 const iconMap = {
   PackageCheck,
@@ -130,6 +131,25 @@ export default function Services({ onSelectService }) {
 
                 {/* Card Footer: Action Buttons */}
                 <div className="mt-5 pt-4 border-t border-slate-100">
+                  {service.id === 'assembly' && (
+                    <a
+                      href="/services/flat-pack-assembly-edinburgh"
+                      onClick={(e) => handleInternalLinkClick(e, '/services/flat-pack-assembly-edinburgh')}
+                      className="block text-center text-[11px] font-bold text-blue-600 hover:text-blue-800 hover:underline mb-2.5 transition-colors"
+                    >
+                      View Edinburgh IKEA &amp; Flat-Pack Guide &rarr;
+                    </a>
+                  )}
+                  {service.id === 'mounting' && (
+                    <a
+                      href="/services/tv-wall-mounting-edinburgh"
+                      onClick={(e) => handleInternalLinkClick(e, '/services/tv-wall-mounting-edinburgh')}
+                      className="block text-center text-[11px] font-bold text-blue-600 hover:text-blue-800 hover:underline mb-2.5 transition-colors"
+                    >
+                      View Tenement Stone Wall Mounting Guide &rarr;
+                    </a>
+                  )}
+
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => onSelectService(service)}

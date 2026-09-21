@@ -2,6 +2,7 @@ import React from 'react';
 import { Phone, Mail, MapPin, Star, ShieldCheck, Clock, ExternalLink, MessageSquare } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/businessData';
 import { useContent } from '../context/ContentContext';
+import { handleInternalLinkClick } from '../utils/navigation';
 
 export default function Footer() {
   const { content } = useContent();
@@ -41,13 +42,29 @@ export default function Footer() {
               Services
             </h4>
             <ul className="space-y-2.5 text-xs">
-              <li><a href="#services" className="hover:text-white transition-colors">Flat-Pack Assembly</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">TV & Wall Mounting</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">Painting & Decorating</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">Bathroom Silicone Sealing</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">Kitchen Vinyl Wrapping</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">General Tenement Repairs</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">Garden Gate & Fencing</a></li>
+              <li>
+                <a 
+                  href="/services/flat-pack-assembly-edinburgh" 
+                  onClick={(e) => handleInternalLinkClick(e, '/services/flat-pack-assembly-edinburgh')} 
+                  className="hover:text-white transition-colors"
+                >
+                  Flat-Pack Assembly (IKEA)
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/services/tv-wall-mounting-edinburgh" 
+                  onClick={(e) => handleInternalLinkClick(e, '/services/tv-wall-mounting-edinburgh')} 
+                  className="hover:text-white transition-colors"
+                >
+                  TV &amp; Stone Wall Mounting
+                </a>
+              </li>
+              <li><a href="/#services" className="hover:text-white transition-colors">Painting &amp; Decorating</a></li>
+              <li><a href="/#services" className="hover:text-white transition-colors">Bathroom Silicone Sealing</a></li>
+              <li><a href="/#services" className="hover:text-white transition-colors">Kitchen Vinyl Wrapping</a></li>
+              <li><a href="/#services" className="hover:text-white transition-colors">General Tenement Repairs</a></li>
+              <li><a href="/#services" className="hover:text-white transition-colors">Garden Gate &amp; Fencing</a></li>
             </ul>
           </div>
 

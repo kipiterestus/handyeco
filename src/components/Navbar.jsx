@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Star, MapPin, Phone, MessageSquare, Clock } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
+import { handleInternalLinkClick, navigateTo } from '../utils/navigation';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,6 +16,15 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleNavLink = (e, href) => {
+    if (href.startsWith('#')) {
+      if (window.location.pathname !== '/') {
+        e.preventDefault();
+        window.location.href = '/' + href;
+      }
+    }
+  };
 
   const navLinks = [
     { label: "Where We Work", href: "#areas" },
@@ -64,7 +74,11 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           
           {/* Clean Logo without black background */}
-          <a href="#" className="flex items-center gap-2 group">
+          <a 
+            href="/" 
+            onClick={(e) => handleInternalLinkClick(e, '/')} 
+            className="flex items-center gap-2 group"
+          >
             <img 
               src="/logo-transparent.png" 
               alt="Handyeco - Edinburgh Handyman Services" 
@@ -78,6 +92,7 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
+                onClick={(e) => handleNavLink(e, link.href)}
                 className="hover:text-blue-600 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 hover:after:w-full after:transition-all after:duration-300"
               >
                 {link.label}
@@ -104,7 +119,10 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => {
+                  handleNavLink(e, link.href);
+                  setMobileMenuOpen(false);
+                }}
                 className="block px-3 py-3 rounded-xl text-base font-semibold text-slate-800 hover:bg-blue-50 hover:text-blue-600 transition-colors text-left"
               >
                 {link.label}
