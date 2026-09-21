@@ -267,10 +267,12 @@ export default function QuoteForm({ preselectedService }) {
                   {/* Contact Information Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                      <label htmlFor="quote-name" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
                         Your Full Name *
                       </label>
                       <input
+                        id="quote-name"
+                        name="name"
                         type="text"
                         required
                         placeholder="e.g. David Robertson"
@@ -281,10 +283,12 @@ export default function QuoteForm({ preselectedService }) {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                      <label htmlFor="quote-email" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
                         Email Address
                       </label>
                       <input
+                        id="quote-email"
+                        name="email"
                         type="email"
                         placeholder="e.g. david@example.co.uk"
                         value={formData.email}
@@ -297,10 +301,12 @@ export default function QuoteForm({ preselectedService }) {
                   {/* Phone & Postcode Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                      <label htmlFor="quote-phone" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
                         Phone / WhatsApp *
                       </label>
                       <input
+                        id="quote-phone"
+                        name="phone"
                         type="tel"
                         required
                         placeholder="e.g. 07700 900123"
@@ -312,12 +318,14 @@ export default function QuoteForm({ preselectedService }) {
 
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                        <label htmlFor="quote-address" className="block text-xs font-bold uppercase tracking-wider text-slate-300">
                           Apartment &amp; House Number
                         </label>
                         <span className="text-[10px] text-slate-500 font-medium lowercase">optional</span>
                       </div>
                       <input
+                        id="quote-address"
+                        name="address"
                         type="text"
                         placeholder="e.g. Flat 3F2, 45 or House 12"
                         value={formData.postcode}
@@ -329,10 +337,13 @@ export default function QuoteForm({ preselectedService }) {
 
                   {/* Preferred Timeline */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                    <label htmlFor="quote-urgency" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
                       Preferred Timeline
                     </label>
                     <select
+                      id="quote-urgency"
+                      name="urgency"
+                      aria-label="Preferred Timeline"
                       value={formData.urgency}
                       onChange={(e) => setFormData({ ...formData, urgency: e.target.value })}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer"
@@ -346,10 +357,12 @@ export default function QuoteForm({ preselectedService }) {
 
                   {/* Job Description Textarea */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                    <label htmlFor="quote-details" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
                       Job Details &amp; Specifics
                     </label>
                     <textarea
+                      id="quote-details"
+                      name="details"
                       rows="2"
                       placeholder="e.g. Assemble IKEA PAX wardrobe, mount 55-inch TV into stone wall, seal shower tray..."
                       value={formData.details}
@@ -370,6 +383,9 @@ export default function QuoteForm({ preselectedService }) {
                       </span>
                       <input
                         ref={fileInputRef}
+                        id="quote-photos"
+                        name="photos"
+                        aria-label="Attach photos of the job"
                         type="file"
                         multiple
                         accept="image/*"

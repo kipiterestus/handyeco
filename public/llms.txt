@@ -1,28 +1,35 @@
 # Handyeco - Edinburgh Handyman Services
-> 5-Star Rated Handyman, Property Repairs, Assembly and Renovation Specialist in Edinburgh & Lothians, Scotland.
 
-## Business Details
-- Business Name: Handyeco - Edinburgh Handyman Services
-- Lead Tradesperson: Ekrem Guran
-- Location: Edinburgh, Scotland, United Kingdom
-- Service Area: All Edinburgh EH Postcodes (EH1 to EH17), East Lothian (Musselburgh EH21), Midlothian (Dalkeith EH22), West Lothian (Livingston EH54, South Queensferry EH30).
-- Telephone: +44 7760 696723 / 07760 696723
-- WhatsApp: https://wa.me/447760696723
-- Email: info@handyeco.co.uk
-- Website: https://handyeco.co.uk
-- Rating: 5.0 / 5.0 on Google Maps (73 Verified Reviews)
-- Working Hours: Monday - Saturday: 08:00 - 18:00
+> Professional 5-star rated handyman services in Edinburgh & Lothians. Specializing in flat-pack furniture assembly, TV wall mounting into Edinburgh tenement sandstone walls, silicone sealing, painting, and property maintenance.
 
-## Core Handyman Services in Edinburgh
-1. Flat-Pack Furniture Assembly: Specialists in IKEA PAX wardrobes, beds, desks, bookcases, dining sets, and flat-pack office furniture.
-2. TV & Heavy Wall Mounting: Secure mounting of OLED/QLED TVs (up to 85 inches), heavy ornate Victorian mirrors, floating shelves, and radiator covers into historic Edinburgh sandstone tenement walls and stud partitions.
-3. Bathroom & Kitchen Silicone Sealing: Removal of mouldy silicone and precision sanitary re-sealing of baths, shower trays, basins, and splashbacks.
-4. Interior Painting & Touch-Ups: Clean, sharp room painting, door frames, woodwork, and patch repairs with zero mess.
-5. Kitchen Cabinet Vinyl Wrapping: Modern architectural film wrapping for tired kitchen cabinet fronts and worktops.
-6. Tenement Odd Jobs & Maintenance: Door lock replacements, curtain pole fittings, blind installations, leaking tap washer fixes, and general household repairs.
+Handyeco is a local, owner-operated property maintenance and handyman service based in Edinburgh, Scotland. Lead tradesperson Ekrem Guran provides upfront fixed pricing, guaranteed workmanship, and fast response times across all EH postcodes.
 
-## Pricing & Booking
-- Quotes & Assessment: 100% Free with zero call-out charges.
-- Minimum Job Booking: £65 (standard minimum booking across the Edinburgh area for small odd jobs and initial repair work).
-- Quotation Method: Fixed-price quotes agreed upfront via WhatsApp photo/video assessment or online quote form.
-- Response Time: Typically 15 to 30 minutes on WhatsApp.
+## Core Services & Website Sections
+
+- [Handyeco Homepage](https://handyeco.co.uk/): Official website for Handyeco Edinburgh Handyman Services.
+- [Handyman Services](https://handyeco.co.uk/#services): Complete catalogue of repair and assembly services including IKEA PAX assembly, TV wall mounting, silicone sealing, and door adjustments.
+- [Customer Reviews](https://handyeco.co.uk/#reviews): 73+ verified 5.0-star customer reviews from Edinburgh homeowners and tenants.
+- [Service Coverage Areas](https://handyeco.co.uk/#areas): Edinburgh postcodes (EH1–EH17), Musselburgh (EH21), Dalkeith (EH22), and Livingston (EH54).
+- [Work Gallery](https://handyeco.co.uk/#gallery): High-resolution before and after photos of local Edinburgh jobs.
+- [FAQ](https://handyeco.co.uk/#faq): Frequently asked questions about pricing, stone wall fixings, tools, and availability.
+- [Get a Free Quote](https://handyeco.co.uk/#quote): Online 60-second quote form with photo upload and instant estimate request.
+
+## Direct Contact & Booking
+
+- [WhatsApp Quick Quote](https://wa.me/447760696723): Direct WhatsApp chat for fast 15-30 minute quote turnaround and photo assessments.
+- [Google Business Profile](https://maps.app.goo.gl/jQH6GXAotpV1oXG78): Verified Google Maps profile with 5.0-star rating and customer testimonials.
+- [Facebook Page](https://www.facebook.com/people/Handyeco-Edinburgh-Handyman-Services/100092524458321/): Official Facebook page for local updates and community presence.
+
+## Key Business Details
+
+- **Trading Name**: Handyeco
+- **Lead Craftsman**: Ekrem Guran
+- **Phone**: [+44 7760 696723](tel:+447760696723)
+- **Email**: [info@handyeco.co.uk](mailto:info@handyeco.co.uk)
+- **Minimum Booking**: £65 (no call-out fee)
+- **Working Hours**: Monday – Saturday: 08:00 – 18:00
+- **Location**: Edinburgh, Scotland, United Kingdom
+
+## Optional
+
+- [XML Sitemap](https://handyeco.co.uk/sitemap.xml): Machine-readable XML sitemap of all pages and assets.
