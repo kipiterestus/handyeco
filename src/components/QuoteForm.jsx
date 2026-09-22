@@ -485,11 +485,8 @@ export default function QuoteForm({ preselectedService }) {
                     <div className="flex items-start gap-2 mt-2 px-3 py-2 rounded-xl bg-blue-950/40 border border-blue-900/50 text-[11px] text-blue-200 leading-snug">
                       <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
                       <div>
-                        <span className="font-bold text-white">Tavsiye / Tip: </span>
-                        <span>Fotoğraf eklerseniz yerinde keşfe gerek kalmadan dakikalar içinde <strong>en hızlı ve net sabit fiyat teklifini</strong> alabilirsiniz.</span>
-                        <span className="block text-[10px] text-slate-400 mt-0.5">
-                          (Attaching photos helps us provide a faster, 100% accurate fixed price quote).
-                        </span>
+                        <span className="font-bold text-white">Pro Tip: </span>
+                        <span>Attaching a clear photo or short video helps us provide a <strong>faster, 100% accurate fixed quote</strong> without delay or unnecessary home visits.</span>
                       </div>
                     </div>
 

@@ -36,15 +36,15 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
     const today = new Date().toISOString().split('T')[0];
     const newRev = {
       id: newId,
-      author: 'Yeni Edinburgh Müşterisi',
+      author: 'Edinburgh Customer',
       location: 'Morningside, Edinburgh (EH10)',
       rating: 5,
       date: today,
-      relativeTime: 'Bugün',
-      service: 'Mobilya Montajı & Tamirat',
+      relativeTime: 'Today',
+      service: 'Flat-Pack Assembly & Repairs',
       platform: 'google',
       likes: 1,
-      text: 'Zamanında geldi, temiz ve çok titiz çalıştı. Edinburgh usta ihtiyacı olan herkese gönül rahatlığıyla tavsiye ederim.'
+      text: 'Punctual, exceptionally tidy, and top quality workmanship. Solid assembly and zero mess. Highly recommend Handyeco to anyone in Edinburgh.'
     };
     setReviews(prev => [newRev, ...prev]);
   };
