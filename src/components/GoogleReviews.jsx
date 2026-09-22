@@ -161,6 +161,11 @@ export default function GoogleReviews() {
     });
   }, [reviewsList, selectedFilter, searchQuery, sortBy, likes]);
 
+  // Maksimum 9 yorum göster (Kullanıcı talebi doğrultusunda temiz 3x3 ızgara)
+  const displayedReviews = useMemo(() => {
+    return filteredReviews.slice(0, 9);
+  }, [filteredReviews]);
+
   const handleLike = (id, e) => {
     e.stopPropagation();
     if (likedReviews[id]) return;
@@ -320,9 +325,9 @@ export default function GoogleReviews() {
           </div>
         </div>
 
-        {/* Reviews Cards Grid (PHOTOLESS AS REQUESTED - PURE TEXTUAL TRUST & AUTHENTIC NAMES) */}
+        {/* Reviews Cards Grid - Maximum 9 reviews displayed */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {filteredReviews.map((review) => {
+          {displayedReviews.map((review) => {
             const isGoogle = review.platform === "google";
 
             return (
@@ -395,6 +400,24 @@ export default function GoogleReviews() {
             );
           })}
         </div>
+
+        {/* View All Reviews on Google Link CTA */}
+        {displayedReviews.length > 0 && (
+          <div className="mt-10 text-center">
+            <a
+              href={siteConfig.googleProfileUrl || 'https://maps.app.goo.gl/jQH6GXAotpV1oXG78'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-slate-900 hover:bg-blue-600 text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-95"
+            >
+              <span>See All {siteConfig.googleReviewCount || 75} Reviews on Google Maps</span>
+              <ExternalLink className="w-4 h-4 shrink-0" />
+            </a>
+            <p className="text-[11px] sm:text-xs text-slate-500 mt-2 font-medium">
+              Displaying the top 9 most recent verified customer reviews.
+            </p>
+          </div>
+        )}
 
         {filteredReviews.length === 0 && (
           <div className="text-center py-12 bg-slate-50 rounded-2xl border border-slate-200 mt-6">
