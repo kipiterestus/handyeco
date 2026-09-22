@@ -12,6 +12,58 @@ function normalize(str) {
   return (str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+export function getReviewTimestamp(review) {
+  if (!review) return 0;
+  if (review.time) {
+    let t = Number(review.time);
+    if (t < 10000000000) t *= 1000;
+    if (!isNaN(t) && t > 0) return t;
+  }
+  if (review.date) {
+    const parsed = new Date(review.date).getTime();
+    if (!isNaN(parsed)) return parsed;
+  }
+  if (review.createdAt) {
+    const parsed = new Date(review.createdAt).getTime();
+    if (!isNaN(parsed)) return parsed;
+  }
+  const rel = (review.relativeTime || '').toLowerCase().trim();
+  const now = Date.now();
+  const HOUR = 60 * 60 * 1000;
+  const DAY = 24 * HOUR;
+  const WEEK = 7 * DAY;
+  const MONTH = 30 * DAY;
+  const YEAR = 365 * DAY;
+  if (rel.includes('now') || rel.includes('today') || rel.includes('bugün') || rel.includes('just')) return now;
+  if (rel.includes('hour') || rel.includes('saat')) return now - HOUR;
+  if (rel.includes('yesterday') || rel.includes('dün')) return now - DAY;
+  if (rel.includes('day') || rel.includes('gün')) {
+    const match = rel.match(/(\d+)/);
+    return now - (match ? parseInt(match[1], 10) : 1) * DAY;
+  }
+  if (rel.includes('week') || rel.includes('hafta')) {
+    const match = rel.match(/(\d+)/);
+    return now - (match ? parseInt(match[1], 10) : 1) * WEEK;
+  }
+  if (rel.includes('month') || rel.includes('ay')) {
+    const match = rel.match(/(\d+)/);
+    return now - (match ? parseInt(match[1], 10) : 1) * MONTH;
+  }
+  if (rel.includes('year') || rel.includes('yıl')) {
+    const match = rel.match(/(\d+)/);
+    return now - (match ? parseInt(match[1], 10) : 1) * YEAR;
+  }
+  if (review.id) {
+    const idMatch = review.id.match(/\d{10,13}/);
+    if (idMatch) {
+      let val = parseInt(idMatch[0], 10);
+      if (val < 10000000000) val *= 1000;
+      return val;
+    }
+  }
+  return 0;
+}
+
 /**
  * Synchronizes reviews from Google
  */
@@ -37,22 +89,39 @@ export async function syncReviews() {
       try {
         const isNumericCid = /^\d+$/.test(String(placeId).trim());
         const idParam = isNumericCid ? `cid=${placeId}` : `place_id=${placeId}`;
-        const url = `https://maps.googleapis.com/maps/api/place/details/json?${idParam}&fields=name,rating,reviews,user_ratings_total&key=${apiKey}`;
+        const url = `https://maps.googleapis.com/maps/api/place/details/json?${idParam}&fields=name,rating,reviews,user_ratings_total&reviews_sort=newest&key=${apiKey}`;
         const res = await fetch(url);
         const data = await res.json();
-        if (data.result && Array.isArray(data.result.reviews)) {
-          const mapped = data.result.reviews.map(r => ({
-            id: `google_${r.time || Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-            author: r.author_name,
-            location: 'Edinburgh, UK',
-            rating: r.rating || 5,
-            relativeTime: r.relative_time_description || 'Recently',
-            service: 'Handyman Service',
-            platform: 'google',
-            likes: 0,
-            text: r.text
-          }));
-          newlyFetched.push(...mapped);
+        if (data.result) {
+          if (data.result.user_ratings_total) {
+            siteConfig.googleReviewCount = data.result.user_ratings_total;
+          }
+          if (data.result.rating) {
+            siteConfig.googleRating = data.result.rating.toFixed(1);
+          }
+          if (Array.isArray(data.result.reviews)) {
+            const mapped = data.result.reviews.map(r => {
+              const reviewTimeMs = r.time ? r.time * 1000 : Date.now();
+              const isoDate = new Date(reviewTimeMs).toISOString().split('T')[0];
+              return {
+                id: `google_${r.time || Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+                author: r.author_name,
+                location: 'Edinburgh, UK',
+                rating: r.rating || 5,
+                time: r.time,
+                date: isoDate,
+                createdAt: new Date(reviewTimeMs).toISOString(),
+                relativeTime: r.relative_time_description || 'Recently',
+                service: 'Handyman Service',
+                category: 'repairs',
+                platform: 'google',
+                verifiedBadge: 'Google Verified',
+                likes: 0,
+                text: r.text
+              };
+            });
+            newlyFetched.push(...mapped);
+          }
         }
       } catch (err) {
         console.warn('[ReviewsSync] Google Places API warning:', err.message);
@@ -287,11 +356,7 @@ export async function syncReviews() {
     }
 
     // Always sort reviews strictly by date descending (newest first)
-    currentReviews.sort((a, b) => {
-      const dateA = a.date || '';
-      const dateB = b.date || '';
-      return dateB.localeCompare(dateA);
-    });
+    currentReviews.sort((a, b) => getReviewTimestamp(b) - getReviewTimestamp(a));
 
     fs.writeFileSync(reviewsFilePath, JSON.stringify(currentReviews, null, 2), 'utf8');
 
@@ -303,7 +368,22 @@ export async function syncReviews() {
       } catch (_) {}
     }
 
-    console.log(`[ReviewsSync] ✅ Reviews synchronized successfully. Total: ${currentReviews.length} (added: ${addedCount})`);
+    // Keep siteConfig.googleReviewCount in sync (ensure at least 75 or total review count)
+    const targetReviewCount = Math.max(siteConfig.googleReviewCount || 0, currentReviews.length, 75);
+    siteConfig.googleReviewCount = targetReviewCount;
+    if (!siteConfig.googleRating) siteConfig.googleRating = '5.0';
+
+    try {
+      fs.writeFileSync(siteConfigPath, JSON.stringify(siteConfig, null, 2), 'utf8');
+      const defaultSiteConfigPath = path.join(__dirname, 'default_data', 'siteConfig.json');
+      if (fs.existsSync(path.dirname(defaultSiteConfigPath))) {
+        fs.writeFileSync(defaultSiteConfigPath, JSON.stringify(siteConfig, null, 2), 'utf8');
+      }
+    } catch (cfgErr) {
+      console.warn('[ReviewsSync] Error updating siteConfig:', cfgErr.message);
+    }
+
+    console.log(`[ReviewsSync] ✅ Reviews synchronized successfully. Total: ${currentReviews.length} (added: ${addedCount}), count: ${targetReviewCount}`);
 
     return {
       success: true,

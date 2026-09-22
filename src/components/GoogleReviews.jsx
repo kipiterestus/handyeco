@@ -21,6 +21,13 @@ import { useContent } from '../context/ContentContext';
 export function getReviewTimestamp(review) {
   if (!review) return 0;
 
+  // 0. Direct time or timestamp (from Google Places API or direct number)
+  if (review.time) {
+    let t = Number(review.time);
+    if (t < 10000000000) t *= 1000;
+    if (!isNaN(t) && t > 0) return t;
+  }
+
   // 1. Direct explicit date or createdAt (YYYY-MM-DD or ISO string)
   if (review.date) {
     const parsed = new Date(review.date).getTime();
@@ -31,48 +38,57 @@ export function getReviewTimestamp(review) {
     if (!isNaN(parsed)) return parsed;
   }
 
-  // 2. Parse relative time text (e.g. "3 days ago", "1 week ago", "2 months ago")
+  // 2. Parse relative time text (e.g. "Today", "2 hours ago", "3 days ago", "1 week ago", "2 months ago")
   const rel = (review.relativeTime || '').toLowerCase().trim();
   const now = Date.now();
-  const HOUR = 60 * 60 * 1000;
+  const MINUTE = 60 * 1000;
+  const HOUR = 60 * MINUTE;
   const DAY = 24 * HOUR;
   const WEEK = 7 * DAY;
   const MONTH = 30 * DAY;
   const YEAR = 365 * DAY;
 
-  if (rel.includes('hour')) {
+  if (rel.includes('now') || rel.includes('today') || rel.includes('bugün') || rel.includes('just')) {
+    return now;
+  }
+  if (rel.includes('min')) {
+    const match = rel.match(/(\d+)/);
+    const count = match ? parseInt(match[1], 10) : 1;
+    return now - count * MINUTE;
+  }
+  if (rel.includes('hour') || rel.includes('saat')) {
     const match = rel.match(/(\d+)/);
     const count = match ? parseInt(match[1], 10) : 1;
     return now - count * HOUR;
   }
-  if (rel.includes('yesterday')) {
+  if (rel.includes('yesterday') || rel.includes('dün')) {
     return now - DAY;
   }
-  if (rel.includes('day')) {
+  if (rel.includes('day') || rel.includes('gün')) {
     const match = rel.match(/(\d+)/);
     const count = match ? parseInt(match[1], 10) : 1;
     return now - count * DAY;
   }
-  if (rel.includes('week')) {
+  if (rel.includes('week') || rel.includes('hafta')) {
     const match = rel.match(/(\d+)/);
     const count = match ? parseInt(match[1], 10) : 1;
     return now - count * WEEK;
   }
-  if (rel.includes('month')) {
+  if (rel.includes('month') || rel.includes('ay')) {
     const match = rel.match(/(\d+)/);
     const count = match ? parseInt(match[1], 10) : 1;
     return now - count * MONTH;
   }
-  if (rel.includes('year')) {
+  if (rel.includes('year') || rel.includes('yıl')) {
     const match = rel.match(/(\d+)/);
     const count = match ? parseInt(match[1], 10) : 1;
     return now - count * YEAR;
   }
-  if (rel.includes('recently') || rel.includes('new')) {
+  if (rel.includes('recently') || rel.includes('new') || rel.includes('yeni')) {
     return now - 2 * DAY;
   }
 
-  // 3. Fallback: Check for timestamp embedded in review ID (e.g. rev-1726000000)
+  // 3. Fallback: Check for timestamp embedded in review ID (e.g. rev-1726000000 or google_1726000000)
   if (review.id) {
     const idMatch = review.id.match(/\d{10,13}/);
     if (idMatch) {
@@ -217,7 +233,7 @@ export default function GoogleReviews() {
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/20 transition-all active:scale-95 whitespace-nowrap"
               >
-                <span>Google Reviews ({siteConfig.googleReviewCount || 73})</span>
+                <span>Google Reviews ({siteConfig.googleReviewCount || 75})</span>
                 <ExternalLink className="w-4 h-4 shrink-0" />
               </a>
             </div>

@@ -65,8 +65,8 @@ export default function Hero({ onOpenQuote }) {
                       <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <span>{hero.ratingScore || '5.0'}</span>
-                  <span className="text-slate-400 text-[10px] sm:text-xs font-normal ml-0.5">(73)</span>
+                  <span>{hero.ratingScore || config.googleRating || '5.0'}</span>
+                  <span className="text-slate-400 text-[10px] sm:text-xs font-normal ml-0.5">({config.googleReviewCount || 75})</span>
                   <ArrowDown className="w-3 h-3 ml-1 text-blue-600 transition-transform group-hover:translate-y-0.5 shrink-0" />
                 </div>
               </a>

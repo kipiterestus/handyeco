@@ -98,7 +98,7 @@ export default function LeithHandymanPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-8 pt-6 border-t border-slate-800">
               <div className="flex items-center gap-2 text-slate-300 text-xs sm:text-sm">
                 <Star className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
-                <span className="font-semibold">5.0 Star Rated (73+ Reviews)</span>
+                <span className="font-semibold">5.0 Star Rated (75+ Reviews)</span>
               </div>
               <div className="flex items-center gap-2 text-slate-300 text-xs sm:text-sm">
                 <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
