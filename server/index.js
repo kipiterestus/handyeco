@@ -134,8 +134,31 @@ app.post('/api/quote', async (req, res) => {
   }
 
   try {
-    const quote = req.body;
+    const quote = req.body || {};
     console.log('\n[API] 📩 New quote submission received:', quote.name, quote.phone, quote.service);
+
+    // Process and optimize any uploaded photos (base64 data URLs)
+    const savedPhotoUrls = [];
+    if (Array.isArray(quote.photos)) {
+      for (let i = 0; i < Math.min(quote.photos.length, 5); i++) {
+        const item = quote.photos[i];
+        const dataUrl = typeof item === 'string' ? item : item?.dataUrl;
+        const filename = (typeof item === 'object' && item?.name) ? item.name : `quote_photo_${i + 1}`;
+        
+        if (dataUrl && typeof dataUrl === 'string' && dataUrl.startsWith('data:image/')) {
+          try {
+            const uploadedUrl = await saveBase64Image(dataUrl, filename);
+            savedPhotoUrls.push(uploadedUrl);
+          } catch (imgErr) {
+            console.warn('[Quote Upload] Photo save warning:', imgErr.message);
+          }
+        } else if (typeof item === 'string' && (item.startsWith('/uploads/') || item.startsWith('http'))) {
+          savedPhotoUrls.push(item);
+        }
+      }
+    }
+    quote.photos = savedPhotoUrls;
+    quote.photosCount = savedPhotoUrls.length;
 
     // Save quote record locally (with sanitization)
     const saved = saveQuoteRecord(quote);
@@ -144,12 +167,13 @@ app.post('/api/quote', async (req, res) => {
     const siteConfig = getSection('siteConfig') || {};
     const botToken = siteConfig.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
     const chatId = siteConfig.telegramChatId || process.env.TELEGRAM_CHAT_ID;
-    const telegramResult = await sendTelegramNotification(quote, botToken, chatId);
+    const telegramResult = await sendTelegramNotification(saved, botToken, chatId);
 
     res.status(200).json({
       success: true,
       message: 'Quote received and saved',
       quoteId: saved.id,
+      photos: savedPhotoUrls,
       telegramDelivered: telegramResult.delivered
     });
   } catch (error) {

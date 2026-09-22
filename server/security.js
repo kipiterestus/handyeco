@@ -185,6 +185,16 @@ export function sanitizeQuotePayload(payload) {
   const details = sanitizeInput(payload.details, 2000);
   if (!name || name.length < 2) throw new Error("Valid name is required");
   if (!phone || phone.length < 6) throw new Error("Valid phone number is required");
+
+  // Validate and sanitize uploaded photo paths
+  let photos = [];
+  if (Array.isArray(payload.photos)) {
+    photos = payload.photos
+      .filter(p => typeof p === 'string' && (p.startsWith('/uploads/') || p.startsWith('http://') || p.startsWith('https://')))
+      .map(p => sanitizeInput(p, 300))
+      .slice(0, 5);
+  }
+
   return {
     name, phone,
     email: email || "",
@@ -192,7 +202,8 @@ export function sanitizeQuotePayload(payload) {
     service: service || "Handyman Service",
     urgency: ["flexible", "this-week", "urgent", "weekend"].includes(urgency) ? urgency : "flexible",
     details: details || "No additional details provided",
-    photosCount: Math.min(Math.max(Number(payload.photosCount) || 0, 0), 5)
+    photos,
+    photosCount: photos.length || Math.min(Math.max(Number(payload.photosCount) || 0, 0), 5)
   };
 }
 

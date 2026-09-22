@@ -19,6 +19,47 @@ import { SERVICES as FALLBACK_SERVICES } from '../data/servicesData';
 import { useContent } from '../context/ContentContext';
 import confetti from 'canvas-confetti';
 
+/**
+ * Compresses an image file client-side to ensure fast uploads
+ * and keeps memory/payload size low (<200KB per photo)
+ */
+async function fileToDataUrl(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX_DIM = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_DIM) {
+            height = Math.round((height * MAX_DIM) / width);
+            width = MAX_DIM;
+          }
+        } else {
+          if (height > MAX_DIM) {
+            width = Math.round((width * MAX_DIM) / height);
+            height = MAX_DIM;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = () => resolve(e.target.result);
+      img.src = e.target.result;
+    };
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function QuoteForm({ preselectedService }) {
   const { content } = useContent();
   const servicesList = content.services && content.services.length > 0 ? content.services : FALLBACK_SERVICES;
@@ -47,20 +88,27 @@ export default function QuoteForm({ preselectedService }) {
     }
   }, [preselectedService]);
 
-  const handlePhotoUpload = (e) => {
+  const handlePhotoUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length + uploadedPhotos.length > 5) {
       setErrorMsg("You can upload a maximum of 5 photos.");
       return;
     }
 
-    const newPhotos = files.map(file => ({
-      name: file.name,
-      size: (file.size / 1024 / 1024).toFixed(2) + " MB",
-      url: URL.createObjectURL(file)
-    }));
+    const processed = [];
+    for (const file of files) {
+      const dataUrl = await fileToDataUrl(file);
+      if (dataUrl) {
+        processed.push({
+          name: file.name,
+          size: (file.size / 1024 / 1024).toFixed(2) + " MB",
+          url: URL.createObjectURL(file),
+          dataUrl: dataUrl
+        });
+      }
+    }
 
-    setUploadedPhotos(prev => [...prev, ...newPhotos]);
+    setUploadedPhotos(prev => [...prev, ...processed]);
     setErrorMsg("");
   };
 
@@ -68,15 +116,51 @@ export default function QuoteForm({ preselectedService }) {
     setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSendWhatsApp = (e) => {
+  const handleSendWhatsApp = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.phone) {
       setErrorMsg("Please provide your name and contact phone number.");
       return;
     }
 
+    setIsSubmitting(true);
     const selectedServiceName = servicesList.find(s => s.id === formData.serviceId)?.title || "Handyman Service";
-    
+    let serverPhotoUrls = [];
+
+    // If photos are attached, upload to server first so they are saved to the Admin Panel & accessible via URL
+    if (uploadedPhotos.length > 0) {
+      try {
+        const payload = {
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email || "",
+          postcode: formData.postcode || "Edinburgh Area",
+          service: selectedServiceName,
+          urgency: formData.urgency,
+          details: formData.details || "Details to discuss on WhatsApp",
+          photos: uploadedPhotos.map(p => ({ name: p.name, dataUrl: p.dataUrl })),
+          photosCount: uploadedPhotos.length
+        };
+        const res = await fetch('/api/quote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const resData = await res.json();
+          if (Array.isArray(resData.photos)) {
+            serverPhotoUrls = resData.photos;
+          }
+        }
+      } catch (uploadErr) {
+        console.warn("Background quote save warning:", uploadErr);
+      }
+    }
+
+    const photoLinksText = serverPhotoUrls.length > 0
+      ? `\n*Attached Photos (${serverPhotoUrls.length}):*\n` + serverPhotoUrls.map((u, idx) => `• Photo ${idx + 1}: https://handyeco.co.uk${u}`).join("\n")
+      : (uploadedPhotos.length > 0 ? `\n*(Attached ${uploadedPhotos.length} photo(s) ready to send in chat)*` : "");
+
     const message = [
       `*NEW QUOTE REQUEST - ${siteConfig.businessName || "HANDYECO"}*`,
       `-----------------------------`,
@@ -87,11 +171,13 @@ export default function QuoteForm({ preselectedService }) {
       `*Requested Service:* ${selectedServiceName}`,
       `*Urgency:* ${formData.urgency.toUpperCase()}`,
       `*Job Description:* ${formData.details || "Details to discuss"}`,
-      uploadedPhotos.length > 0 ? `*(Attached ${uploadedPhotos.length} photo(s) ready to send)*` : ""
+      photoLinksText
     ].filter(Boolean).join("\n");
 
     const waNumber = (siteConfig.whatsappNumber || siteConfig.phone || BUSINESS_INFO.whatsappNumber).replace(/\D/g, '');
     const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+    
+    setIsSubmitting(false);
     window.open(waUrl, "_blank");
   };
 
@@ -116,6 +202,7 @@ export default function QuoteForm({ preselectedService }) {
         service: selectedServiceName,
         urgency: formData.urgency,
         details: formData.details || "No additional details provided",
+        photos: uploadedPhotos.map(p => ({ name: p.name, dataUrl: p.dataUrl })),
         photosCount: uploadedPhotos.length,
         createdAt: new Date().toISOString()
       };
@@ -375,7 +462,7 @@ export default function QuoteForm({ preselectedService }) {
                   <div>
                     <div
                       onClick={() => fileInputRef.current?.click()}
-                      className="border border-dashed border-slate-700 hover:border-blue-500 rounded-xl px-3.5 py-2 text-center cursor-pointer bg-slate-900/40 hover:bg-slate-900/80 transition-all flex items-center justify-center gap-2 group"
+                      className="border border-dashed border-slate-700 hover:border-blue-500 rounded-xl px-3.5 py-2.5 text-center cursor-pointer bg-slate-900/40 hover:bg-slate-900/80 transition-all flex items-center justify-center gap-2 group"
                     >
                       <UploadCloud className="w-4 h-4 text-slate-400 group-hover:text-blue-400 shrink-0 transition-colors" />
                       <span className="text-xs text-slate-300 font-medium">
@@ -392,6 +479,18 @@ export default function QuoteForm({ preselectedService }) {
                         onChange={handlePhotoUpload}
                         className="hidden"
                       />
+                    </div>
+
+                    {/* Informative Tip: Faster & Accurate Fixed Quotes with Photos */}
+                    <div className="flex items-start gap-2 mt-2 px-3 py-2 rounded-xl bg-blue-950/40 border border-blue-900/50 text-[11px] text-blue-200 leading-snug">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                      <div>
+                        <span className="font-bold text-white">Tavsiye / Tip: </span>
+                        <span>Fotoğraf eklerseniz yerinde keşfe gerek kalmadan dakikalar içinde <strong>en hızlı ve net sabit fiyat teklifini</strong> alabilirsiniz.</span>
+                        <span className="block text-[10px] text-slate-400 mt-0.5">
+                          (Attaching photos helps us provide a faster, 100% accurate fixed price quote).
+                        </span>
+                      </div>
                     </div>
 
                     {/* Uploaded Photo Previews */}

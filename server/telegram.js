@@ -31,8 +31,9 @@ export async function sendTelegramNotification(quote, token, chatId) {
     quote.postcode ? `🏢 <b>Apartman & Ev No:</b> ${escapeHtml(quote.postcode)}` : '',
     `🛠️ <b>Hizmet:</b> ${escapeHtml(quote.service || 'Genel Tamirat')}`,
     `⏱️ <b>Zamanlama:</b> ${escapeHtml((quote.urgency || 'flexible').toUpperCase())}`,
-    `📝 <b>İş Detayları:</b>\n<i>${escapeHtml(quote.details || 'Detay verilmedi')}</i>`,
-    quote.photosCount ? `📸 <b>Fotoğraf:</b> ${quote.photosCount} adet eklendi` : '',
+    quote.photos && quote.photos.length > 0 
+      ? `📸 <b>Fotoğraflar (${quote.photos.length} Adet):</b>\n` + quote.photos.map((url, idx) => `  • <a href="https://handyeco.co.uk${url}">Fotoğraf ${idx + 1} Görüntüle 🔗</a>`).join('\n')
+      : (quote.photosCount ? `📸 <b>Fotoğraf:</b> ${quote.photosCount} adet eklendi` : ''),
     `⏰ <b>Tarih:</b> ${timestamp} (UK Time)`,
     `━━━━━━━━━━━━━━━━━━━━`,
     waDirectLink ? `💬 <a href="${waDirectLink}"><b>Müşteriye WhatsApp'tan Yanıt Ver ➡️</b></a>` : ''
