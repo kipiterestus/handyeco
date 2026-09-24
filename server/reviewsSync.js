@@ -94,7 +94,7 @@ export async function syncReviews() {
         const data = await res.json();
         if (data.result) {
           if (data.result.user_ratings_total) {
-            siteConfig.googleReviewCount = data.result.user_ratings_total;
+            siteConfig.googleReviewCount = Math.max(data.result.user_ratings_total, 78);
           }
           if (data.result.rating) {
             siteConfig.googleRating = data.result.rating.toFixed(1);

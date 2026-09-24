@@ -410,7 +410,7 @@ export default function GoogleReviews() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-slate-900 hover:bg-blue-600 text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-95"
             >
-              <span>See All {siteConfig.googleReviewCount || 75} Reviews on Google Maps</span>
+              <span>See All {siteConfig.googleReviewCount || 78} Reviews on Google Maps</span>
               <ExternalLink className="w-4 h-4 shrink-0" />
             </a>
             <p className="text-[11px] sm:text-xs text-slate-500 mt-2 font-medium">

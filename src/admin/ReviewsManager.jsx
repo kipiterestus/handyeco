@@ -17,7 +17,7 @@ import {
 
 export default function ReviewsManager({ data, siteConfig = {}, onSave, token, onRefresh }) {
   const [reviews, setReviews] = useState(data || []);
-  const [reviewCount, setReviewCount] = useState(siteConfig.googleReviewCount ?? 75);
+  const [reviewCount, setReviewCount] = useState(siteConfig.googleReviewCount ?? 78);
   const [rating, setRating] = useState(siteConfig.googleRating ?? '5.0');
   const [placeId, setPlaceId] = useState(siteConfig.googlePlaceId || '');
   
@@ -89,7 +89,7 @@ export default function ReviewsManager({ data, siteConfig = {}, onSave, token, o
     // Also save review count, rating and placeId to siteConfig
     const updatedConfig = {
       ...siteConfig,
-      googleReviewCount: Number(reviewCount) || 75,
+      googleReviewCount: Number(reviewCount) || 78,
       googleRating: String(rating) || '5.0',
       googlePlaceId: placeId.trim()
     };

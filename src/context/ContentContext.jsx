@@ -121,8 +121,13 @@ export function ContentProvider({ children }) {
       if (res.ok) {
         const data = await res.json();
         if (data.success && data.content) {
-          if (data.content.siteConfig && (!data.content.siteConfig.email || data.content.siteConfig.email === 'ekremguran@gmail.com')) {
-            data.content.siteConfig.email = 'info@handyeco.co.uk';
+          if (data.content.siteConfig) {
+            if (!data.content.siteConfig.email || data.content.siteConfig.email === 'ekremguran@gmail.com') {
+              data.content.siteConfig.email = 'info@handyeco.co.uk';
+            }
+            if (!data.content.siteConfig.googleReviewCount || Number(data.content.siteConfig.googleReviewCount) < 78) {
+              data.content.siteConfig.googleReviewCount = 78;
+            }
           }
           setContent(prev => ({
             ...prev,

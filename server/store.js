@@ -62,6 +62,24 @@ function migrateSiteConfigEmail() {
 }
 migrateSiteConfigEmail();
 
+// Ensure persistent volume siteConfig.json has the updated reviewCount
+function migrateSiteConfigReviewCount() {
+  try {
+    const siteConfigFile = path.join(dataDir, 'siteConfig.json');
+    if (fs.existsSync(siteConfigFile)) {
+      const cfg = JSON.parse(fs.readFileSync(siteConfigFile, 'utf-8'));
+      if (cfg && (!cfg.googleReviewCount || Number(cfg.googleReviewCount) < 78)) {
+        cfg.googleReviewCount = 78;
+        fs.writeFileSync(siteConfigFile, JSON.stringify(cfg, null, 2), 'utf-8');
+        console.log('[Store] Automatically migrated siteConfig googleReviewCount to 78 on persistent volume');
+      }
+    }
+  } catch (err) {
+    console.error('[Store] Error migrating siteConfig review count:', err);
+  }
+}
+migrateSiteConfigReviewCount();
+
 // One-time startup migration to wipe old test quotes as requested by user
 function clearExistingQuotesMigration() {
   try {
@@ -91,10 +109,13 @@ export function readJson(filename, defaultValue = {}) {
   try {
     if (fs.existsSync(filePath)) {
       const parsed = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-      // Defensive guarantee: Never let legacy email slip through anywhere in siteConfig
+      // Defensive guarantee: Never let legacy email or outdated review count slip through in siteConfig
       if (filename === 'siteConfig.json' && parsed) {
         if (parsed.email === 'ekremguran@gmail.com' || !parsed.email) {
           parsed.email = 'info@handyeco.co.uk';
+        }
+        if (!parsed.googleReviewCount || Number(parsed.googleReviewCount) < 78) {
+          parsed.googleReviewCount = 78;
         }
       }
       return parsed;
