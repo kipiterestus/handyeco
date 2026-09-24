@@ -368,8 +368,8 @@ export async function syncReviews() {
       } catch (_) {}
     }
 
-    // Keep siteConfig.googleReviewCount in sync (ensure at least 75 or total review count)
-    const targetReviewCount = Math.max(siteConfig.googleReviewCount || 0, currentReviews.length, 75);
+    // Keep siteConfig.googleReviewCount in sync (ensure at least 78 or total review count)
+    const targetReviewCount = Math.max(siteConfig.googleReviewCount || 0, currentReviews.length, 78);
     siteConfig.googleReviewCount = targetReviewCount;
     if (!siteConfig.googleRating) siteConfig.googleRating = '5.0';
 

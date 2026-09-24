@@ -16,6 +16,8 @@ const DEFAULT_CONTENT = {
     whatsappNumber: BUSINESS_INFO.whatsapp,
     whatsappUrl: BUSINESS_INFO.whatsappUrl,
     googleProfileUrl: BUSINESS_INFO.googleProfileUrl,
+    googleReviewCount: 78,
+    googleRating: '5.0',
     callOutFee: 0,
     minimumJobBooking: 65,
     callOutText: 'Free Quotes • Minimum Job £65 (Edinburgh Area)',

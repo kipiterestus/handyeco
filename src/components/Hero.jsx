@@ -66,7 +66,7 @@ export default function Hero({ onOpenQuote }) {
                     ))}
                   </div>
                   <span>{hero.ratingScore || config.googleRating || '5.0'}</span>
-                  <span className="text-slate-400 text-[10px] sm:text-xs font-normal ml-0.5">({config.googleReviewCount || 75})</span>
+                  <span className="text-slate-400 text-[10px] sm:text-xs font-normal ml-0.5">({config.googleReviewCount || 78})</span>
                   <ArrowDown className="w-3 h-3 ml-1 text-blue-600 transition-transform group-hover:translate-y-0.5 shrink-0" />
                 </div>
               </a>
