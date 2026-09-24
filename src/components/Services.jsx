@@ -59,10 +59,10 @@ export default function Services({ onSelectService }) {
             <span>Scottish Handyman Solutions</span>
           </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Quality Home Repairs & Assembly Done Right.
+            Edinburgh Handyman Services &amp; Quality Home Repairs
           </h2>
           <p className="text-xs sm:text-sm lg:text-base text-slate-600 mt-2 max-w-2xl mx-auto">
-            From single-room repairs to full flat refreshes. Free upfront quotes, clean workmanship, and £65 minimum job booking.
+            Trusted local handyman services across Edinburgh and Lothians. From furniture assembly to TV mounting and repairs. Free upfront quotes, £65 minimum job booking.
           </p>
 
           {/* Desktop-Only Filter Pills (Hidden on Mobile to keep page clean & avoid scroll friction) */}

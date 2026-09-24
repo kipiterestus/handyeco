@@ -32,7 +32,7 @@ const DEFAULT_CONTENT = {
     headlineStart: "Edinburgh's Trusted Handyman for",
     headlineHighlight: 'Repairs, Assembly',
     headlineEnd: '& Home Renovations.',
-    description: 'Specialist in flat-pack furniture assembly, TV wall mounting into Edinburgh stone walls, interior painting, and mould-free bathroom silicone sealing. Fast, reliable, and exceptionally tidy workmanship.',
+    description: 'Looking for a trusted, 5-star rated local handyman near me in Edinburgh? Specialist in flat-pack furniture assembly, TV wall mounting into historic stone walls, interior painting, and mould-free bathroom silicone sealing. Fast, reliable, and exceptionally tidy workmanship.',
     bullets: [
       'Punctual, Clean & Spotless Tidy',
       'Free Quotes • Minimum Job £65',
@@ -58,7 +58,7 @@ const DEFAULT_CONTENT = {
       a: 'We believe in 100% transparent pricing. We provide fixed quotes upfront based on photos or description of the job sent via WhatsApp or our online quote form. Our minimum call-out fee is £65 (covers travel and the initial diagnostic/small repair time within Edinburgh). There are never hidden extras or surprise call-out fees.'
     },
     {
-      q: 'How quickly can you attend to a job in Edinburgh?',
+      q: 'How quickly can a local handyman near me in Edinburgh attend to a job?',
       a: 'We regularly accommodate same-week and even next-day emergency appointments for urgent jobs like leaking silicone or pre-tenancy move-out repairs. Average response time on WhatsApp is 15–30 minutes.'
     },
     {
@@ -70,16 +70,20 @@ const DEFAULT_CONTENT = {
       a: 'No, we bring a comprehensive kit of professional 18V cordless power tools, laser levels, and industrial-grade fixings (screws, wall plugs, masonry anchors). For flat-pack furniture, all assembly hardware is included in your boxes; if any screws are missing, we carry spares in our kit.'
     },
     {
-      q: 'What areas around Edinburgh do you cover?',
+      q: 'What areas in Edinburgh do you cover if I need a handyman near me?',
       a: 'We cover all of Edinburgh (EH1 through EH17) as well as the surrounding Lothians including Musselburgh (EH21), Dalkeith (EH22), South Queensferry (EH30), and Livingston (EH54) with zero extra travel surcharge within standard zones.'
     }
   ],
   seo: {
-    metaTitle: 'Handyeco | Edinburgh Handyman Services | Flat Pack Assembly & Repairs',
-    metaDescription: '5-star rated handyman services in Edinburgh & Lothians. Specialists in IKEA flat-pack furniture assembly, TV wall mounting into stone walls, silicone sealing, painting and property repairs. Fixed quotes upfront.',
+    metaTitle: 'Handyman Edinburgh | #1 Trusted Handyman Near Me | Handyeco',
+    metaDescription: 'Looking for a trusted local handyman near me in Edinburgh? 5-star rated for IKEA flat-pack assembly, TV wall mounting into stone, silicone sealing & odd jobs. From £65.',
     keywords: [
       'handyman edinburgh',
+      'handyman near me',
+      'local handyman near me',
+      'handyman near me edinburgh',
       'edinburgh handyman services',
+      'emergency handyman near me',
       'flat pack assembly edinburgh',
       'ikea furniture assembly edinburgh',
       'tv wall mounting edinburgh',

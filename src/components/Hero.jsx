@@ -21,7 +21,7 @@ export default function Hero({ onOpenQuote }) {
     <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[3/4] sm:aspect-[4/5] bg-slate-900">
       <img
         src={hero.heroImage || '/hero-handyman-edinburgh.jpg'}
-        alt="Edinburgh Handyman assembling furniture with cordless drill in a home apartment"
+        alt="Handyman Edinburgh - Trusted local handyman near me assembling furniture"
         className="w-full h-full object-cover object-center"
       />
       
@@ -83,7 +83,7 @@ export default function Hero({ onOpenQuote }) {
 
             {/* Description */}
             <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-2xl font-normal">
-              {hero.description || "Specialist in flat-pack furniture assembly, TV wall mounting into Edinburgh stone walls, interior painting, and mould-free bathroom silicone sealing. Fast, reliable, and exceptionally tidy workmanship."}
+              {hero.description || "Looking for a trusted, 5-star rated local handyman near me in Edinburgh? Specialist in flat-pack furniture assembly, TV wall mounting into historic stone walls, interior painting, and mould-free bathroom silicone sealing. Fast, reliable, and exceptionally tidy workmanship."}
             </p>
 
             {/* Handyman Image - Pulled up directly under description on Mobile */}

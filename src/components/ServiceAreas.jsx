@@ -27,10 +27,10 @@ export default function ServiceAreas() {
               </div>
               <div>
                 <h2 className="text-sm sm:text-base md:text-lg font-bold text-slate-900 leading-tight tracking-tight">
-                  Edinburgh Handyman Service Areas
+                  Local Handyman Near Me — Edinburgh &amp; Lothians Coverage
                 </h2>
                 <p className="text-[11px] sm:text-xs text-slate-500 font-normal mt-0.5">
-                  Full coverage across Edinburgh &amp; Lothians
+                  Looking for a trusted local handyman near you? Full coverage across all EH postcodes with zero travel surcharge.
                 </p>
               </div>
             </div>
