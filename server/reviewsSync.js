@@ -12,6 +12,23 @@ function normalize(str) {
   return (str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+/** Compute human-readable relative time from a YYYY-MM-DD date string */
+function computeRelativeTime(dateStr) {
+  if (!dateStr) return 'Recently';
+  const reviewDate = new Date(dateStr);
+  if (isNaN(reviewDate.getTime())) return 'Recently';
+  const diffMs = Date.now() - reviewDate.getTime();
+  const diffDays = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 14) return '1 week ago';
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+  if (diffDays < 60) return '1 month ago';
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+  return `${Math.floor(diffDays / 365)} year${Math.floor(diffDays / 365) > 1 ? 's' : ''} ago`;
+}
+
 export function getReviewTimestamp(review) {
   if (!review) return 0;
   if (review.time) {
@@ -103,24 +120,29 @@ export async function syncReviews() {
             const mapped = data.result.reviews.map(r => {
               const reviewTimeMs = r.time ? r.time * 1000 : Date.now();
               const isoDate = new Date(reviewTimeMs).toISOString().split('T')[0];
+              // Stable deterministic ID (no random suffix) — prevents duplicates on repeated sync
+              const stableId = `google_${r.time || Date.now()}_${normalize(r.author_name || '').slice(0, 6)}`;
               return {
-                id: `google_${r.time || Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+                id: stableId,
                 author: r.author_name,
                 location: 'Edinburgh, UK',
                 rating: r.rating || 5,
                 time: r.time,
                 date: isoDate,
                 createdAt: new Date(reviewTimeMs).toISOString(),
-                relativeTime: r.relative_time_description || 'Recently',
+                relativeTime: computeRelativeTime(isoDate),
                 service: 'Handyman Service',
                 category: 'repairs',
                 platform: 'google',
                 verifiedBadge: 'Google Verified',
                 likes: 0,
-                text: r.text
+                text: r.text,
+                _source: 'google_api'
               };
             });
-            newlyFetched.push(...mapped);
+            // Unshift Google API reviews to front — they process first so they can't be blocked by static pool matches
+            newlyFetched.unshift(...mapped);
+            console.log(`[ReviewsSync] 📡 Fetched ${mapped.length} real review(s) from Google Places API`);
           }
         }
       } catch (err) {
@@ -332,14 +354,18 @@ export async function syncReviews() {
     let addedCount = 0;
     let updatedCount = 0;
 
-    for (const newRev of newlyFetched) {
-      const existingIndex = currentReviews.findIndex(existing => 
-        normalize(existing.author) === normalize(newRev.author) ||
-        (existing.text && newRev.text && normalize(existing.text.slice(0, 30)) === normalize(newRev.text.slice(0, 30)))
-      );
+    // Separate Google API reviews from static pool entries
+    const googleApiReviews = newlyFetched.filter(r => r._source === 'google_api');
+    const staticPoolReviews = newlyFetched.filter(r => r._source !== 'google_api');
 
+    // --- Pass 1: Merge REAL Google API reviews first (by stable ID or author) ---
+    for (const newRev of googleApiReviews) {
+      const existingIndex = currentReviews.findIndex(existing =>
+        existing.id === newRev.id ||
+        (existing._source === 'google_api' && normalize(existing.author) === normalize(newRev.author))
+      );
       if (existingIndex !== -1) {
-        // Update existing with freshest date, relativeTime and category
+        // Update real Google review — preserve likes, update everything else
         currentReviews[existingIndex] = {
           ...currentReviews[existingIndex],
           ...newRev,
@@ -347,13 +373,49 @@ export async function syncReviews() {
         };
         updatedCount++;
       } else if (newRev.text && newRev.text.trim().length > 10) {
-        currentReviews.push({
+        currentReviews.push({ ...newRev });
+        addedCount++;
+        console.log(`[ReviewsSync] ✅ New real Google review added: "${newRev.author}" (${newRev.date})`);
+      }
+    }
+
+    // --- Pass 2: Merge static pool entries (match by ID or author name) ---
+    // IMPORTANT: A static pool entry must NOT overwrite a real Google review that shares author name
+    for (const newRev of staticPoolReviews) {
+      // Check if a real Google review already covers this author
+      const realGoogleMatch = currentReviews.findIndex(existing =>
+        existing._source === 'google_api' && normalize(existing.author) === normalize(newRev.author)
+      );
+      if (realGoogleMatch !== -1) {
+        // Real Google review already exists for this author — skip static entry
+        continue;
+      }
+
+      const existingIndex = currentReviews.findIndex(existing =>
+        existing.id === newRev.id ||
+        normalize(existing.author) === normalize(newRev.author) ||
+        (existing.text && newRev.text && normalize(existing.text.slice(0, 40)) === normalize(newRev.text.slice(0, 40)))
+      );
+
+      if (existingIndex !== -1) {
+        currentReviews[existingIndex] = {
+          ...currentReviews[existingIndex],
           ...newRev,
-          id: newRev.id || `rev_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`
-        });
+          likes: Math.max(currentReviews[existingIndex].likes || 0, newRev.likes || 0)
+        };
+        updatedCount++;
+      } else if (newRev.text && newRev.text.trim().length > 10) {
+        currentReviews.push({ ...newRev });
         addedCount++;
       }
     }
+
+    // --- Pass 3: Refresh relativeTime for ALL reviews based on their date field ---
+    // This ensures dates like "2 days ago" are always accurate, not frozen from when they were first synced
+    currentReviews = currentReviews.map(rev => ({
+      ...rev,
+      relativeTime: rev.date ? computeRelativeTime(rev.date) : (rev.relativeTime || 'Recently')
+    }));
 
     // Always sort reviews strictly by date descending (newest first)
     currentReviews.sort((a, b) => getReviewTimestamp(b) - getReviewTimestamp(a));
