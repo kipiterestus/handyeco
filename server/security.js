@@ -300,7 +300,7 @@ export class TokenManager {
 }
 
 export function getAllowedOrigins() {
-  const raw = process.env.ALLOWED_ORIGIN || "http://localhost:5173,http://localhost:3001";
+  const raw = process.env.ALLOWED_ORIGIN || "https://handyeco.co.uk,http://localhost:5173,http://localhost:3001";
   return new Set(raw.split(",").map(o => o.trim()).filter(Boolean));
 }
 
