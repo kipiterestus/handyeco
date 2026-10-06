@@ -4,6 +4,18 @@ import { SERVICES } from '../data/servicesData';
 import { GALLERY_ITEMS } from '../data/galleryData';
 import { REVIEWS } from '../data/reviewsData';
 
+// Helper to get cached review count from localStorage so there is zero flash on initial render
+const getCachedReviewCount = () => {
+  try {
+    const cached = localStorage.getItem('handyeco_review_count');
+    if (cached) {
+      const num = parseInt(cached, 10);
+      if (!isNaN(num) && num > 0) return num;
+    }
+  } catch (_) {}
+  return 80;
+};
+
 // Fallback initial state ensuring 100% stability
 const DEFAULT_CONTENT = {
   siteConfig: {
@@ -16,7 +28,7 @@ const DEFAULT_CONTENT = {
     whatsappNumber: BUSINESS_INFO.whatsapp,
     whatsappUrl: BUSINESS_INFO.whatsappUrl,
     googleProfileUrl: BUSINESS_INFO.googleProfileUrl,
-    googleReviewCount: 78,
+    googleReviewCount: getCachedReviewCount(),
     googleRating: '5.0',
     callOutFee: 0,
     minimumJobBooking: 65,
@@ -125,8 +137,10 @@ export function ContentProvider({ children }) {
             if (!data.content.siteConfig.email || data.content.siteConfig.email === 'ekremguran@gmail.com') {
               data.content.siteConfig.email = 'info@handyeco.co.uk';
             }
-            if (!data.content.siteConfig.googleReviewCount || Number(data.content.siteConfig.googleReviewCount) < 78) {
-              data.content.siteConfig.googleReviewCount = 78;
+            if (data.content.siteConfig.googleReviewCount) {
+              try {
+                localStorage.setItem('handyeco_review_count', String(data.content.siteConfig.googleReviewCount));
+              } catch (_) {}
             }
           }
           setContent(prev => ({

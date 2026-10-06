@@ -145,8 +145,8 @@ export function readJson(filename, defaultValue = {}) {
         if (parsed.email === 'ekremguran@gmail.com' || !parsed.email) {
           parsed.email = 'info@handyeco.co.uk';
         }
-        if (!parsed.googleReviewCount || Number(parsed.googleReviewCount) < 78) {
-          parsed.googleReviewCount = 78;
+        if (!parsed.googleReviewCount) {
+          parsed.googleReviewCount = 80;
         }
       }
       if (filename === 'services.json' && Array.isArray(parsed)) {
