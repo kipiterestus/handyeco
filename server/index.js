@@ -82,10 +82,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/uploads', express.static(path.join(process.cwd(), 'server', 'data', 'uploads')));
 app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
 
-// Serve production build files if present
+// Serve production build files if present (allow dotfiles for /.well-known/ discovery endpoints)
 const distDir = path.join(process.cwd(), 'dist');
 if (fs.existsSync(distDir)) {
-  app.use(express.static(distDir));
+  app.use(express.static(distDir, { dotfiles: 'allow' }));
 }
 
 

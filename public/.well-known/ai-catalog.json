@@ -2,54 +2,17 @@
   "specVersion": "1.0",
   "host": {
     "displayName": "Handyeco Edinburgh Handyman Services",
-    "identifier": "https://handyeco.co.uk",
-    "description": "Professional 5-star rated handyman service in Edinburgh & Lothians. Specialising in flat-pack assembly, TV wall mounting into tenement stone walls, bathroom silicone sealing, painting, and property maintenance.",
-    "url": "https://handyeco.co.uk",
-    "logoUrl": "https://handyeco.co.uk/logo.png",
-    "contactEmail": "info@handyeco.co.uk"
+    "identifier": "did:web:handyeco.co.uk",
+    "documentationUrl": "https://handyeco.co.uk/llms.txt",
+    "logoUrl": "https://handyeco.co.uk/logo.png"
   },
   "entries": [
     {
-      "identifier": "handyeco-quote-form",
-      "displayName": "Request a Free Quote",
-      "type": "action",
-      "description": "Submit a quote request for handyman services in Edinburgh. Accepts job description, contact details, and optional photo uploads.",
-      "url": "https://handyeco.co.uk/#quote",
-      "representativeQueries": [
-        "get a handyman quote in Edinburgh",
-        "book a handyman near me Edinburgh",
-        "request flat pack assembly quote Edinburgh"
-      ]
-    },
-    {
-      "identifier": "handyeco-whatsapp",
-      "displayName": "WhatsApp Quick Quote",
-      "type": "action",
-      "description": "Contact Handyeco directly via WhatsApp for a fast 15–30 minute quote turnaround and photo assessments.",
-      "url": "https://wa.me/447760696723",
-      "representativeQueries": [
-        "WhatsApp handyman Edinburgh",
-        "message handyman near me"
-      ]
-    },
-    {
-      "identifier": "handyeco-services",
-      "displayName": "Edinburgh Handyman Services",
-      "type": "resource",
-      "description": "Full catalogue of handyman services available across Edinburgh and the Lothians.",
-      "url": "https://handyeco.co.uk/#services",
-      "representativeQueries": [
-        "handyman services Edinburgh",
-        "what handyman services are available in Edinburgh",
-        "home repairs Edinburgh"
-      ]
-    },
-    {
-      "identifier": "handyeco-flat-pack",
+      "identifier": "urn:air:handyeco:services:flatpack-assembly",
       "displayName": "Flat-Pack & IKEA Assembly Edinburgh",
-      "type": "resource",
-      "description": "Professional IKEA PAX wardrobe, flat-pack furniture assembly and installation across Edinburgh.",
+      "type": "text/html",
       "url": "https://handyeco.co.uk/services/flat-pack-assembly-edinburgh",
+      "description": "Professional IKEA PAX wardrobe and flat-pack furniture assembly across Edinburgh.",
       "representativeQueries": [
         "IKEA assembly Edinburgh",
         "flat pack furniture assembly Edinburgh",
@@ -57,11 +20,11 @@
       ]
     },
     {
-      "identifier": "handyeco-tv-mounting",
+      "identifier": "urn:air:handyeco:services:tv-wall-mounting",
       "displayName": "TV Wall Mounting Edinburgh",
-      "type": "resource",
-      "description": "Expert TV mounting into Edinburgh tenement sandstone walls, stud walls, and plasterboard.",
+      "type": "text/html",
       "url": "https://handyeco.co.uk/services/tv-wall-mounting-edinburgh",
+      "description": "Expert TV wall mounting into Edinburgh tenement sandstone walls, masonry, and stud partitions.",
       "representativeQueries": [
         "TV wall mounting Edinburgh",
         "mount TV on stone wall Edinburgh",
@@ -69,11 +32,11 @@
       ]
     },
     {
-      "identifier": "handyeco-silicone-sealing",
+      "identifier": "urn:air:handyeco:services:silicone-sealing",
       "displayName": "Bathroom Silicone Sealing Edinburgh",
-      "type": "resource",
-      "description": "Anti-mould bathroom and shower silicone resealing service across Edinburgh.",
+      "type": "text/html",
       "url": "https://handyeco.co.uk/services/silicone-sealing-edinburgh",
+      "description": "Anti-mould sanitary silicone resealing and leak prevention for bathrooms and showers in Edinburgh.",
       "representativeQueries": [
         "bathroom silicone sealing Edinburgh",
         "replace mouldy sealant Edinburgh",
@@ -81,26 +44,38 @@
       ]
     },
     {
-      "identifier": "handyeco-reviews",
-      "displayName": "Customer Reviews",
-      "type": "resource",
-      "description": "78+ verified 5-star Google reviews from Edinburgh homeowners and tenants.",
-      "url": "https://handyeco.co.uk/#reviews",
+      "identifier": "urn:air:handyeco:services:tenement-repairs",
+      "displayName": "Edinburgh Tenement Repairs & Odd Jobs",
+      "type": "text/html",
+      "url": "https://handyeco.co.uk/services/tenement-repairs-edinburgh",
+      "description": "Victorian tenement home repairs, door trimming over carpets, curtain pole mounting, and odd jobs.",
       "representativeQueries": [
-        "Handyeco reviews",
-        "Edinburgh handyman reviews",
-        "is Handyeco reliable"
+        "tenement repairs Edinburgh",
+        "door trimming Edinburgh handyman",
+        "odd jobs Edinburgh"
       ]
     },
     {
-      "identifier": "handyeco-llms",
-      "displayName": "AI & LLM Resource File",
-      "type": "resource",
-      "description": "Plain-text llms.txt resource for AI language model consumption, listing all services, contact info, and site sections.",
+      "identifier": "urn:air:handyeco:actions:quote-form",
+      "displayName": "Request a Free Handyman Quote",
+      "type": "text/html",
+      "url": "https://handyeco.co.uk/#quote",
+      "description": "Online quote request form for Edinburgh handyman services with fast WhatsApp turnaround.",
+      "representativeQueries": [
+        "get a handyman quote in Edinburgh",
+        "book a handyman near me Edinburgh",
+        "request handyman quote Edinburgh"
+      ]
+    },
+    {
+      "identifier": "urn:air:handyeco:resources:ai-documentation",
+      "displayName": "Handyeco LLM & AI Resource Guide",
+      "type": "text/plain",
       "url": "https://handyeco.co.uk/llms.txt",
+      "description": "Machine-readable context file providing service catalogue, coverage areas, pricing, and contact details for AI agents.",
       "representativeQueries": [
         "Handyeco AI resource",
-        "handyeco.co.uk machine readable"
+        "handyeco Edinburgh handyman services info"
       ]
     }
   ]
