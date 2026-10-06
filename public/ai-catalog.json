@@ -1,0 +1,107 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Handyeco Edinburgh Handyman Services",
+    "identifier": "https://handyeco.co.uk",
+    "description": "Professional 5-star rated handyman service in Edinburgh & Lothians. Specialising in flat-pack assembly, TV wall mounting into tenement stone walls, bathroom silicone sealing, painting, and property maintenance.",
+    "url": "https://handyeco.co.uk",
+    "logoUrl": "https://handyeco.co.uk/logo.png",
+    "contactEmail": "info@handyeco.co.uk"
+  },
+  "entries": [
+    {
+      "identifier": "handyeco-quote-form",
+      "displayName": "Request a Free Quote",
+      "type": "action",
+      "description": "Submit a quote request for handyman services in Edinburgh. Accepts job description, contact details, and optional photo uploads.",
+      "url": "https://handyeco.co.uk/#quote",
+      "representativeQueries": [
+        "get a handyman quote in Edinburgh",
+        "book a handyman near me Edinburgh",
+        "request flat pack assembly quote Edinburgh"
+      ]
+    },
+    {
+      "identifier": "handyeco-whatsapp",
+      "displayName": "WhatsApp Quick Quote",
+      "type": "action",
+      "description": "Contact Handyeco directly via WhatsApp for a fast 15–30 minute quote turnaround and photo assessments.",
+      "url": "https://wa.me/447760696723",
+      "representativeQueries": [
+        "WhatsApp handyman Edinburgh",
+        "message handyman near me"
+      ]
+    },
+    {
+      "identifier": "handyeco-services",
+      "displayName": "Edinburgh Handyman Services",
+      "type": "resource",
+      "description": "Full catalogue of handyman services available across Edinburgh and the Lothians.",
+      "url": "https://handyeco.co.uk/#services",
+      "representativeQueries": [
+        "handyman services Edinburgh",
+        "what handyman services are available in Edinburgh",
+        "home repairs Edinburgh"
+      ]
+    },
+    {
+      "identifier": "handyeco-flat-pack",
+      "displayName": "Flat-Pack & IKEA Assembly Edinburgh",
+      "type": "resource",
+      "description": "Professional IKEA PAX wardrobe, flat-pack furniture assembly and installation across Edinburgh.",
+      "url": "https://handyeco.co.uk/services/flat-pack-assembly-edinburgh",
+      "representativeQueries": [
+        "IKEA assembly Edinburgh",
+        "flat pack furniture assembly Edinburgh",
+        "PAX wardrobe assembly Edinburgh"
+      ]
+    },
+    {
+      "identifier": "handyeco-tv-mounting",
+      "displayName": "TV Wall Mounting Edinburgh",
+      "type": "resource",
+      "description": "Expert TV mounting into Edinburgh tenement sandstone walls, stud walls, and plasterboard.",
+      "url": "https://handyeco.co.uk/services/tv-wall-mounting-edinburgh",
+      "representativeQueries": [
+        "TV wall mounting Edinburgh",
+        "mount TV on stone wall Edinburgh",
+        "TV bracket installation Edinburgh tenement"
+      ]
+    },
+    {
+      "identifier": "handyeco-silicone-sealing",
+      "displayName": "Bathroom Silicone Sealing Edinburgh",
+      "type": "resource",
+      "description": "Anti-mould bathroom and shower silicone resealing service across Edinburgh.",
+      "url": "https://handyeco.co.uk/services/silicone-sealing-edinburgh",
+      "representativeQueries": [
+        "bathroom silicone sealing Edinburgh",
+        "replace mouldy sealant Edinburgh",
+        "shower resealing Edinburgh"
+      ]
+    },
+    {
+      "identifier": "handyeco-reviews",
+      "displayName": "Customer Reviews",
+      "type": "resource",
+      "description": "78+ verified 5-star Google reviews from Edinburgh homeowners and tenants.",
+      "url": "https://handyeco.co.uk/#reviews",
+      "representativeQueries": [
+        "Handyeco reviews",
+        "Edinburgh handyman reviews",
+        "is Handyeco reliable"
+      ]
+    },
+    {
+      "identifier": "handyeco-llms",
+      "displayName": "AI & LLM Resource File",
+      "type": "resource",
+      "description": "Plain-text llms.txt resource for AI language model consumption, listing all services, contact info, and site sections.",
+      "url": "https://handyeco.co.uk/llms.txt",
+      "representativeQueries": [
+        "Handyeco AI resource",
+        "handyeco.co.uk machine readable"
+      ]
+    }
+  ]
+}

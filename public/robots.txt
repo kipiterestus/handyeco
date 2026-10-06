@@ -19,3 +19,6 @@ Disallow: /api/
 
 # Sitemap Location
 Sitemap: https://handyeco.co.uk/sitemap.xml
+
+# AI Agent Discovery
+AI-Catalog: https://handyeco.co.uk/ai-catalog.json
