@@ -71,15 +71,15 @@ export default function SpeedDuel() {
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs font-semibold uppercase tracking-wider mb-4">
             <Gauge className="w-3.5 h-3.5" />
-            <span>{isNl ? 'LIVE SNELHEIDSBENCHMARK' : 'INTERACTIVE SPEED BENCHMARK'}</span>
+            <span>{isNl ? 'LIVE SNELHEIDSTEST' : 'LIVE SPEED TEST'}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold font-heading text-white tracking-tight mb-3">
-            {isNl ? 'Traditioneel Bureau vs. Utku\'s Architectuur' : 'Traditional Agency vs. Utku\'s Architecture'}
+            {isNl ? 'Standaard Bureau vs. Mijn Snelle Code' : 'Traditional Agency vs. Fast Modern Code'}
           </h2>
           <p className="text-slate-400 text-sm sm:text-base leading-relaxed text-balance">
             {isNl 
-              ? 'Trage websites kosten conversie en Google-posities. Test hieronder live het verschil tussen een standaard CMS en een op maat gebouwde Next.js / React 19 stack.'
-              : 'Slow loading speeds destroy user conversion and SEO rankings. Run a live side-by-side benchmark between generic agency bloatware and custom React 19 edge engineering.'}
+              ? 'Trage websites verliezen bezoekers en Google-posities. Test hieronder live het verschil tussen een trage WordPress-site en een snelle React 19 webapp.'
+              : 'Slow websites lose visitors and Google rankings. Test the real speed difference between a heavy WordPress site and my fast, custom React 19 build.'}
           </p>
         </div>
 
@@ -91,7 +91,7 @@ export default function SpeedDuel() {
             <div className="flex items-center gap-3">
               <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
               <span className="font-mono text-xs text-slate-300">
-                {isNl ? 'Core Web Vitals Stresstest Simulatie' : 'Core Web Vitals Real-Time Simulation'}
+                {isNl ? 'Snelheidstest in Real-Time' : 'Real-Time Speed Test'}
               </span>
             </div>
 
@@ -130,17 +130,17 @@ export default function SpeedDuel() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2 text-slate-300 font-semibold text-sm">
                     <Server className="w-4 h-4 text-red-400" />
-                    <span>{isNl ? 'Klassiek Bureau (WordPress / CMS)' : 'Traditional Agency (WordPress / Plugins)'}</span>
+                    <span>{isNl ? 'Klassiek Bureau (WordPress / CMS)' : 'Typical Agency (WordPress / Heavy CMS)'}</span>
                   </div>
                   <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-red-500/15 text-red-400 border border-red-500/30">
-                    {isNl ? 'Zware Codebase' : 'Heavy Payload'}
+                    {isNl ? 'Traag & Zwaar' : 'Slow & Heavy'}
                   </span>
                 </div>
 
                 {/* Progress bar */}
                 <div className="space-y-1.5 mb-6">
                   <div className="flex justify-between text-xs font-mono text-slate-400">
-                    <span>{isNl ? 'Laadvoortgang' : 'Load Progress'}</span>
+                    <span>{isNl ? 'Laadtijd' : 'Load Time'}</span>
                     <span className={agencyProgress === 100 ? 'text-red-400 font-bold' : ''}>
                       {agencyProgress}%
                     </span>
@@ -156,15 +156,15 @@ export default function SpeedDuel() {
                 {/* Metrics Table */}
                 <div className="space-y-2.5 text-xs font-mono">
                   <div className="flex justify-between p-2 rounded-lg bg-black/40 border border-white/5">
-                    <span className="text-slate-400">Largest Contentful Paint (LCP):</span>
-                    <span className="text-red-400 font-semibold">3.8 s (Poor)</span>
+                    <span className="text-slate-400">Page Load Time (LCP):</span>
+                    <span className="text-red-400 font-semibold">3.8s (Slow)</span>
                   </div>
                   <div className="flex justify-between p-2 rounded-lg bg-black/40 border border-white/5">
-                    <span className="text-slate-400">Total JavaScript & Assets:</span>
+                    <span className="text-slate-400">Total Page Size:</span>
                     <span className="text-red-300 font-medium">4.2 MB</span>
                   </div>
                   <div className="flex justify-between p-2 rounded-lg bg-black/40 border border-white/5">
-                    <span className="text-slate-400">Time to First Byte (TTFB):</span>
+                    <span className="text-slate-400">Server Response Time:</span>
                     <span className="text-red-300 font-medium">850 ms</span>
                   </div>
                 </div>
@@ -174,7 +174,7 @@ export default function SpeedDuel() {
               <div className="mt-6 pt-4 border-t border-red-500/10 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs text-slate-400">
                   <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
-                  <span>{isNl ? 'Verlies aan potentiële leads' : 'High Bounce Rate Risk'}</span>
+                  <span>{isNl ? 'Bezoekers haken af' : 'Visitors leave before it loads'}</span>
                 </div>
                 <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center font-bold font-mono text-red-400 text-sm">
                   44

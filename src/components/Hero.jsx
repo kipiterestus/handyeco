@@ -9,6 +9,7 @@ import {
   Mail,
   Cpu
 } from 'lucide-react';
+import NeuralSynthwaveGrid from './NeuralSynthwaveGrid';
 
 export default function Hero({ onOpenCv }) {
   const { t } = useLanguage();
@@ -58,9 +59,12 @@ export default function Hero({ onOpenCv }) {
             </span>
           </h1>
 
-          <p className="text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto mb-10 font-normal text-balance">
+          <p className="text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto mb-6 font-normal text-balance">
             {t.hero.subPitch}
           </p>
+
+          {/* Interactive Concept 4: Neural Synthwave 3D Interactive Grid */}
+          <NeuralSynthwaveGrid />
 
           {/* Centered Action CTAs */}
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-14">

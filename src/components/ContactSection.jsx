@@ -111,38 +111,6 @@ export default function ContactSection() {
               </div>
             </div>
 
-            {/* Netherlands Location Card */}
-            <div className="glass-card rounded-3xl p-6 sm:p-7 border border-white/10 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                <span className="font-heading font-bold text-white text-sm flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-emerald-400" />
-                  {t.contact.locationCard.title}
-                </span>
-                <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  {amsterdamTime.timeString}
-                </span>
-              </div>
-
-              <div className="space-y-2 text-xs text-slate-300">
-                <p className="flex items-center gap-2">
-                  <span className="text-slate-500">Region:</span>
-                  <span className="font-medium text-white">{t.contact.locationCard.city}</span>
-                </p>
-                <p className="flex items-center gap-2">
-                  <Clock className="w-3.5 h-3.5 text-slate-500" />
-                  <span>{t.contact.locationCard.openHours}</span>
-                </p>
-                <p className="text-slate-400 pt-2 border-t border-white/5 leading-relaxed">
-                  {t.contact.locationCard.remote}
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-white/5 flex items-center gap-2 text-xs text-slate-400">
-                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Direct engineering partnership with zero agency overhead.</span>
-              </div>
-            </div>
-
           </div>
 
           {/* Right Column: Project Inquiry Form */}

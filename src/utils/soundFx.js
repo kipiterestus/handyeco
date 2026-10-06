@@ -161,3 +161,75 @@ export function playAlert() {
     // Graceful fallback
   }
 }
+
+// Interactive Cockpit Engine / Turbo synthesizer
+let engineOsc = null;
+let engineGain = null;
+let engineFilter = null;
+
+export function startEngineSound() {
+  if (isMuted) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  try {
+    if (engineOsc) return;
+    engineOsc = ctx.createOscillator();
+    engineGain = ctx.createGain();
+    engineFilter = ctx.createBiquadFilter();
+
+    engineOsc.type = 'sawtooth';
+    engineOsc.frequency.setValueAtTime(65, ctx.currentTime);
+
+    engineFilter.type = 'lowpass';
+    engineFilter.frequency.setValueAtTime(300, ctx.currentTime);
+
+    engineGain.gain.setValueAtTime(0.02, ctx.currentTime);
+
+    engineOsc.connect(engineFilter);
+    engineFilter.connect(engineGain);
+    engineGain.connect(ctx.destination);
+    engineOsc.start();
+  } catch {
+    // Graceful fallback
+  }
+}
+
+export function updateEnginePitch(ratio) {
+  if (isMuted || !engineOsc || !audioCtx) return;
+  try {
+    const targetFreq = 70 + ratio * 240; // 70Hz -> 310Hz
+    const targetFilter = 250 + ratio * 800; // filter opens up with speed
+    engineOsc.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.05);
+    if (engineFilter) {
+      engineFilter.frequency.setTargetAtTime(targetFilter, audioCtx.currentTime, 0.05);
+    }
+    if (engineGain) {
+      const vol = 0.02 + ratio * 0.035;
+      engineGain.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.05);
+    }
+  } catch {
+    // Graceful fallback
+  }
+}
+
+export function stopEngineSound() {
+  if (!audioCtx) return;
+  try {
+    if (engineGain) {
+      engineGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.1);
+    }
+    setTimeout(() => {
+      if (engineOsc) {
+        try { engineOsc.stop(); } catch {}
+        engineOsc = null;
+        engineGain = null;
+        engineFilter = null;
+      }
+    }, 120);
+  } catch {
+    engineOsc = null;
+    engineGain = null;
+    engineFilter = null;
+  }
+}
+

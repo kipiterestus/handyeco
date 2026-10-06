@@ -99,10 +99,10 @@ export default function CvModal({ isOpen, onClose }) {
           {/* Executive Summary */}
           <div>
             <h3 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2 font-semibold">
-              Executive Profile
+              Professional Summary
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Pioneering the new <strong>Builder & Maintainer</strong> discipline in modern software engineering. Leveraging autonomous AI agent workflows to build end-to-end, high-performance web platforms in record time — followed by proactive systems maintenance ensuring zero bit-rot, top-tier Core Web Vitals, and continuous AI feature integration.
+              I build fast, modern web applications and websites using AI tools and clean code standards — and provide ongoing maintenance to keep software fast, secure, and up to date over time.
             </p>
           </div>
 
@@ -110,7 +110,7 @@ export default function CvModal({ isOpen, onClose }) {
           <div>
             <h3 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-4 font-semibold flex items-center gap-2">
               <Briefcase className="w-4 h-4 text-blue-400" />
-              Flagship Production Deliverables
+              Selected Live Projects
             </h3>
 
             <div className="space-y-4">

@@ -98,12 +98,6 @@ export default function Navbar({ onOpenCmd }) {
             >
               {t.nav.skills}
             </a>
-            <a 
-              href="#process" 
-              className="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white rounded-full hover:bg-white/10 transition-colors whitespace-nowrap"
-            >
-              {t.nav.process}
-            </a>
           </nav>
 
           {/* Right Action Controls */}
@@ -221,15 +215,6 @@ export default function Navbar({ onOpenCmd }) {
             >
               <Cpu className="w-4 h-4 text-slate-400" />
               <span>{t.nav.skills}</span>
-            </a>
-
-            <a 
-              href="#process" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="py-2 text-sm font-medium text-slate-200 hover:text-white flex items-center gap-2.5 transition-colors"
-            >
-              <GitCommit className="w-4 h-4 text-slate-400" />
-              <span>{t.nav.process}</span>
             </a>
 
             <a 

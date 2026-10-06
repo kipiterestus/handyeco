@@ -5,7 +5,6 @@ import {
   Check, 
   ArrowRight, 
   Sparkles, 
-  Send, 
   Layers, 
   Target, 
   Calendar 
@@ -21,63 +20,22 @@ export default function ScopeBuilder() {
   const [timeline, setTimeline] = useState('sprint');
 
   const projectTypes = [
-    {
-      id: 'saas',
-      title: isNl ? 'SaaS & Webapplicatie' : 'SaaS & Web Platform',
-      desc: isNl ? 'Op maat gebouwde software, dashboard & gebruikersbeheer' : 'Custom web application, authenticated dashboard & database',
-    },
-    {
-      id: 'booking',
-      title: isNl ? 'Conversiegerichte E-Commerce / Boekingen' : 'High-Converting Booking / Commerce',
-      desc: isNl ? 'Snelle checkout, directe betalingen & geoptimaliseerde funnel' : 'Frictionless checkout, custom flows & localized UX funnel',
-    },
-    {
-      id: 'ai_tools',
-      title: isNl ? 'AI Agent & Bedrijfsautomatisering' : 'AI Agent & Workflow Automation',
-      desc: isNl ? 'Data scraping, interne tools & LLM pijplijnen' : 'Autonomous data pipelines, scraping & internal operations tools',
-    },
+    { id: 'saas', title: isNl ? 'SaaS & Webapplicatie' : 'SaaS & Web Platform' },
+    { id: 'booking', title: isNl ? 'E-Commerce / Boekingen' : 'E-Commerce & Booking' },
+    { id: 'ai_tools', title: isNl ? 'AI Agent & Automatisering' : 'AI Automation & Tools' },
   ];
 
-  // STEP 2: REPLACED OPTION AS REQUESTED (Core Business Priority & Strategic Impact)
   const businessPriorities = [
-    {
-      id: 'conversion',
-      title: isNl ? 'Maximale Conversie & Omzetgroei' : 'Maximum Conversion & Revenue',
-      desc: isNl ? 'Wrijvingsloze formulieren, sublieme UX en duidelijke CTA-paden' : 'Frictionless UX journeys, fast checkout & trust-first layout',
-    },
-    {
-      id: 'speed_seo',
-      title: isNl ? 'Sub-Seconde Laadtijd & SEO Dominantie' : 'Sub-Second Speed & Google SEO',
-      desc: isNl ? '100/100 Core Web Vitals, supersnel laden & lokale SEO-structuur' : '100/100 Core Web Vitals, ultra-fast TTFB & structured data',
-    },
-    {
-      id: 'ai_leverage',
-      title: isNl ? 'AI-Ondersteuning & Handmatig Werk Elimineren' : 'Autonomous AI Leverage & Efficiency',
-      desc: isNl ? 'Repetitieve bedrijfstaken automatiseren met slimme agents' : 'Automating manual operational bottlenecks with AI pipelines',
-    },
-    {
-      id: 'modernize',
-      title: isNl ? 'Verouderde Stack Vernieuwen (0 Downtime)' : 'Legacy Stack Modernization',
-      desc: isNl ? 'Oude codebase vervangen door moderne React 19/Next.js stack' : 'Replacing brittle legacy code with clean, maintainable systems',
-    },
+    { id: 'conversion', title: isNl ? 'Maximale Conversie & Omzet' : 'High Conversion & Sales' },
+    { id: 'speed_seo', title: isNl ? 'Supersnel Laden & Google SEO' : 'Fast Speed & Google SEO' },
+    { id: 'ai_leverage', title: isNl ? 'AI & Automatisering' : 'AI & Process Automation' },
+    { id: 'modernize', title: isNl ? 'Oude Codebase Vernieuwen' : 'Modernize Legacy Code' },
   ];
 
   const timelines = [
-    {
-      id: 'sprint',
-      title: isNl ? 'Snelle Sprint (2 – 3 Weken)' : 'Rapid Sprint (2 – 3 Weeks)',
-      desc: isNl ? 'Gefocuste MVP of gerichte feature lancering' : 'Focused MVP release or high-priority feature sprint',
-    },
-    {
-      id: 'full_build',
-      title: isNl ? 'Volledig Platform (4 – 6 Weken)' : 'Full Production Build (4 – 6 Weeks)',
-      desc: isNl ? 'End-to-end ontwerp, integraties en productie-inrichting' : 'Complete end-to-end architecture, API integrations & launch',
-    },
-    {
-      id: 'partnership',
-      title: isNl ? 'Bouw + Doorlopend Onderhoud' : 'Build + Ongoing Maintainer Partnership',
-      desc: isNl ? 'Eerst bouwen, daarna proactief onderhoud en monitoring' : 'Initial delivery followed by proactive SLA systems maintenance',
-    },
+    { id: 'sprint', title: isNl ? 'Sprint (2 – 3 Weken)' : 'Fast Sprint (2 – 3 Weeks)' },
+    { id: 'full_build', title: isNl ? 'Volledig Project (4 – 6 Weken)' : 'Full Build (4 – 6 Weeks)' },
+    { id: 'partnership', title: isNl ? 'Bouw + Maandelijks Onderhoud' : 'Build + Monthly Support' },
   ];
 
   const handleApplyToForm = () => {
@@ -88,10 +46,9 @@ export default function ScopeBuilder() {
     const selectedTimeline = timelines.find((t) => t.id === timeline)?.title || '';
 
     const briefText = isNl
-      ? `Projectscope Samenvatting:\n- Type: ${selectedType}\n- Belangrijkste Doelstelling: ${selectedPriority}\n- Gewenste Planning: ${selectedTimeline}\n\nGraag bespreek ik de technische architectuur en realisatie.`
-      : `Project Scope Summary:\n- Scope: ${selectedType}\n- Strategic Priority: ${selectedPriority}\n- Target Timeline: ${selectedTimeline}\n\nLooking forward to reviewing the technical architecture and delivery plan.`;
+      ? `Project Scope:\n- Type: ${selectedType}\n- Hoofddoel: ${selectedPriority}\n- Gewenste Planning: ${selectedTimeline}\n\nLaten we de details en planning bespreken.`
+      : `Project Scope:\n- Type: ${selectedType}\n- Primary Goal: ${selectedPriority}\n- Target Timeline: ${selectedTimeline}\n\nLet's discuss the project details and delivery.`;
 
-    // Dispatch event to fill the contact form automatically
     window.dispatchEvent(new CustomEvent('scope_brief_applied', {
       detail: {
         projectType: selectedType,
@@ -99,7 +56,6 @@ export default function ScopeBuilder() {
       }
     }));
 
-    // Smooth scroll to contact section
     const contactElem = document.getElementById('contact');
     if (contactElem) {
       contactElem.scrollIntoView({ behavior: 'smooth' });
@@ -107,35 +63,35 @@ export default function ScopeBuilder() {
   };
 
   return (
-    <section id="scope-builder" className="py-20 scroll-mt-24 relative">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="scope-builder" className="py-14 scroll-mt-24 relative">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
         
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 font-mono text-xs font-semibold uppercase tracking-wider mb-4">
+        <div className="text-center max-w-xl mx-auto mb-8">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 font-mono text-xs font-semibold uppercase tracking-wider mb-3">
             <Compass className="w-3.5 h-3.5" />
-            <span>{isNl ? 'INTERACTIEVE PROJECT SCOPE BUILDER' : 'INTERACTIVE PROJECT SCOPE BUILDER'}</span>
+            <span>{isNl ? 'PROJECT SCOPE' : 'PROJECT SCOPE BUILDER'}</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold font-heading text-white tracking-tight mb-3">
-            {isNl ? 'Definieer Uw Project in 30 Seconden' : 'Structure Your Project Scope in 30 Seconds'}
+          <h2 className="text-2xl sm:text-3xl font-bold font-heading text-white tracking-tight mb-2">
+            {isNl ? 'Stel Uw Project Samen' : 'Plan Your Project in Seconds'}
           </h2>
-          <p className="text-slate-400 text-sm sm:text-base leading-relaxed text-balance">
+          <p className="text-slate-400 text-xs sm:text-sm">
             {isNl 
-              ? 'Selecteer uw wensen en doelstellingen hieronder. De tool stelt direct een heldere technische briefing samen die u met één klik kunt versturen.'
-              : 'Select your project goals and requirements below to generate an instant, structured technical brief ready for direct review.'}
+              ? 'Kies uw type, hoofddoel en planning. De samenvatting wordt direct overgenomen in het formulier.'
+              : 'Pick your project type, primary goal, and timeline. The summary fills into the contact form automatically.'}
           </p>
         </div>
 
-        {/* Builder Container */}
-        <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl space-y-8">
+        {/* Minimal Compact Builder Container */}
+        <div className="glass-card rounded-2xl p-5 sm:p-6 border border-white/10 shadow-xl space-y-6">
           
           {/* STEP 1: Project Type */}
           <div>
-            <div className="flex items-center gap-2 mb-3 text-xs font-mono uppercase tracking-wider text-blue-400 font-semibold">
-              <Layers className="w-4 h-4" />
-              <span>{isNl ? 'Stap 1: Type Software & Architectuur' : 'Step 1: Software Type & Architecture'}</span>
+            <div className="flex items-center gap-1.5 mb-2.5 text-xs font-mono uppercase tracking-wider text-blue-400 font-semibold">
+              <Layers className="w-3.5 h-3.5" />
+              <span>{isNl ? '1. Type Software' : '1. Project Type'}</span>
             </div>
-            <div className="grid sm:grid-cols-3 gap-3">
+            <div className="flex flex-wrap gap-2">
               {projectTypes.map((item) => (
                 <button
                   key={item.id}
@@ -143,29 +99,26 @@ export default function ScopeBuilder() {
                     playClick();
                     setProjectType(item.id);
                   }}
-                  className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer flex items-center gap-2 ${
                     projectType === item.id
-                      ? 'bg-blue-600/15 border-blue-500/60 shadow-lg shadow-blue-500/10'
-                      : 'bg-slate-900/60 border-white/10 hover:border-white/20'
+                      ? 'bg-blue-600/20 border-blue-500/70 text-white shadow-sm shadow-blue-500/20'
+                      : 'bg-slate-900/60 border-white/10 text-slate-300 hover:border-white/20 hover:text-white'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-bold font-heading text-white">{item.title}</span>
-                    {projectType === item.id && <Check className="w-4 h-4 text-blue-400 shrink-0" />}
-                  </div>
-                  <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                  <span>{item.title}</span>
+                  {projectType === item.id && <Check className="w-3.5 h-3.5 text-blue-400 shrink-0" />}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* STEP 2: Business Priority (Replaced Step) */}
+          {/* STEP 2: Main Priority */}
           <div>
-            <div className="flex items-center gap-2 mb-3 text-xs font-mono uppercase tracking-wider text-indigo-400 font-semibold">
-              <Target className="w-4 h-4" />
-              <span>{isNl ? 'Stap 2: Strategische Prioriteit & Doelstelling' : 'Step 2: Strategic Priority & Target Impact'}</span>
+            <div className="flex items-center gap-1.5 mb-2.5 text-xs font-mono uppercase tracking-wider text-indigo-400 font-semibold">
+              <Target className="w-3.5 h-3.5" />
+              <span>{isNl ? '2. Belangrijkste Doel' : '2. Primary Goal'}</span>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="flex flex-wrap gap-2">
               {businessPriorities.map((item) => (
                 <button
                   key={item.id}
@@ -173,17 +126,14 @@ export default function ScopeBuilder() {
                     playClick();
                     setBusinessPriority(item.id);
                   }}
-                  className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer flex items-center gap-2 ${
                     businessPriority === item.id
-                      ? 'bg-indigo-600/15 border-indigo-500/60 shadow-lg shadow-indigo-500/10'
-                      : 'bg-slate-900/60 border-white/10 hover:border-white/20'
+                      ? 'bg-indigo-600/20 border-indigo-500/70 text-white shadow-sm shadow-indigo-500/20'
+                      : 'bg-slate-900/60 border-white/10 text-slate-300 hover:border-white/20 hover:text-white'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold font-heading text-white">{item.title}</span>
-                    {businessPriority === item.id && <Check className="w-4 h-4 text-indigo-400 shrink-0" />}
-                  </div>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">{item.desc}</p>
+                  <span>{item.title}</span>
+                  {businessPriority === item.id && <Check className="w-3.5 h-3.5 text-indigo-400 shrink-0" />}
                 </button>
               ))}
             </div>
@@ -191,11 +141,11 @@ export default function ScopeBuilder() {
 
           {/* STEP 3: Timeline */}
           <div>
-            <div className="flex items-center gap-2 mb-3 text-xs font-mono uppercase tracking-wider text-emerald-400 font-semibold">
-              <Calendar className="w-4 h-4" />
-              <span>{isNl ? 'Stap 3: Gewenste Planning & Samenwerking' : 'Step 3: Target Timeline & Cadence'}</span>
+            <div className="flex items-center gap-1.5 mb-2.5 text-xs font-mono uppercase tracking-wider text-emerald-400 font-semibold">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>{isNl ? '3. Planning' : '3. Timeline'}</span>
             </div>
-            <div className="grid sm:grid-cols-3 gap-3">
+            <div className="flex flex-wrap gap-2">
               {timelines.map((item) => (
                 <button
                   key={item.id}
@@ -203,39 +153,32 @@ export default function ScopeBuilder() {
                     playClick();
                     setTimeline(item.id);
                   }}
-                  className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer flex items-center gap-2 ${
                     timeline === item.id
-                      ? 'bg-emerald-600/15 border-emerald-500/60 shadow-lg shadow-emerald-500/10'
-                      : 'bg-slate-900/60 border-white/10 hover:border-white/20'
+                      ? 'bg-emerald-600/20 border-emerald-500/70 text-white shadow-sm shadow-emerald-500/20'
+                      : 'bg-slate-900/60 border-white/10 text-slate-300 hover:border-white/20 hover:text-white'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold font-heading text-white">{item.title}</span>
-                    {timeline === item.id && <Check className="w-4 h-4 text-emerald-400 shrink-0" />}
-                  </div>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">{item.desc}</p>
+                  <span>{item.title}</span>
+                  {timeline === item.id && <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Result Action Bar */}
-          <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
-              <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>
-                {isNl 
-                  ? 'Aanbevolen Stack: React 19 + Next.js App Router + Supabase + Edge CDN' 
-                  : 'Recommended Stack: React 19 + Next.js App Router + Supabase + Edge CDN'}
-              </span>
-            </div>
+          {/* Action Bar */}
+          <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <span className="text-[11px] font-mono text-slate-400 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>React 19 • Next.js • Supabase • High Speed</span>
+            </span>
 
             <button
               onClick={handleApplyToForm}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-600 hover:opacity-95 text-white text-xs font-semibold shadow-xl shadow-blue-500/20 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-blue-500/20 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
             >
-              <span>{isNl ? 'Kopieer naar Contactformulier' : 'Apply Scope to Inquiry Form'}</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>{isNl ? 'Plak in Bericht' : 'Apply to Contact Form'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 

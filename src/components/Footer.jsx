@@ -46,7 +46,6 @@ export default function Footer({ onOpenCmd }) {
             </a>
             <a href="#projects" className="hover:text-white transition-colors whitespace-nowrap">{t.nav.projects}</a>
             <a href="#skills" className="hover:text-white transition-colors whitespace-nowrap">{t.nav.skills}</a>
-            <a href="#process" className="hover:text-white transition-colors whitespace-nowrap">{t.nav.process}</a>
             <a href="#contact" className="hover:text-white transition-colors whitespace-nowrap">{t.nav.contact}</a>
           </div>
 

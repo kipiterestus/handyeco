@@ -147,7 +147,7 @@ export default function ProjectModal({ project, onClose }) {
           <div>
             <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
               <Cpu className="w-4 h-4 text-blue-400" />
-              <span>Key Architecture Features & Modules:</span>
+              <span>Key Features:</span>
             </h3>
             <div className="grid sm:grid-cols-2 gap-3">
               {content.features.map((feat, i) => (
@@ -180,14 +180,14 @@ export default function ProjectModal({ project, onClose }) {
           {/* Bottom CTA */}
           <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
             <p className="text-xs text-slate-400">
-              Need a similar high-performance platform for your company or startup?
+              Need a similar fast web app for your project or business?
             </p>
             <a
               href="#contact"
               onClick={onClose}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-blue-600/20"
             >
-              <span>Discuss Custom Development</span>
+              <span>Get in Touch</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
           </div>

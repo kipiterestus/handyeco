@@ -5,10 +5,8 @@ import Hero from './components/Hero';
 import BuilderMaintainerSection from './components/BuilderMaintainerSection';
 import ProjectsSection from './components/ProjectsSection';
 import SkillsBento from './components/SkillsBento';
-import ProcessSection from './components/ProcessSection';
 import ContactSection from './components/ContactSection';
 import SpeedDuel from './components/SpeedDuel';
-import CodeUiSlider from './components/CodeUiSlider';
 import ScopeBuilder from './components/ScopeBuilder';
 import Footer from './components/Footer';
 import CommandPalette from './components/CommandPalette';
@@ -41,9 +39,7 @@ export default function App() {
           <BuilderMaintainerSection />
           <SpeedDuel />
           <ProjectsSection />
-          <CodeUiSlider />
           <SkillsBento />
-          <ProcessSection />
           <ScopeBuilder />
           <ContactSection />
         </main>
