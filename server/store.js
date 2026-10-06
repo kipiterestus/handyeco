@@ -80,6 +80,37 @@ function migrateSiteConfigReviewCount() {
 }
 migrateSiteConfigReviewCount();
 
+// Ensure persistent volume services.json updates outdated copy on deploy
+function migrateServicesCopy() {
+  try {
+    const servicesFile = path.join(dataDir, 'services.json');
+    if (fs.existsSync(servicesFile)) {
+      const services = JSON.parse(fs.readFileSync(servicesFile, 'utf-8'));
+      if (Array.isArray(services)) {
+        let changed = false;
+        for (const s of services) {
+          if (s.id === 'painting-decorating' && Array.isArray(s.bullets)) {
+            s.bullets = s.bullets.map(b => {
+              if (b.toLowerCase().includes('dust-sheet') || b.toLowerCase().includes('dust sheet')) {
+                changed = true;
+                return 'Dust-free, clean & spotless tidy workmanship';
+              }
+              return b;
+            });
+          }
+        }
+        if (changed) {
+          fs.writeFileSync(servicesFile, JSON.stringify(services, null, 2), 'utf-8');
+          console.log('[Store] Automatically migrated services.json painting copy on persistent volume');
+        }
+      }
+    }
+  } catch (err) {
+    console.error('[Store] Error migrating services copy:', err);
+  }
+}
+migrateServicesCopy();
+
 // One-time startup migration to wipe old test quotes as requested by user
 function clearExistingQuotesMigration() {
   try {
@@ -116,6 +147,15 @@ export function readJson(filename, defaultValue = {}) {
         }
         if (!parsed.googleReviewCount || Number(parsed.googleReviewCount) < 78) {
           parsed.googleReviewCount = 78;
+        }
+      }
+      if (filename === 'services.json' && Array.isArray(parsed)) {
+        for (const s of parsed) {
+          if (s.id === 'painting-decorating' && Array.isArray(s.bullets)) {
+            s.bullets = s.bullets.map(b => (b.toLowerCase().includes('dust-sheet') || b.toLowerCase().includes('dust sheet'))
+              ? 'Dust-free, clean & spotless tidy workmanship'
+              : b);
+          }
         }
       }
       return parsed;
