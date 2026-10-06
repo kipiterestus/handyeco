@@ -228,7 +228,7 @@ export default function PaintingDecoratingPage() {
         <section className="py-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-black text-slate-900">Frequently Asked Questions</h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">Answers about paint brands, dust sheets, and drying times</p>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">Answers about paint brands, clean dust-free preparation, and drying times</p>
           </div>
 
           <div className="space-y-3">

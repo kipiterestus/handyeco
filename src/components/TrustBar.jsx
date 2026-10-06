@@ -37,7 +37,7 @@ export default function TrustBar() {
       iconColor: "text-indigo-600",
       bgColor: "bg-indigo-50",
       title: "Punctual & Clean",
-      subtitle: "Tenement care, dust sheets & spotless tidy",
+      subtitle: "Tenement care, dust-free & spotless tidy",
       link: null
     }
   ];
