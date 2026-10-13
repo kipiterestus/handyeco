@@ -431,7 +431,7 @@ export async function syncReviews() {
     }
 
     // Keep siteConfig.googleReviewCount in sync (respect panel configuration)
-    const targetReviewCount = siteConfig.googleReviewCount || Math.max(currentReviews.length, 80);
+    const targetReviewCount = siteConfig.googleReviewCount || Math.max(currentReviews.length, 87);
     siteConfig.googleReviewCount = targetReviewCount;
     if (!siteConfig.googleRating) siteConfig.googleRating = '5.0';
 

@@ -68,10 +68,10 @@ function migrateSiteConfigReviewCount() {
     const siteConfigFile = path.join(dataDir, 'siteConfig.json');
     if (fs.existsSync(siteConfigFile)) {
       const cfg = JSON.parse(fs.readFileSync(siteConfigFile, 'utf-8'));
-      if (cfg && (!cfg.googleReviewCount || Number(cfg.googleReviewCount) < 78)) {
-        cfg.googleReviewCount = 78;
+      if (cfg && (!cfg.googleReviewCount || Number(cfg.googleReviewCount) < 87)) {
+        cfg.googleReviewCount = 87;
         fs.writeFileSync(siteConfigFile, JSON.stringify(cfg, null, 2), 'utf-8');
-        console.log('[Store] Automatically migrated siteConfig googleReviewCount to 78 on persistent volume');
+        console.log('[Store] Automatically migrated siteConfig googleReviewCount to 87 on persistent volume');
       }
     }
   } catch (err) {
@@ -146,7 +146,7 @@ export function readJson(filename, defaultValue = {}) {
           parsed.email = 'info@handyeco.co.uk';
         }
         if (!parsed.googleReviewCount) {
-          parsed.googleReviewCount = 80;
+          parsed.googleReviewCount = 87;
         }
       }
       if (filename === 'services.json' && Array.isArray(parsed)) {

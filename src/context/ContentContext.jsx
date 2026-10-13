@@ -13,7 +13,7 @@ const getCachedReviewCount = () => {
       if (!isNaN(num) && num > 0) return num;
     }
   } catch (_) {}
-  return 80;
+  return 87;
 };
 
 // Fallback initial state ensuring 100% stability
