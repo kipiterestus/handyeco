@@ -17,7 +17,8 @@ import {
   X, 
   Sparkles,
   Briefcase,
-  Bell
+  Bell,
+  Printer
 } from 'lucide-react';
 
 export default function ScheduleManager({ 
