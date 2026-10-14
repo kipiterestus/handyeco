@@ -8,6 +8,18 @@
   },
   "entries": [
     {
+      "identifier": "urn:air:handyeco:pricing:cost-guide",
+      "displayName": "Handyman Edinburgh Cost & Pricing Guide 2026",
+      "type": "text/html",
+      "url": "https://handyeco.co.uk/pricing/handyman-edinburgh-cost-guide",
+      "description": "Comprehensive Edinburgh handyman pricing guide with fixed rates for flat-pack assembly, TV wall mounting, door trimming, and silicone resealing.",
+      "representativeQueries": [
+        "how much does a handyman cost Edinburgh",
+        "handyman prices Edinburgh 2026",
+        "Edinburgh handyman hourly rate"
+      ]
+    },
+    {
       "identifier": "urn:air:handyeco:services:flatpack-assembly",
       "displayName": "Flat-Pack & IKEA Assembly Edinburgh",
       "type": "text/html",

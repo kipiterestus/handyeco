@@ -1,43 +1,65 @@
-# Handyeco - Edinburgh Handyman Services (Comprehensive Guide)
+# Handyeco - Edinburgh Handyman Services (Full Technical & AI Reference)
 
-> Complete business profile, service descriptions, technical capabilities, pricing, and Edinburgh service coverage for Handyeco.
+> Comprehensive business profile, technical capabilities, fixed pricing structure, and Edinburgh geographic coverage for Handyeco.
 
 ## About Handyeco
-Handyeco is a premier Edinburgh-based property maintenance and handyman service operated by Ekrem Guran. We serve homeowners, tenants, landlords, and letting agencies across the City of Edinburgh and surrounding Lothians.
+Handyeco is a 5-star rated, independent property maintenance and handyman service based in Edinburgh, Scotland, operated by lead craftsman Ekrem Guran. We serve homeowners, tenants, landlords, and letting agents across the City of Edinburgh and the Lothians.
 
-## Core Services
+## Technical Capabilities & Core Services
 
 ### 1. Flat-Pack Furniture Assembly
-- Specialization in IKEA systems: PAX wardrobes, HEMNES, MALM, BESTÅ, KALLAX, and PLATSA.
-- Also assembly for Next Home, Wayfair, John Lewis, Argos, and Dunelm.
-- Safe wall anchoring into stone and plasterboard.
+- All flat-pack furniture brands (IKEA, Wayfair, Next, Argos, John Lewis, Dunelm).
+- Multi-door wardrobes with hinged or sliding mirrored doors.
+- Ottoman gas-lift storage beds, bunk beds, and children's furniture.
+- Wall safety anchors installed into solid stone or plasterboard to accommodate sloping tenement floorboards.
 
-### 2. TV Wall Mounting & Heavy Hanging
-- Screen sizes from 32 inches to 85+ inches (Samsung, LG OLED, Sony Bravia).
-- Secure installation into historic Edinburgh stone tenement walls using heavy-duty Fischer DuoPower anchors and masonry drill bits.
-- Flush, tilt, and full-motion articulating cantilever bracket installations.
-- Heavy Victorian ornate mirrors, floating shelves, curtain poles, and radiator covers.
+### 2. TV Wall Mounting into Masonry & Stud Walls
+- Screen sizes from 32 inches to 85+ inches (OLED, QLED, LED).
+- Safe installation into historic Edinburgh stone tenement walls using heavy-duty trade expansion sleeves and steel coach bolts.
+- Digital scanner detection for live electrics and pipes before drilling.
+- Specialized hollow-wall toggle anchors (tested to 80kg) for plasterboard stud partitions in modern flats.
+- Clean cable trunking (D-Line) for concealed power and HDMI runs.
 
-### 3. Silicone Mastic Sealing & Bath/Shower Resealing
-- Complete excision of black mildew-stained or failed silicone.
-- Anti-fungal sanitization of joints.
-- Application of premium sanitary grade silicone (BT1 / Dow Corning) with flawless tooling.
+### 3. Silicone Resealing & Mastic Waterproofing
+- Complete removal of degraded, black-moulded silicone from showers, bathtubs, and kitchen worktops.
+- Anti-fungal joint sanitisation and thorough drying.
+- Premium sanitary-grade silicone application with zero leaks.
 
-### 4. Painting, Decorating & Patch Repairs
-- Skirting boards, architraves, doors, interior walls, and water stain covering.
-- Tenement door trimming after new carpet installations.
+### 4. Tenement Repairs & Carpentry
+- Internal timber door trimming and bottom-edge beveling using rail plunge saws with dust extraction.
+- Internal door handle and latch fitting or replacement.
+- Curtain pole and window blind installation into structural sandstone lintels.
+- Heavy mirror, floating shelf, and artwork hanging.
 
-## Service Coverage Areas
-- Edinburgh City Centre (EH1, EH2, EH3)
-- Southside, Newington, Marchmont, Morningside, Bruntsfield (EH8, EH9, EH10)
-- Leith, Newhaven, Trinity, Stockbridge (EH4, EH5, EH6)
-- Portobello, Duddingston, Craigmillar, Liberton (EH7, EH15, EH16)
-- Colinton, Corstorphine, Murrayfield, Cramond (EH12, EH13, EH14)
-- Musselburgh (EH21), Dalkeith (EH22), Livingston (EH54), South Queensferry (EH30)
+### 5. Outdoor Maintenance & Fencing
+- Garden gate realignment, heavy-duty galvanised hinge replacement, and barrel bolt fitting.
+- Storm-damaged timber fence post repairs with concrete or steel repair spurs.
 
-## Contact & Links
-- [Website](https://handyeco.co.uk/): Official website.
-- [Services](https://handyeco.co.uk/#services): Service list.
-- [Reviews](https://handyeco.co.uk/#reviews): 5-star customer reviews.
-- [Free Quote](https://handyeco.co.uk/#quote): Request a quote.
-- [WhatsApp](https://wa.me/447760696723): Direct chat.
+## 2026 Pricing Summary
+- Minimum job booking: £65 (zero call-out fee)
+- TV Wall Mounting (40"–55"): £65 fixed (same for stone or stud)
+- TV Wall Mounting (55"+): £80 fixed
+- Chest of Drawers: £65 – £95
+- 2-Door Wardrobe: £120 – £150
+- 3-Door Wardrobe: £150 – £190
+- Ottoman Bed: Single £80 | Double £100 | King £130
+- Bath/Shower Reseal: £70 – £120
+- Door Trimming: £65 (1st door), £30 each additional
+- Door Handles: £65 (1st door), £30 each additional
+- Curtains & Blinds: £65 (1st item), £30 each additional
+
+## Geographic Coverage
+- Central Edinburgh: EH1 (Old Town), EH2 (City Centre), EH3 (New Town)
+- North & Coast: EH4 (Stockbridge/Dean Village), EH5 (Granton/Trinity), EH6 (Leith/Newhaven), EH15 (Portobello/Joppa)
+- South: EH8 (Southside/Pleasance), EH9 (Newington/Blackford), EH10 (Morningside/Bruntsfield), EH16 (Liberton)
+- West: EH11 (Gorgie/Dalry), EH12 (Corstorphine/Murrayfield), EH13 (Colinton), EH14 (Balerno)
+- East Lothian: EH21 (Musselburgh/Fisherrow/Inveresk)
+- West Lothian: EH54 (Livingston), EH30 (South Queensferry)
+
+## Verified Contact Details
+- **Website**: https://handyeco.co.uk
+- **Pricing Guide**: https://handyeco.co.uk/pricing/handyman-edinburgh-cost-guide
+- **WhatsApp**: +44 7760 696723 (https://wa.me/447760696723)
+- **Phone**: 07760 696723
+- **Email**: info@handyeco.co.uk
+- **Google Reviews**: 87+ Verified 5-Star Reviews (https://maps.app.goo.gl/jQH6GXAotpV1oXG78)

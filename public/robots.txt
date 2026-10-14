@@ -17,8 +17,29 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 
-# Sitemap Location
-Sitemap: https://handyeco.co.uk/sitemap.xml
+# AI Search Crawlers (GEO & AI Engine Discovery)
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+Disallow: /api/
 
-# AI Agent Discovery
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Sitemap & LLM Discovery Files
+Sitemap: https://handyeco.co.uk/sitemap.xml
 AI-Catalog: https://handyeco.co.uk/ai-catalog.json
+LLMs-Txt: https://handyeco.co.uk/llms.txt

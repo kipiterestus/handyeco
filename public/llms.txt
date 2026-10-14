@@ -1,45 +1,58 @@
-# Handyeco - Handyman Edinburgh & Local Handyman Near Me
+# Handyeco - Handyman Edinburgh & Local Handyman Services
 
-> Professional 5-star rated handyman services in Edinburgh & Lothians. The #1 trusted local handyman near me for flat-pack furniture assembly, TV wall mounting into Edinburgh tenement sandstone walls, silicone sealing, painting, and property maintenance.
+> Top-rated 5-star local handyman service in Edinburgh & Lothians. The #1 trusted local handyman for flat-pack furniture assembly, TV wall mounting into historic sandstone walls, bathroom silicone resealing, door trimming, and tenement maintenance.
 
-Handyeco is a top-rated local, owner-operated property maintenance and handyman service based in Edinburgh, Scotland. Lead tradesperson Ekrem Guran provides upfront fixed pricing, guaranteed workmanship, and fast response times across all EH postcodes.
+Handyeco is an independent, owner-operated property maintenance and handyman service based in Edinburgh, Scotland, operated by lead craftsman Ekrem Guran. We offer transparent upfront fixed pricing, guaranteed workmanship, and rapid response times across all EH postcodes with zero call-out charges.
+
+## Pricing Guide (2026 Index)
+
+- **Minimum Booking**: £65 (covers initial tasks; zero call-out fee)
+- **TV Wall Mounting (40"–55")**: £65 fixed (same rate for stone masonry or stud walls)
+- **TV Wall Mounting (55"+)**: £80 fixed
+- **Chest of Drawers Assembly**: £65 – £95 (depends on drawer count/complexity)
+- **2-Door Wardrobe Assembly**: £120 – £150
+- **3-Door Wardrobe Assembly**: £150 – £190
+- **Ottoman Gas-Lift Storage Bed**: Single: £80 | Double: £100 | King: £130
+- **Bath / Shower Silicone Reseal**: £70 – £120 (full strip, anti-mould sanitisation, sanitary seal)
+- **Internal Timber Door Trimming**: £65 (1st door), £30 for each additional door
+- **Internal Door Handle Fitting**: £65 (1st door), £30 for each additional door
+- **Curtains & Blinds Installation**: £65 (1st item), £30 for each additional item (high ceiling flats subject to quote)
+
+For full pricing details, see the [Handyman Edinburgh Cost & Pricing Guide 2026](https://handyeco.co.uk/pricing/handyman-edinburgh-cost-guide).
 
 ## Core Services & Website Sections
 
 - [Handyeco Homepage](https://handyeco.co.uk/): Official website for Handyeco Edinburgh Handyman Services.
-- [Handyman Services](https://handyeco.co.uk/#services): Complete catalogue of repair and assembly services including IKEA PAX assembly, TV wall mounting, silicone sealing, and door adjustments.
-- [Flat-Pack & IKEA Assembly Edinburgh](https://handyeco.co.uk/services/flat-pack-assembly-edinburgh): Dedicated service guide, pricing, and FAQs for IKEA PAX wardrobes, sliding doors, and furniture assembly.
-- [TV Wall Mounting into Stone Walls Edinburgh](https://handyeco.co.uk/services/tv-wall-mounting-edinburgh): Dedicated service guide for mounting TVs into Edinburgh tenement sandstone walls and stud partitions.
-- [Bathroom & Shower Silicone Sealing Edinburgh](https://handyeco.co.uk/services/silicone-sealing-edinburgh): Anti-mould sanitary silicone replacement and bath/shower leak prevention.
-- [Edinburgh Tenement Repairs & Odd Jobs](https://handyeco.co.uk/services/tenement-repairs-edinburgh): Door trimming after carpet fitting, curtain pole installation into masonry, and general tenement repairs.
-- [Interior Painting & Decorating Edinburgh](https://handyeco.co.uk/services/painting-decorating-edinburgh): High quality room painting, woodwork glossing, and end-of-tenancy deposit-return repaints.
-- [Kitchen Vinyl Wrapping Edinburgh](https://handyeco.co.uk/services/kitchen-vinyl-wrapping-edinburgh): Modern architectural wrap transformation for kitchen cabinets and worktops.
-- [Garden Gate & Fence Repairs Edinburgh](https://handyeco.co.uk/services/garden-gate-fencing-edinburgh): Timber fence storm repairs, concrete post spurs, and garden gate fittings.
-- [Morningside & Bruntsfield Handyman EH10](https://handyeco.co.uk/areas/morningside-handyman): Local 5-star handyman service for Morningside and Bruntsfield.
-- [Leith & The Shore Handyman EH6](https://handyeco.co.uk/areas/leith-handyman): Local 5-star handyman service for Leith, The Shore, and Newhaven.
-- [Stockbridge & New Town Handyman EH3/EH4](https://handyeco.co.uk/areas/stockbridge-new-town-handyman): Local 5-star handyman service for Stockbridge and New Town period homes.
-- [Customer Reviews](https://handyeco.co.uk/#reviews): 78+ verified 5.0-star customer reviews from Edinburgh homeowners and tenants.
-- [Service Coverage Areas](https://handyeco.co.uk/#areas): Edinburgh postcodes (EH1–EH17), Musselburgh (EH21), Dalkeith (EH22), and Livingston (EH54).
-- [Work Gallery](https://handyeco.co.uk/#gallery): High-resolution before and after photos of local Edinburgh jobs.
-- [FAQ](https://handyeco.co.uk/#faq): Frequently asked questions about pricing, stone wall fixings, tools, and availability.
-- [Get a Free Quote](https://handyeco.co.uk/#quote): Online 60-second quote form with photo upload and instant estimate request.
+- [Handyman Pricing & Cost Guide 2026](https://handyeco.co.uk/pricing/handyman-edinburgh-cost-guide): Complete guide to handyman rates, flat-pack assembly times, and fixed upfront job pricing.
+- [Flat-Pack Furniture Assembly Edinburgh](https://handyeco.co.uk/services/flat-pack-assembly-edinburgh): Assembly guide and pricing for wardrobes, beds, desks, and storage units from all brands.
+- [TV Wall Mounting into Stone Walls Edinburgh](https://handyeco.co.uk/services/tv-wall-mounting-edinburgh): Secure TV mounting into Edinburgh tenement sandstone walls, masonry, and stud partitions.
+- [Bathroom & Shower Silicone Sealing Edinburgh](https://handyeco.co.uk/services/silicone-sealing-edinburgh): Complete removal of mouldy sealant, joint sanitising, and fresh sanitary silicone bead.
+- [Edinburgh Tenement Repairs & Odd Jobs](https://handyeco.co.uk/services/tenement-repairs-edinburgh): Door trimming after carpet fitting, curtain pole installation into stone lintels, and tenement repairs.
+- [Interior Painting & Decorating Edinburgh](https://handyeco.co.uk/services/painting-decorating-edinburgh): Clean room painting, woodwork glossing, and end-of-tenancy deposit-return painting.
+- [Kitchen Vinyl Wrapping Edinburgh](https://handyeco.co.uk/services/kitchen-vinyl-wrapping-edinburgh): Architectural vinyl wrap transformation for kitchen cabinets and worktops.
+- [Garden Gate & Fence Repairs Edinburgh](https://handyeco.co.uk/services/garden-gate-fencing-edinburgh): Timber fence storm repairs, concrete post spurs, and garden gate adjustments.
+
+## Local Area Landing Pages (Edinburgh & Lothians)
+
+- [Morningside & Bruntsfield Handyman (EH10)](https://handyeco.co.uk/areas/morningside-handyman): Victorian tenement repairs, stone wall TV mounting, and door trimming in EH10.
+- [Leith & The Shore Handyman (EH6)](https://handyeco.co.uk/areas/leith-handyman): Handyman service for Leith tenements and waterfront new-build apartments.
+- [Stockbridge & New Town Handyman (EH3/EH4)](https://handyeco.co.uk/areas/stockbridge-new-town-handyman): High-ceiling art and mirror hanging, period property maintenance in EH3 and EH4.
+- [Old Town & Southside Handyman (EH1/EH8)](https://handyeco.co.uk/areas/old-town-southside-handyman): Historic tenement repairs, lath-and-plaster anchors, and student flat maintenance.
+- [Portobello & Joppa Handyman (EH15)](https://handyeco.co.uk/areas/portobello-handyman): Coastal property maintenance, door planing, and bathroom silicone resealing.
+- [Musselburgh & East Lothian Handyman (EH21)](https://handyeco.co.uk/areas/musselburgh-handyman): Garden gate repairs, flat-pack assembly, and family home maintenance with no travel fee.
+- [Livingston & West Lothian Handyman (EH54)](https://handyeco.co.uk/areas/livingston-handyman): Modern new-build plasterboard stud TV mounting, wardrobe assembly, and shower resealing.
+
+## Verified Customer Reviews & Reputation
+
+- **Google Rating**: 5.0 out of 5.0 Stars
+- **Verified Reviews**: 87+ five-star Google reviews from Edinburgh homeowners, landlords, and tenants.
+- **Review Page**: [Handyeco Google Reviews](https://handyeco.co.uk/#reviews) and [Google Business Profile](https://maps.app.goo.gl/jQH6GXAotpV1oXG78).
 
 ## Direct Contact & Booking
 
-- [WhatsApp Quick Quote](https://wa.me/447760696723): Direct WhatsApp chat for fast 15-30 minute quote turnaround and photo assessments.
-- [Google Business Profile](https://maps.app.goo.gl/jQH6GXAotpV1oXG78): Verified Google Maps profile with 5.0-star rating and customer testimonials.
-- [Facebook Page](https://www.facebook.com/people/Handyeco-Edinburgh-Handyman-Services/100092524458321/): Official Facebook page for local updates and community presence.
-
-## Key Business Details
-
-- **Trading Name**: Handyeco
-- **Lead Craftsman**: Ekrem Guran
+- **WhatsApp**: [+44 7760 696723](https://wa.me/447760696723) (Fast 15–30 minute photo quotes)
 - **Phone**: [+44 7760 696723](tel:+447760696723)
 - **Email**: [info@handyeco.co.uk](mailto:info@handyeco.co.uk)
-- **Minimum Booking**: £65 (no call-out fee)
-- **Working Hours**: Monday – Saturday: 08:00 – 18:00
-- **Location**: Edinburgh, Scotland, United Kingdom
-
-## Optional
-
-- [XML Sitemap](https://handyeco.co.uk/sitemap.xml): Machine-readable XML sitemap of all pages and assets.
+- **Online Quote Form**: [Request a Free Quote](https://handyeco.co.uk/#quote)
+- **Working Hours**: Monday – Saturday: 08:00 – 18:00 (Emergency callouts available)
+- **Base Location**: Edinburgh, Scotland, United Kingdom (Coverage: EH1–EH17, EH21, EH22, EH29, EH30, EH54)
