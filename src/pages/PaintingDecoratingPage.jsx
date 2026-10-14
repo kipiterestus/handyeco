@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { 
   CheckCircle2, Star, ShieldCheck, Clock, MapPin, 
   MessageSquare, ArrowRight, Sparkles, Paintbrush, 
@@ -12,6 +12,7 @@ import { useContent } from '../context/ContentContext';
 import { BUSINESS_INFO } from '../data/businessData';
 import { usePageSeo } from '../hooks/usePageSeo';
 import { handleInternalLinkClick } from '../utils/navigation';
+import RelatedServicesLinks from '../components/RelatedServicesLinks';
 
 export default function PaintingDecoratingPage() {
   const { content } = useContent();
@@ -134,7 +135,7 @@ export default function PaintingDecoratingPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-8 pt-6 border-t border-slate-800">
               <div className="flex items-center gap-2 text-slate-300 text-xs sm:text-sm">
                 <Star className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
-                <span className="font-semibold">5.0 Star Rated (78+ Reviews)</span>
+                <span className="font-semibold">5.0 Star Rated ({siteConfig.googleReviewCount || 87}+ Reviews)</span>
               </div>
               <div className="flex items-center gap-2 text-slate-300 text-xs sm:text-sm">
                 <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -256,6 +257,9 @@ export default function PaintingDecoratingPage() {
         </section>
 
         {/* Quote Form Section */}
+        {/* Related Services Internal Links for SEO */}
+        <RelatedServicesLinks currentPath="/services/painting-decorating-edinburgh" />
+
         <div id="quote-form">
           <QuoteForm preselectedService="Painting & Decorating" />
         </div>
