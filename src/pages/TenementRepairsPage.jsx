@@ -252,7 +252,7 @@ export default function TenementRepairsPage() {
         <RelatedServicesLinks currentPath="/services/tenement-repairs-edinburgh" />
 
         <div id="quote-form">
-          <QuoteForm preselectedService="Repairs & Odd Jobs" />
+          <QuoteForm preselectedService="Repairs & Odd Jobs" hideFaq={true} />
         </div>
       </main>
 

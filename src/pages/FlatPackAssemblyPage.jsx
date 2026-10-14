@@ -293,7 +293,7 @@ export default function FlatPackAssemblyPage() {
 
         {/* Quote Form Section */}
         <div id="quote-form">
-          <QuoteForm preselectedService="Flat Pack Assembly" />
+          <QuoteForm preselectedService="Flat Pack Assembly" hideFaq={true} />
         </div>
       </main>
 

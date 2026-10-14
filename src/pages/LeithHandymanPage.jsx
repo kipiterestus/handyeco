@@ -196,7 +196,7 @@ export default function LeithHandymanPage() {
         <RelatedServicesLinks currentPath="/areas/leith-handyman" />
 
         <div id="quote-form">
-          <QuoteForm />
+          <QuoteForm hideFaq={true} />
         </div>
       </main>
 

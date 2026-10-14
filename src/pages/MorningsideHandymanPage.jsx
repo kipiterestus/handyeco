@@ -196,7 +196,7 @@ export default function MorningsideHandymanPage() {
         <RelatedServicesLinks currentPath="/areas/morningside-handyman" />
 
         <div id="quote-form">
-          <QuoteForm />
+          <QuoteForm hideFaq={true} />
         </div>
       </main>
 

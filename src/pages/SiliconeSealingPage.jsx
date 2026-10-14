@@ -288,7 +288,7 @@ export default function SiliconeSealingPage() {
         <RelatedServicesLinks currentPath="/services/silicone-sealing-edinburgh" />
 
         <div id="quote-form">
-          <QuoteForm preselectedService="Silicone & Sealing" />
+          <QuoteForm preselectedService="Silicone & Sealing" hideFaq={true} />
         </div>
       </main>
 

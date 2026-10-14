@@ -252,7 +252,7 @@ export default function GardenFencingPage() {
         <RelatedServicesLinks currentPath="/services/garden-gate-fencing-edinburgh" />
 
         <div id="quote-form">
-          <QuoteForm preselectedService="Garden & Fencing" />
+          <QuoteForm preselectedService="Garden & Fencing" hideFaq={true} />
         </div>
       </main>
 

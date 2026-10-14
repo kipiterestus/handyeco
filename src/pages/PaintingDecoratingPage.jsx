@@ -252,7 +252,7 @@ export default function PaintingDecoratingPage() {
         <RelatedServicesLinks currentPath="/services/painting-decorating-edinburgh" />
 
         <div id="quote-form">
-          <QuoteForm preselectedService="Painting & Decorating" />
+          <QuoteForm preselectedService="Painting & Decorating" hideFaq={true} />
         </div>
       </main>
 

@@ -394,23 +394,16 @@ export default function HandymanCostGuidePage() {
         <RelatedServicesLinks currentPath="/pricing/handyman-edinburgh-cost-guide" />
 
         {/* Quote Form Section */}
-        <section className="py-16 bg-slate-900 text-white">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-3">
-              Get Your Guaranteed Fixed Price Today
-            </h2>
-            <p className="text-slate-300 text-sm sm:text-base mb-8">
-              Send us a description or photos of your task. We reply with a transparent, fixed upfront quote with zero call-out charges.
-            </p>
-            <div className="bg-white rounded-2xl p-6 sm:p-8 text-slate-900 text-left shadow-2xl">
-              <QuoteForm defaultService="General Handyman & Odd Jobs" />
-            </div>
-          </div>
-        </section>
+        <div id="quote-form">
+          <QuoteForm preselectedService="General Handyman & Odd Jobs" hideFaq={true} />
+        </div>
       </main>
 
       <Footer />
-      <MobileStickyBar />
+      <MobileStickyBar onOpenQuote={() => {
+        const el = document.getElementById('quote-form');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }} />
     </div>
   );
 }

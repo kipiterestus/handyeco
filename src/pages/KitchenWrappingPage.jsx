@@ -252,7 +252,7 @@ export default function KitchenWrappingPage() {
         <RelatedServicesLinks currentPath="/services/kitchen-vinyl-wrapping-edinburgh" />
 
         <div id="quote-form">
-          <QuoteForm preselectedService="Kitchen Vinyl Wrap" />
+          <QuoteForm preselectedService="Kitchen Vinyl Wrap" hideFaq={true} />
         </div>
       </main>
 

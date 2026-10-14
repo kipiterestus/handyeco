@@ -196,7 +196,7 @@ export default function StockbridgeNewTownPage() {
         <RelatedServicesLinks currentPath="/areas/stockbridge-new-town-handyman" />
 
         <div id="quote-form">
-          <QuoteForm />
+          <QuoteForm hideFaq={true} />
         </div>
       </main>
 

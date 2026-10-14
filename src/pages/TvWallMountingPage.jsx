@@ -293,7 +293,7 @@ export default function TvWallMountingPage() {
         <RelatedServicesLinks currentPath="/services/tv-wall-mounting-edinburgh" />
 
         <div id="quote-form">
-          <QuoteForm preselectedService="TV & Wall Mounting" />
+          <QuoteForm preselectedService="TV & Wall Mounting" hideFaq={true} />
         </div>
       </main>
 
