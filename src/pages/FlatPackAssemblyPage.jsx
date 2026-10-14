@@ -27,7 +27,7 @@ export default function FlatPackAssemblyPage() {
     },
     {
       q: "Do you secure tall wardrobes into Edinburgh tenement stone walls?",
-      a: "Yes! High tenement ceilings and uneven floors are very common in Edinburgh. We carry heavy-duty Fischer DuoPower anchors and specialized masonry drill bits to securely fasten all tall wardrobes and bookcases to the wall, preventing tipping."
+      a: "Yes! High tenement ceilings and uneven floors are very common in Edinburgh. I carry heavy-duty masonry expansion anchors and long masonry drill bits to securely fasten all tall wardrobes and bookcases to the wall, preventing tipping."
     },
     {
       q: "What if screws or parts are missing from my flat-pack box?",
@@ -214,7 +214,7 @@ export default function FlatPackAssemblyPage() {
                   <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-xs sm:text-sm text-slate-900 block">Tenement Wall Anchors</span>
-                    <span className="text-xs text-slate-500">Heavy-duty Fischer fixings to secure tall units to stone.</span>
+                    <span className="text-xs text-slate-500">Heavy-duty trade masonry fixings to anchor tall units to stone.</span>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">

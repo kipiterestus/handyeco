@@ -85,7 +85,7 @@ export default function Hero({ onOpenQuote }) {
 
             {/* Description */}
             <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-2xl font-normal">
-              {hero.description || "Looking for a trusted, 5-star rated local handyman near me in Edinburgh? Specialist in flat-pack furniture assembly, TV wall mounting into historic stone walls, interior painting, and mould-free bathroom silicone sealing. Fast, reliable, and exceptionally tidy workmanship."}
+              {hero.description || "I help Edinburgh homeowners, landlords, and tenants tackle home repairs properly: flat-pack furniture building, TV mounting into tough tenement stone, door trimming, painting, and clean bathroom resealing. Zero call-out fees, guaranteed upfront quotes on WhatsApp, and I always leave your place spotless."}
             </p>
 
             {/* Handyman Image - Pulled up directly under description on Mobile */}
@@ -96,10 +96,10 @@ export default function Hero({ onOpenQuote }) {
             {/* Key Bullet Checklist */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs sm:text-sm text-slate-700 font-medium">
               {(hero.bullets || [
-                'Punctual, Clean & Spotless Tidy',
-                'Zero Hidden Fees • £65 Minimum Call-Out',
-                'Tenement Specialists (Stone & Plaster)',
-                'Prompt WhatsApp Photo Estimates'
+                'Punctual, Clean & Respectful of Your Home',
+                'Zero Call-Out Fee • £65 Minimum Booking',
+                'Tenement & Stone Wall Specialist',
+                'Fast Fixed Quotes via WhatsApp'
               ]).map((bullet, idx) => (
                 <div key={idx} className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />

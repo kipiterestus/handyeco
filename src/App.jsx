@@ -23,6 +23,10 @@ import LeithHandymanPage from './pages/LeithHandymanPage';
 import GardenFencingPage from './pages/GardenFencingPage';
 import StockbridgeNewTownPage from './pages/StockbridgeNewTownPage';
 import HandymanCostGuidePage from './pages/HandymanCostGuidePage';
+import OldTownSouthsidePage from './pages/OldTownSouthsidePage';
+import PortobelloHandymanPage from './pages/PortobelloHandymanPage';
+import MusselburghHandymanPage from './pages/MusselburghHandymanPage';
+import LivingstonHandymanPage from './pages/LivingstonHandymanPage';
 
 export default function App() {
   const [selectedService, setSelectedService] = useState(null);
@@ -78,6 +82,18 @@ export default function App() {
     }
     if (currentPath === '/areas/stockbridge-new-town-handyman') {
       return <StockbridgeNewTownPage />;
+    }
+    if (currentPath === '/areas/old-town-southside-handyman') {
+      return <OldTownSouthsidePage />;
+    }
+    if (currentPath === '/areas/portobello-handyman') {
+      return <PortobelloHandymanPage />;
+    }
+    if (currentPath === '/areas/musselburgh-handyman') {
+      return <MusselburghHandymanPage />;
+    }
+    if (currentPath === '/areas/livingston-handyman') {
+      return <LivingstonHandymanPage />;
     }
     if (currentPath === '/pricing/handyman-edinburgh-cost-guide') {
       return <HandymanCostGuidePage />;

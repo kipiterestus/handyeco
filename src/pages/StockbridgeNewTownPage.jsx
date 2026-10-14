@@ -23,7 +23,7 @@ export default function StockbridgeNewTownPage() {
   const faqs = [
     {
       q: "Do you have experience with Georgian and Victorian period walls in New Town?",
-      a: "Yes, practical experience with New Town townhouses and Stockbridge tenements featuring thick sandstone, lath and plaster, and high ceilings up to 3.5 metres. We use specialized masonry anchors (Fischer DuoPower) and laser levels to ensure secure, damage-free installations."
+      a: "Yes, everyday experience with New Town townhouses and Stockbridge tenements featuring thick sandstone, lath and plaster, and high ceilings up to 3.5 metres. I use specialized trade masonry anchors and precision laser levels to ensure solid, damage-free installations."
     },
     {
       q: "Do you charge extra for parking or congestion in New Town / Stockbridge?",

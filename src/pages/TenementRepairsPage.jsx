@@ -27,11 +27,11 @@ export default function TenementRepairsPage() {
     },
     {
       q: "Why do curtain poles pull out of tenement walls?",
-      a: "Tenement window surrounds typically consist of hard stone lintels or lath and plaster with deep voids. DIY plastic plugs cannot bridge the gap between the plaster and the stone. We use extended length SDS masonry bits and Fischer DuoPower anchors that grip directly into the structural sandstone lintel."
+      a: "Tenement window surrounds typically consist of hard stone lintels or lath and plaster with deep voids. DIY plastic plugs cannot bridge the gap between the plaster and the stone. I use extended length SDS masonry bits and heavy-duty expansion anchors that grip directly into the structural sandstone lintel."
     },
     {
       q: "Can I book you for several small odd jobs in one visit?",
-      a: "Absolutely! Most of our Edinburgh clients compile a list of 4 to 8 small tasks (e.g. reseal bath, trim 2 doors, hang 3 pictures, fit a curtain pole). We work through the entire punch-list efficiently in one morning or afternoon."
+      a: "Yes! Many Edinburgh clients compile a list of multiple tasks (e.g. reseal a shower, trim a sticky door, hang pictures, fit a curtain pole). I provide a discounted combined package price on WhatsApp so you save money compared to booking each job separately."
     },
     {
       q: "How does your pricing work for tenement repairs?",

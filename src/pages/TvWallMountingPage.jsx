@@ -23,23 +23,23 @@ export default function TvWallMountingPage() {
   const faqs = [
     {
       q: "Can you safely mount a large 75-inch TV into a Victorian sandstone tenement wall?",
-      a: "Yes, this is our everyday specialty. Traditional Edinburgh stone walls crumble if ordinary DIY plastic wall plugs are used. We use SDS rotary hammer masonry drills and heavy-duty Fischer DuoPower / Fischer SX nylon expansion anchors with heavy gauge hex coach screws. Once installed, the bracket will easily support over 80kg."
+      a: "Yes, this is everyday work for me in Edinburgh. Traditional sandstone walls crumble if ordinary DIY plastic plugs are used. I use professional SDS hammer drills, trade-grade expansion anchors, and heavy-gauge coach bolts. Once installed, the bracket will easily support over 80kg."
     },
     {
       q: "Do I need to supply the bracket, or can you provide one?",
-      a: "You can supply your own bracket (bought from Amazon, Currys, or Richer Sounds), or we can supply a premium heavy-duty tilt or full-motion bracket if you let us know your TV size in advance via WhatsApp."
+      a: "You can supply your own bracket (bought from Amazon, Currys, or Richer Sounds), or I can bring a heavy-duty tilt or full-motion bracket if you let me know your TV screen size in advance via WhatsApp."
     },
     {
       q: "What about stud partition walls and plasterboard?",
-      a: "For modern apartments or stud partitions, we use professional digital wall scanners to locate timber studs. Where studs are not conveniently located, we use industrial heavy-duty hollow-wall toggle anchors (GripIt or Fischer Duotec) that grip behind the plasterboard without damaging the wall."
+      a: "For modern flats or stud partitions, I use digital scanners to locate the timber framework. Where studs aren't positioned where you want the screen, I use industrial heavy-duty hollow-wall toggle anchors that spread the load safely behind the plasterboard without pulling through."
     },
     {
       q: "Can you hide or tidy the dangling cables?",
-      a: "Yes! We provide clean white or colour-matched D-Line cable trunking to neatly enclose power and HDMI cables straight down the wall or skirting board."
+      a: "Yes. I supply clean white or colour-matched D-Line trunking to neatly enclose your power and HDMI cables straight down to the socket or skirting board."
     },
     {
       q: "How much does TV mounting cost in Edinburgh?",
-      a: "Our jobs start from our standard minimum booking of £65 (for standard size TVs with customer-supplied bracket). Simply WhatsApp us your TV model/size, wall type (stone, brick, or stud), and preferred bracket style for an instant fixed quote."
+      a: "Our fixed price is £65 for screens 40\" to 55\" (stone or plasterboard, same price!), and £80 for 55\"+. Simply WhatsApp a quick photo of your wall and your TV model for a guaranteed flat quote."
     }
   ];
 
@@ -51,7 +51,7 @@ export default function TvWallMountingPage() {
 
   usePageSeo({
     title: "TV Wall Mounting Edinburgh into Stone Walls | Handyeco",
-    description: "Professional TV wall mounting into Edinburgh tenement stone walls & stud partitions. Up to 85\" OLED/QLED, heavy mirrors. Fischer anchors included, from £65!",
+    description: "Professional TV wall mounting into Edinburgh tenement stone walls & stud partitions. Up to 85\" OLED/QLED, heavy mirrors. Trade anchors included, from £65!",
     canonical: "https://handyeco.co.uk/services/tv-wall-mounting-edinburgh",
     schema: buildPageSchema({
       title: "TV Wall Mounting Edinburgh into Stone Walls | Handyeco",
@@ -134,7 +134,7 @@ export default function TvWallMountingPage() {
               </div>
               <div className="flex items-center gap-2 text-slate-300 text-xs sm:text-sm">
                 <Anchor className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="font-semibold">Heavy-Duty Fischer Anchors</span>
+                <span className="font-semibold">Heavy-Duty Trade Anchors</span>
               </div>
               <div className="flex items-center gap-2 text-slate-300 text-xs sm:text-sm">
                 <ShieldCheck className="w-4 h-4 text-blue-400 shrink-0" />
@@ -175,7 +175,7 @@ export default function TvWallMountingPage() {
               Precision Wall Hanging Services
             </h2>
             <p className="mt-2 text-sm text-slate-600">
-              Whether mounting a premium OLED TV over a fireplace or hanging an antique Victorian mirror, we ensure total peace of mind.
+              From mounting a 75" OLED over a stone fireplace to hanging an antique mirror, I make sure everything sits dead level and completely secure.
             </p>
           </div>
 
@@ -200,7 +200,7 @@ export default function TvWallMountingPage() {
                 Why Edinburgh Tenement Walls Require Specialist Masonry Equipment
               </h2>
               <p className="text-sm text-slate-600 leading-relaxed mb-6">
-                Edinburgh tenement flats feature 120+ year old sandstone, lime mortar, and lath-and-plaster. A generic DIY plug drilled into crumbling stone can easily pull out under the weight of an expensive 65" or 75" TV. Here is how we guarantee 100% safety:
+                Edinburgh tenement flats feature 120+ year old sandstone, lime mortar, and lath-and-plaster. A generic DIY plug drilled into crumbling stone can easily pull out under the weight of an expensive 65" or 75" TV. Here is how I guarantee 100% safety:
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="flex items-start gap-3">
@@ -213,15 +213,15 @@ export default function TvWallMountingPage() {
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-xs sm:text-sm text-slate-900 block">Heavy-Duty Fischer DuoPower</span>
-                    <span className="text-xs text-slate-500">German-engineered anchors that expand securely into aged masonry.</span>
+                    <span className="font-bold text-xs sm:text-sm text-slate-900 block">Heavy-Duty Trade Expansion Anchors</span>
+                    <span className="text-xs text-slate-500">Heavy-gauge nylon sleeves and steel bolts that bite firmly into historic stone.</span>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-xs sm:text-sm text-slate-900 block">Laser Levelling &amp; Dust Capture</span>
-                    <span className="text-xs text-slate-500">Micro-level precision with zero red stone dust on your floor or furniture.</span>
+                    <span className="text-xs text-slate-500">Dead-level precision with zero red stone dust on your floor or furniture.</span>
                   </div>
                 </div>
               </div>
@@ -236,7 +236,7 @@ export default function TvWallMountingPage() {
               <span className="text-xs font-bold uppercase tracking-wider text-blue-400">Fixed Upfront Rates</span>
               <h2 className="text-2xl sm:text-3xl font-black mt-1 mb-4">TV Wall Mounting Pricing in Edinburgh</h2>
               <p className="text-sm text-slate-300 leading-relaxed">
-                We believe in 100% transparent pricing with zero surprise charges. All standard Fischer masonry wall fixings are included.
+                Clear fixed pricing with zero surprise charges. All trade masonry fixings and coach bolts are included.
               </p>
               <div className="mt-6 flex flex-wrap items-baseline gap-3">
                 <span className="text-4xl sm:text-5xl font-black text-emerald-400">From £65</span>

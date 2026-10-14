@@ -27,7 +27,7 @@ export default function MorningsideHandymanPage() {
     },
     {
       q: "Can you mount heavy items into Victorian stone walls in Morningside?",
-      a: "Yes. Morningside's Victorian tenements and villas have solid sandstone walls and deep ceiling heights. We specialize in Fischer DuoPower masonry fixings for heavy 75\" TVs, ornate mirrors, and ceiling-hung clothes pulleys."
+      a: "Yes. Morningside's Victorian tenements and villas have solid sandstone walls and deep ceiling heights. I carry trade-grade SDS masonry drills and heavy-duty expansion fixings designed specifically for 100-year-old stone, safely mounting heavy 75\" TVs, large mirrors, and ceiling laundry pulleys."
     },
     {
       q: "How fast can you attend a job in EH10?",
@@ -47,7 +47,7 @@ export default function MorningsideHandymanPage() {
     canonical: "https://handyeco.co.uk/areas/morningside-handyman",
     schema: buildPageSchema({
       title: "Handyman Morningside & Bruntsfield (EH10) | 5-Star | Handyeco",
-      description: "5-star handyman service in Morningside & Bruntsfield (EH10). Specialist in Victorian tenement repairs, IKEA PAX assembly, TV wall mounting into stone, and painting.",
+      description: "5-star handyman service in Morningside & Bruntsfield (EH10). Specialist in Victorian tenement repairs, wardrobe assembly, TV wall mounting into stone, and painting.",
       canonical: "https://handyeco.co.uk/areas/morningside-handyman",
       isAreaPage: true,
       areaName: "Morningside & Bruntsfield",
@@ -89,7 +89,7 @@ export default function MorningsideHandymanPage() {
             </h1>
 
             <p className="mt-4 text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-              Specialist property maintenance for Morningside's historic Victorian tenements and villas. From stone wall TV mounting and IKEA PAX building to door trimming and bathroom resealing.
+              Specialist property maintenance for Morningside's historic Victorian tenements and villas. From stone wall TV mounting and wardrobe building to door trimming and bathroom resealing.
             </p>
 
             {/* Quick Benefits Bar */}
@@ -141,7 +141,7 @@ export default function MorningsideHandymanPage() {
               Careful, Reliable Craftsmanship for Victorian Tenements
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed mb-6">
-              Morningside and Bruntsfield homes feature tall decorative cornices, lathe-and-plaster partitions, and sandstone chimney breasts. Generic DIY solutions frequently fail on these period walls. Ekrem brings over a decade of hands-on expertise, heavy-duty German fixings, laser alignment tools, and total respect for your home.
+              Morningside and Bruntsfield homes feature tall decorative cornices, lath-and-plaster partitions, and sandstone chimney breasts. Standard plastic plugs quickly pull loose on these historic walls. I arrive equipped with laser levels, heavy-duty masonry expansion anchors, rail plunge saws, and total respect for your flooring and furniture.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
@@ -149,7 +149,7 @@ export default function MorningsideHandymanPage() {
                 <span className="text-xs text-slate-500">Safe, laser-levelled mounting into 120-year-old sandstone.</span>
               </div>
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                <span className="font-bold text-sm text-slate-900 block mb-1">IKEA PAX &amp; Furniture Assembly</span>
+                <span className="font-bold text-sm text-slate-900 block mb-1">Wardrobe &amp; Flat-Pack Assembly</span>
                 <span className="text-xs text-slate-500">Fixed against walls to accommodate uneven historic pine floorboards.</span>
               </div>
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">

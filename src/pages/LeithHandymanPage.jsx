@@ -27,11 +27,11 @@ export default function LeithHandymanPage() {
     },
     {
       q: "Can you mount TVs on modern plasterboard walls in new-build Leith apartments?",
-      a: "Yes. While traditional Leith tenements have stone, many newer waterfront developments around Western Harbour and Ocean Terminal have metal stud partitions. We use heavy-duty hollow-wall toggle anchors (GripIt / Fischer Duotec) tested up to 80kg to hang large TVs safely."
+      a: "Yes. While traditional Leith tenements have stone, many newer waterfront developments around Western Harbour and Ocean Terminal have metal stud partitions. I use heavy-duty hollow-wall toggle anchors tested up to 80kg to hang large TVs and heavy mirrors safely."
     },
     {
       q: "Do you work with Leith landlords and letting agents?",
-      a: "Yes, we regularly handle pre-tenancy repairs, deposit return punch-lists, lock replacements, and bath silicone resealing between leases across Leith."
+      a: "Yes, I regularly handle pre-tenancy repairs, deposit return checklists, lock adjustments, and bath silicone resealing between leases across Leith."
     }
   ];
 
@@ -43,11 +43,11 @@ export default function LeithHandymanPage() {
 
   usePageSeo({
     title: "Handyman Leith & The Shore (EH6) | 5-Star | Handyeco",
-    description: "Trusted local handyman for Leith, The Shore & Newhaven EH6. Tenement & new-build repairs, TV wall mounting, IKEA flat pack, silicone reseals. From £65!",
+    description: "Trusted local handyman for Leith, The Shore & Newhaven EH6. Tenement & new-build repairs, TV wall mounting, flat pack assembly, silicone reseals. From £65!",
     canonical: "https://handyeco.co.uk/areas/leith-handyman",
     schema: buildPageSchema({
       title: "Handyman Leith & The Shore (EH6) | 5-Star | Handyeco",
-      description: "5-star handyman service in Leith, The Shore & Newhaven (EH6). Tenement maintenance, modern apartment fittings, IKEA assembly, and TV wall mounting.",
+      description: "5-star handyman service in Leith, The Shore & Newhaven (EH6). Tenement maintenance, modern apartment fittings, flat-pack assembly, and TV wall mounting.",
       canonical: "https://handyeco.co.uk/areas/leith-handyman",
       isAreaPage: true,
       areaName: "Leith & The Shore",

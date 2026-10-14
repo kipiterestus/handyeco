@@ -151,10 +151,42 @@ export default function Footer() {
                   Stockbridge &amp; New Town (EH3/EH4)
                 </a>
               </li>
-              <li><span className="text-slate-300">Old Town &amp; Southside (EH1/EH8)</span></li>
-              <li><span className="text-slate-300">Portobello &amp; Joppa (EH15)</span></li>
-              <li><span className="text-slate-300">Musselburgh &amp; East Lothian (EH21)</span></li>
-              <li><span className="text-slate-300">Livingston &amp; West Lothian (EH54)</span></li>
+              <li>
+                <a 
+                  href="/areas/old-town-southside-handyman" 
+                  onClick={(e) => handleInternalLinkClick(e, '/areas/old-town-southside-handyman')} 
+                  className="hover:text-white text-slate-300 transition-colors"
+                >
+                  Old Town &amp; Southside (EH1/EH8)
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/areas/portobello-handyman" 
+                  onClick={(e) => handleInternalLinkClick(e, '/areas/portobello-handyman')} 
+                  className="hover:text-white text-slate-300 transition-colors"
+                >
+                  Portobello &amp; Joppa (EH15)
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/areas/musselburgh-handyman" 
+                  onClick={(e) => handleInternalLinkClick(e, '/areas/musselburgh-handyman')} 
+                  className="hover:text-white text-slate-300 transition-colors"
+                >
+                  Musselburgh &amp; East Lothian (EH21)
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/areas/livingston-handyman" 
+                  onClick={(e) => handleInternalLinkClick(e, '/areas/livingston-handyman')} 
+                  className="hover:text-white text-slate-300 transition-colors"
+                >
+                  Livingston &amp; West Lothian (EH54)
+                </a>
+              </li>
             </ul>
           </div>
 

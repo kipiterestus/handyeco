@@ -55,9 +55,13 @@ const ALL_SERVICES = [
 ];
 
 const ALL_AREAS = [
-  { href: '/areas/morningside-handyman', name: 'Morningside & Bruntsfield (EH10)' },
-  { href: '/areas/leith-handyman', name: 'Leith & The Shore (EH6)' },
-  { href: '/areas/stockbridge-new-town-handyman', name: 'Stockbridge & New Town (EH3/EH4)' }
+  { href: '/areas/morningside-handyman', name: 'Morningside (EH10)' },
+  { href: '/areas/leith-handyman', name: 'Leith & Shore (EH6)' },
+  { href: '/areas/stockbridge-new-town-handyman', name: 'Stockbridge & New Town (EH3/EH4)' },
+  { href: '/areas/old-town-southside-handyman', name: 'Old Town & Southside (EH1/EH8)' },
+  { href: '/areas/portobello-handyman', name: 'Portobello (EH15)' },
+  { href: '/areas/musselburgh-handyman', name: 'Musselburgh (EH21)' },
+  { href: '/areas/livingston-handyman', name: 'Livingston (EH54)' }
 ];
 
 export default function RelatedServicesLinks({ currentPath, category = 'service' }) {
