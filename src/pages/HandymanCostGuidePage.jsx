@@ -271,21 +271,21 @@ export default function HandymanCostGuidePage() {
               </p>
             </div>
 
-            {/* Price Variation Notice Badge */}
-            <div className="mb-8 rounded-2xl bg-amber-500/10 border-2 border-amber-500/30 p-5 sm:p-6 text-left shadow-sm">
+            {/* Price Variation Notice Badge (Prominent Red Alert) */}
+            <div className="mb-8 rounded-2xl bg-red-50/90 border-2 border-red-400 p-5 sm:p-6 text-left shadow-sm ring-1 ring-red-500/20">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div className="flex items-start gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <AlertCircle className="w-5 h-5 text-amber-600" />
+                  <div className="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <AlertCircle className="w-5 h-5 text-red-600" />
                   </div>
                   <div>
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold uppercase tracking-wider mb-1.5">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 text-[11px] font-extrabold uppercase tracking-wider mb-1.5 border border-red-200">
                       Average Estimated Rates
                     </div>
-                    <h3 className="text-base font-bold text-slate-900 leading-snug">
-                      Prices May Vary Based on Job Scope &amp; Complexity
+                    <h3 className="text-base font-bold text-red-950 leading-snug">
+                      Important: Prices May Vary Based on Job Scope &amp; Complexity
                     </h3>
-                    <p className="mt-1 text-slate-700 text-xs sm:text-sm leading-relaxed max-w-2xl">
+                    <p className="mt-1 text-red-900/90 text-xs sm:text-sm leading-relaxed max-w-2xl">
                       The figures listed below are average guide prices. Costs can vary depending on furniture design complexity, room dimensions, and tenement wall construction (solid stone vs plasterboard). For an exact, guaranteed fixed-price quote, please get in touch with photos and project details.
                     </p>
                   </div>
@@ -294,7 +294,7 @@ export default function HandymanCostGuidePage() {
                   href={whatsappLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all shrink-0 whitespace-nowrap"
+                  className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-red-600/20 transition-all shrink-0 whitespace-nowrap"
                 >
                   <MessageSquare className="w-4 h-4" />
                   <span>Get Exact Fixed Quote</span>
@@ -373,13 +373,6 @@ export default function HandymanCostGuidePage() {
                   ))}
                 </tbody>
               </table>
-            </div>
-
-            <div className="mt-4 p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs sm:text-sm flex items-start gap-3 text-left">
-              <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-              <div>
-                <strong>Need an exact price for your specific task?</strong> Prices vary depending on wall construction (sandstone vs stud) and furniture complexity. Send photos on WhatsApp to get a 100% fixed upfront quote.
-              </div>
             </div>
           </div>
         </section>
