@@ -117,7 +117,7 @@ export default function HandymanCostGuidePage() {
     },
     {
       q: "How can I save money when hiring an Edinburgh handyman?",
-      a: "The most cost-effective way is to combine tasks into a 'punch-list'. Instead of booking a handyman three separate times for hanging a mirror, resealing a shower, and trimming a sticky door, compile your list and book a single session. This maximizes the value of the £65 minimum booking."
+      a: "The most cost-effective approach is to bundle several tasks together into a single visit. Instead of booking separate visits for individual jobs, compile a full list of everything you need done and send it to us via WhatsApp. Bundling tasks allows us to offer a discounted combined package price that works out significantly cheaper than booking each job separately."
     }
   ];
 
