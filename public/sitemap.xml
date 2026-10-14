@@ -6,7 +6,7 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <loc>https://handyeco.co.uk/</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -17,7 +17,7 @@
   </url>
   <url>
     <loc>https://handyeco.co.uk/services/flat-pack-assembly-edinburgh</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -28,7 +28,7 @@
   </url>
   <url>
     <loc>https://handyeco.co.uk/services/tv-wall-mounting-edinburgh</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -39,7 +39,7 @@
   </url>
   <url>
     <loc>https://handyeco.co.uk/services/silicone-sealing-edinburgh</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -50,7 +50,7 @@
   </url>
   <url>
     <loc>https://handyeco.co.uk/services/tenement-repairs-edinburgh</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -61,7 +61,7 @@
   </url>
   <url>
     <loc>https://handyeco.co.uk/services/painting-decorating-edinburgh</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -72,7 +72,7 @@
   </url>
   <url>
     <loc>https://handyeco.co.uk/services/kitchen-vinyl-wrapping-edinburgh</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -83,7 +83,7 @@
   </url>
   <url>
     <loc>https://handyeco.co.uk/services/garden-gate-fencing-edinburgh</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -94,20 +94,31 @@
   </url>
   <url>
     <loc>https://handyeco.co.uk/areas/morningside-handyman</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://handyeco.co.uk/areas/leith-handyman</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://handyeco.co.uk/areas/stockbridge-new-town-handyman</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://handyeco.co.uk/pricing/handyman-edinburgh-cost-guide</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://handyeco.co.uk/hero-handyman-edinburgh.jpg</image:loc>
+      <image:title>Handyman Edinburgh Cost &amp; Pricing Guide 2026 - Handyeco</image:title>
+      <image:caption>Transparent pricing guide for handyman services, IKEA flat-pack assembly and TV wall mounting in Edinburgh</image:caption>
+    </image:image>
   </url>
 </urlset>

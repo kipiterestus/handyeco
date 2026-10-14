@@ -171,6 +171,24 @@ export default function RelatedServicesLinks({ currentPath, category = 'service'
           </div>
         </div>
 
+        {/* Cost Guide Banner Link */}
+        {currentPath !== '/pricing/handyman-edinburgh-cost-guide' && (
+          <div className="mt-4 p-3.5 sm:p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs sm:text-sm shadow-2xs">
+            <div className="flex items-center gap-2 text-emerald-900 font-medium">
+              <span className="font-bold text-emerald-800">Looking for transparent costs?</span>
+              <span className="hidden md:inline text-emerald-700">&bull; Review typical rates, assembly times, and fixed prices across Edinburgh.</span>
+            </div>
+            <a
+              href="/pricing/handyman-edinburgh-cost-guide"
+              onClick={(e) => handleInternalLinkClick(e, '/pricing/handyman-edinburgh-cost-guide')}
+              className="inline-flex items-center gap-1.5 font-bold text-emerald-800 hover:text-emerald-900 hover:underline shrink-0 bg-white px-3 py-1.5 rounded-xl border border-emerald-300 shadow-2xs"
+            >
+              <span>View 2026 Edinburgh Handyman Cost Guide</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        )}
+
       </div>
     </section>
   );

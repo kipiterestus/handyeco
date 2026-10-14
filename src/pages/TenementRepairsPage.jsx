@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   CheckCircle2, Star, ShieldCheck, Clock, MapPin, 
   MessageSquare, ArrowRight, Sparkles, Wrench, 
@@ -13,42 +13,51 @@ import { BUSINESS_INFO } from '../data/businessData';
 import { usePageSeo } from '../hooks/usePageSeo';
 import { handleInternalLinkClick } from '../utils/navigation';
 import RelatedServicesLinks from '../components/RelatedServicesLinks';
+import { buildPageSchema } from '../utils/seoSchema';
 
 export default function TenementRepairsPage() {
   const { content } = useContent();
   const siteConfig = content.siteConfig || BUSINESS_INFO;
   const [openFaq, setOpenFaq] = useState(null);
 
-  const pageSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Tenement Repairs & Odd Jobs Edinburgh",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": "Handyeco",
-      "telephone": siteConfig.phone || BUSINESS_INFO.phone,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Edinburgh",
-        "addressRegion": "City of Edinburgh",
-        "addressCountry": "GB"
-      }
+  const faqs = [
+    {
+      q: "Can you trim heavy Edinburgh tenement doors without taking them outside?",
+      a: "Yes! We use professional cordless plunge saws with integrated guide rails and HEPA dust extraction. We carefully remove the door from its brass hinges, trim the bottom edge with millimeter accuracy, bevel the edges to prevent snagging on the carpet, and re-hang the door perfectly without making a mess."
     },
-    "areaServed": "Edinburgh and Lothians",
-    "description": "Specialist Edinburgh tenement repairs, internal door trimming after carpets, curtain pole fittings into masonry lintels, and general household maintenance.",
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "GBP",
-      "price": "65.00",
-      "priceValidUntil": "2027-12-31"
+    {
+      q: "Why do curtain poles pull out of tenement walls?",
+      a: "Tenement window surrounds typically consist of hard stone lintels or lath and plaster with deep voids. DIY plastic plugs cannot bridge the gap between the plaster and the stone. We use extended length SDS masonry bits and Fischer DuoPower anchors that grip directly into the structural sandstone lintel."
+    },
+    {
+      q: "Can I book you for several small odd jobs in one visit?",
+      a: "Absolutely! Most of our Edinburgh clients compile a list of 4 to 8 small tasks (e.g. reseal bath, trim 2 doors, hang 3 pictures, fit a curtain pole). We work through the entire punch-list efficiently in one morning or afternoon."
+    },
+    {
+      q: "How does your pricing work for tenement repairs?",
+      a: "Our jobs start from our standard £65 minimum booking (covering small repairs or initial work). We provide fixed transparent quotes upfront via WhatsApp photos or videos with zero hidden call-out fees."
     }
-  }), [siteConfig.phone]);
+  ];
+
+  const breadcrumbs = [
+    { name: "Home", url: "https://handyeco.co.uk/" },
+    { name: "Services", url: "https://handyeco.co.uk/#services" },
+    { name: "Tenement Repairs & Odd Jobs Edinburgh", url: "https://handyeco.co.uk/services/tenement-repairs-edinburgh" }
+  ];
 
   usePageSeo({
     title: "Tenement Repairs & Odd Jobs Edinburgh | Handyeco",
     description: "Specialist handyman for Edinburgh tenement repairs: door trimming after new carpet, curtain pole & blind installation into stone, locks & odd jobs from £65!",
     canonical: "https://handyeco.co.uk/services/tenement-repairs-edinburgh",
-    schema: pageSchema
+    schema: buildPageSchema({
+      title: "Tenement Repairs & Odd Jobs Edinburgh | Handyeco",
+      description: "Specialist Edinburgh tenement repairs, internal door trimming after carpets, curtain pole fittings into masonry lintels, and general household maintenance.",
+      canonical: "https://handyeco.co.uk/services/tenement-repairs-edinburgh",
+      serviceName: "Tenement Repairs & Odd Jobs Edinburgh",
+      breadcrumbs,
+      faqs,
+      siteConfig
+    })
   });
 
   const tenementServices = [
@@ -78,24 +87,6 @@ export default function TenementRepairsPage() {
     }
   ];
 
-  const faqs = [
-    {
-      q: "Can you trim heavy Edinburgh tenement doors without taking them outside?",
-      a: "Yes! We use professional cordless plunge saws with integrated guide rails and HEPA dust extraction. We carefully remove the door from its brass hinges, trim the bottom edge with millimeter accuracy, bevel the edges to prevent snagging on the carpet, and re-hang the door perfectly without making a mess."
-    },
-    {
-      q: "Why do curtain poles pull out of tenement walls?",
-      a: "Tenement window surrounds typically consist of hard stone lintels or lath and plaster with deep voids. DIY plastic plugs cannot bridge the gap between the plaster and the stone. We use extended length SDS masonry bits and Fischer DuoPower anchors that grip directly into the structural sandstone lintel."
-    },
-    {
-      q: "Can I book you for several small odd jobs in one visit?",
-      a: "Absolutely! Most of our Edinburgh clients compile a list of 4 to 8 small tasks (e.g. reseal bath, trim 2 doors, hang 3 pictures, fit a curtain pole). We work through the entire punch-list efficiently in one morning or afternoon."
-    },
-    {
-      q: "How does your pricing work for tenement repairs?",
-      a: "Our jobs start from our standard £65 minimum booking (covering small repairs or initial work). We provide fixed transparent quotes upfront via WhatsApp photos or videos with zero hidden call-out fees."
-    }
-  ];
 
   const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber || '447760696723'}?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20quote%20for%20tenement%20repairs%20in%20Edinburgh.`;
 

@@ -105,6 +105,16 @@ export default function Footer() {
                   Garden Gate &amp; Fence Repairs
                 </a>
               </li>
+              <li className="pt-1.5 border-t border-slate-800">
+                <a 
+                  href="/pricing/handyman-edinburgh-cost-guide" 
+                  onClick={(e) => handleInternalLinkClick(e, '/pricing/handyman-edinburgh-cost-guide')} 
+                  className="hover:text-emerald-300 font-semibold text-emerald-400 transition-colors flex items-center gap-1.5"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  2026 Price &amp; Cost Guide
+                </a>
+              </li>
             </ul>
           </div>
 

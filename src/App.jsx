@@ -22,6 +22,7 @@ import MorningsideHandymanPage from './pages/MorningsideHandymanPage';
 import LeithHandymanPage from './pages/LeithHandymanPage';
 import GardenFencingPage from './pages/GardenFencingPage';
 import StockbridgeNewTownPage from './pages/StockbridgeNewTownPage';
+import HandymanCostGuidePage from './pages/HandymanCostGuidePage';
 
 export default function App() {
   const [selectedService, setSelectedService] = useState(null);
@@ -77,6 +78,9 @@ export default function App() {
     }
     if (currentPath === '/areas/stockbridge-new-town-handyman') {
       return <StockbridgeNewTownPage />;
+    }
+    if (currentPath === '/pricing/handyman-edinburgh-cost-guide') {
+      return <HandymanCostGuidePage />;
     }
 
     return (

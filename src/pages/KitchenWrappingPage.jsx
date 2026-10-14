@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   CheckCircle2, Star, ShieldCheck, Clock, MapPin, 
   MessageSquare, ArrowRight, Sparkles, Layers, 
@@ -13,42 +13,51 @@ import { BUSINESS_INFO } from '../data/businessData';
 import { usePageSeo } from '../hooks/usePageSeo';
 import { handleInternalLinkClick } from '../utils/navigation';
 import RelatedServicesLinks from '../components/RelatedServicesLinks';
+import { buildPageSchema } from '../utils/seoSchema';
 
 export default function KitchenWrappingPage() {
   const { content } = useContent();
   const siteConfig = content.siteConfig || BUSINESS_INFO;
   const [openFaq, setOpenFaq] = useState(null);
 
-  const pageSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Kitchen Vinyl Wrapping Edinburgh",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": "Handyeco",
-      "telephone": siteConfig.phone || BUSINESS_INFO.phone,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Edinburgh",
-        "addressRegion": "City of Edinburgh",
-        "addressCountry": "GB"
-      }
+  const faqs = [
+    {
+      q: "How durable is kitchen architectural vinyl wrap?",
+      a: "Commercial architectural films (such as Cover Styl' and 3M DI-NOC) are engineered specifically for high-touch domestic and commercial use. They are fully waterproof, heat resistant up to 110°C, and resistant to everyday kitchen spills and cleaning agents. With normal care, wraps easily last 7 to 10 years without peeling."
     },
-    "areaServed": "Edinburgh and Lothians",
-    "description": "Architectural vinyl wrap transformations for kitchen cabinets, doors, and worktops across Edinburgh. Modern finishes without the cost of a new kitchen.",
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "GBP",
-      "price": "65.00",
-      "priceValidUntil": "2027-12-31"
+    {
+      q: "Can the wrap peel off near the oven or kettle?",
+      a: "No. We apply heat-activated primer along all perimeter edges and wrap around the back of the doors with thermal shrinking tools. This creates an airtight seal that steam and heat cannot penetrate."
+    },
+    {
+      q: "How much does kitchen wrapping save compared to a new kitchen?",
+      a: "A new kitchen in Edinburgh costs £7,000 to £15,000+ and puts your home out of action for 2 to 3 weeks. Vinyl wrapping typically saves 70% to 80% of that cost, and is completed cleanly in just 1 to 2 days without ripping out plumbing or tiles."
+    },
+    {
+      q: "How do I get a quote for my kitchen?",
+      a: "Simply take 3 or 4 photos of your current kitchen showing all the cupboards and worktops, and send them to us on WhatsApp. We will count the doors/drawers and send you a fixed-price estimate within 30 minutes!"
     }
-  }), [siteConfig.phone]);
+  ];
+
+  const breadcrumbs = [
+    { name: "Home", url: "https://handyeco.co.uk/" },
+    { name: "Services", url: "https://handyeco.co.uk/#services" },
+    { name: "Kitchen Vinyl Wrapping Edinburgh", url: "https://handyeco.co.uk/services/kitchen-vinyl-wrapping-edinburgh" }
+  ];
 
   usePageSeo({
     title: "Kitchen Vinyl Wrapping Edinburgh | Cupboard Makeovers | Handyeco",
     description: "Modernise your kitchen for a fraction of replacement cost! Architectural vinyl wrapping for kitchen cabinets & doors in Edinburgh. Upfront quotes, 5-star finish.",
     canonical: "https://handyeco.co.uk/services/kitchen-vinyl-wrapping-edinburgh",
-    schema: pageSchema
+    schema: buildPageSchema({
+      title: "Kitchen Vinyl Wrapping Edinburgh | Cupboard Makeovers | Handyeco",
+      description: "Architectural vinyl wrap transformations for kitchen cabinets, doors, and worktops across Edinburgh. Modern finishes without the cost of a new kitchen.",
+      canonical: "https://handyeco.co.uk/services/kitchen-vinyl-wrapping-edinburgh",
+      serviceName: "Kitchen Vinyl Wrapping Edinburgh",
+      breadcrumbs,
+      faqs,
+      siteConfig
+    })
   });
 
   const wrapFeatures = [
@@ -78,24 +87,6 @@ export default function KitchenWrappingPage() {
     }
   ];
 
-  const faqs = [
-    {
-      q: "How durable is kitchen architectural vinyl wrap?",
-      a: "Commercial architectural films (such as Cover Styl' and 3M DI-NOC) are engineered specifically for high-touch domestic and commercial use. They are fully waterproof, heat resistant up to 110°C, and resistant to everyday kitchen spills and cleaning agents. With normal care, wraps easily last 7 to 10 years without peeling."
-    },
-    {
-      q: "Can the wrap peel off near the oven or kettle?",
-      a: "No. We apply heat-activated primer along all perimeter edges and wrap around the back of the doors with thermal shrinking tools. This creates an airtight seal that steam and heat cannot penetrate."
-    },
-    {
-      q: "How much does kitchen wrapping save compared to a new kitchen?",
-      a: "A new kitchen in Edinburgh costs £7,000 to £15,000+ and puts your home out of action for 2 to 3 weeks. Vinyl wrapping typically saves 70% to 80% of that cost, and is completed cleanly in just 1 to 2 days without ripping out plumbing or tiles."
-    },
-    {
-      q: "How do I get a quote for my kitchen?",
-      a: "Simply take 3 or 4 photos of your current kitchen showing all the cupboards and worktops, and send them to us on WhatsApp. We will count the doors/drawers and send you a fixed-price estimate within 30 minutes!"
-    }
-  ];
 
   const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber || '447760696723'}?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20quote%20for%20kitchen%20vinyl%20wrapping%20in%20Edinburgh.`;
 

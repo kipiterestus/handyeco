@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   CheckCircle2, Star, ShieldCheck, Clock, MapPin, 
   MessageSquare, ArrowRight, Sparkles, Droplets, 
@@ -13,42 +13,51 @@ import { BUSINESS_INFO } from '../data/businessData';
 import { usePageSeo } from '../hooks/usePageSeo';
 import { handleInternalLinkClick } from '../utils/navigation';
 import RelatedServicesLinks from '../components/RelatedServicesLinks';
+import { buildPageSchema } from '../utils/seoSchema';
 
 export default function SiliconeSealingPage() {
   const { content } = useContent();
   const siteConfig = content.siteConfig || BUSINESS_INFO;
   const [openFaq, setOpenFaq] = useState(null);
 
-  const pageSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Silicone Sealing & Bath/Shower Resealing Edinburgh",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": "Handyeco",
-      "telephone": siteConfig.phone || BUSINESS_INFO.phone,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Edinburgh",
-        "addressRegion": "City of Edinburgh",
-        "addressCountry": "GB"
-      }
+  const faqs = [
+    {
+      q: "Why does silicone go black and mouldy in Edinburgh flats?",
+      a: "Edinburgh's high humidity and older tenement ventilation mean moisture lingers on surfaces. Once standard silicone degrades or traps soap scum, black mould (Aspergillus) feeds on the sealant from behind. Wiping it with bleach will not fix it because the fungal spores penetrate the core of the silicone. Complete removal and chemical sanitisation are necessary."
     },
-    "areaServed": "Edinburgh and Lothians",
-    "description": "Professional bathroom and kitchen silicone sealing in Edinburgh. Removal of black mould, anti-fungal sanitisation, and sanitary grade waterproof sealant.",
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "GBP",
-      "price": "65.00",
-      "priceValidUntil": "2027-12-31"
+    {
+      q: "What is your process for resealing a bath or shower?",
+      a: "We never 'seal over' old silicone. First, we 100% excise the old sealant using precision mechanical blades. Second, we use professional silicone remover solvent and an anti-fungal alcohol wipe to kill remaining spores. Third, we thoroughly dry the joint. Finally, we tool a smooth, concave bead of premium high-modulus sanitary silicone (such as BT1 or Dow Corning 785+) with zero voids."
+    },
+    {
+      q: "How long before I can use the shower or bath after resealing?",
+      a: "The premium sanitary silicone we use skins over within 20 minutes, but requires 12 to 24 hours of total curing time before direct exposure to running hot water. We advise booking appointments in the morning or early afternoon so you can shower the next day."
+    },
+    {
+      q: "How much does silicone resealing cost in Edinburgh?",
+      a: "Our resealing services start from our standard minimum booking of £65. A typical bath or shower tray reseal (including complete old removal and sanitisation) is agreed as a fixed price upfront. Send us a quick photo on WhatsApp for an instant exact quote."
     }
-  }), [siteConfig.phone]);
+  ];
+
+  const breadcrumbs = [
+    { name: "Home", url: "https://handyeco.co.uk/" },
+    { name: "Services", url: "https://handyeco.co.uk/#services" },
+    { name: "Silicone Sealing Edinburgh", url: "https://handyeco.co.uk/services/silicone-sealing-edinburgh" }
+  ];
 
   usePageSeo({
     title: "Bathroom & Shower Silicone Sealing Edinburgh | Handyeco",
     description: "Expert bath & shower silicone sealant replacement in Edinburgh. Stop leaks, eliminate black mould with sanitary anti-fungal sealant. Fixed price from £65!",
     canonical: "https://handyeco.co.uk/services/silicone-sealing-edinburgh",
-    schema: pageSchema
+    schema: buildPageSchema({
+      title: "Bathroom & Shower Silicone Sealing Edinburgh | Handyeco",
+      description: "Professional bathroom and kitchen silicone sealing in Edinburgh. Removal of black mould, anti-fungal sanitisation, and sanitary grade waterproof sealant.",
+      canonical: "https://handyeco.co.uk/services/silicone-sealing-edinburgh",
+      serviceName: "Silicone Sealing & Bath/Shower Resealing Edinburgh",
+      breadcrumbs,
+      faqs,
+      siteConfig
+    })
   });
 
   const sealingServices = [
@@ -78,24 +87,6 @@ export default function SiliconeSealingPage() {
     }
   ];
 
-  const faqs = [
-    {
-      q: "Why does silicone go black and mouldy in Edinburgh flats?",
-      a: "Edinburgh's high humidity and older tenement ventilation mean moisture lingers on surfaces. Once standard silicone degrades or traps soap scum, black mould (Aspergillus) feeds on the sealant from behind. Wiping it with bleach will not fix it because the fungal spores penetrate the core of the silicone. Complete removal and chemical sanitisation are necessary."
-    },
-    {
-      q: "What is your process for resealing a bath or shower?",
-      a: "We never 'seal over' old silicone. First, we 100% excise the old sealant using precision mechanical blades. Second, we use professional silicone remover solvent and an anti-fungal alcohol wipe to kill remaining spores. Third, we thoroughly dry the joint. Finally, we tool a smooth, concave bead of premium high-modulus sanitary silicone (such as BT1 or Dow Corning 785+) with zero voids."
-    },
-    {
-      q: "How long before I can use the shower or bath after resealing?",
-      a: "The premium sanitary silicone we use skins over within 20 minutes, but requires 12 to 24 hours of total curing time before direct exposure to running hot water. We advise booking appointments in the morning or early afternoon so you can shower the next day."
-    },
-    {
-      q: "How much does silicone resealing cost in Edinburgh?",
-      a: "Our resealing services start from our standard minimum booking of £65. A typical bath or shower tray reseal (including complete old removal and sanitisation) is agreed as a fixed price upfront. Send us a quick photo on WhatsApp for an instant exact quote."
-    }
-  ];
 
   const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber || '447760696723'}?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20quote%20for%20silicone%20resealing%20in%20Edinburgh.`;
 

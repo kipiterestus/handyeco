@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   CheckCircle2, Star, ShieldCheck, Clock, MapPin, 
   MessageSquare, ArrowRight, Sparkles, Home, 
@@ -13,38 +13,12 @@ import { BUSINESS_INFO } from '../data/businessData';
 import { usePageSeo } from '../hooks/usePageSeo';
 import { handleInternalLinkClick } from '../utils/navigation';
 import RelatedServicesLinks from '../components/RelatedServicesLinks';
+import { buildPageSchema } from '../utils/seoSchema';
 
 export default function MorningsideHandymanPage() {
   const { content } = useContent();
   const siteConfig = content.siteConfig || BUSINESS_INFO;
   const [openFaq, setOpenFaq] = useState(null);
-
-  const pageSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "HandymanService",
-    "name": "Handyeco Morningside & Bruntsfield Handyman Services",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": "Handyeco",
-      "telephone": siteConfig.phone || BUSINESS_INFO.phone,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Morningside, Edinburgh",
-        "postalCode": "EH10",
-        "addressCountry": "GB"
-      }
-    },
-    "areaServed": ["Morningside EH10", "Bruntsfield EH10", "Merchiston EH10", "Greenhill EH10"],
-    "description": "5-star handyman service in Morningside & Bruntsfield (EH10). Specialist in Victorian tenement repairs, IKEA PAX assembly, TV wall mounting into stone, and painting.",
-    "priceRange": "£65 - £500"
-  }), [siteConfig.phone]);
-
-  usePageSeo({
-    title: "Handyman Morningside & Bruntsfield (EH10) | 5-Star | Handyeco",
-    description: "Trusted local handyman for Morningside & Bruntsfield EH10. Victorian tenement repairs, stone wall TV mounting, flat-pack assembly & resealing. From £65, no call-out fee!",
-    canonical: "https://handyeco.co.uk/areas/morningside-handyman",
-    schema: pageSchema
-  });
 
   const faqs = [
     {
@@ -60,6 +34,29 @@ export default function MorningsideHandymanPage() {
       a: "We regularly attend jobs in Morningside within 24 to 48 hours for urgent repairs (e.g. leaking shower seals, broken door latches). Average response time on WhatsApp is 15–30 minutes."
     }
   ];
+
+  const breadcrumbs = [
+    { name: "Home", url: "https://handyeco.co.uk/" },
+    { name: "Areas", url: "https://handyeco.co.uk/#areas" },
+    { name: "Handyman Morningside & Bruntsfield (EH10)", url: "https://handyeco.co.uk/areas/morningside-handyman" }
+  ];
+
+  usePageSeo({
+    title: "Handyman Morningside & Bruntsfield (EH10) | 5-Star | Handyeco",
+    description: "Trusted local handyman for Morningside & Bruntsfield EH10. Victorian tenement repairs, stone wall TV mounting, flat-pack assembly & resealing. From £65, no call-out fee!",
+    canonical: "https://handyeco.co.uk/areas/morningside-handyman",
+    schema: buildPageSchema({
+      title: "Handyman Morningside & Bruntsfield (EH10) | 5-Star | Handyeco",
+      description: "5-star handyman service in Morningside & Bruntsfield (EH10). Specialist in Victorian tenement repairs, IKEA PAX assembly, TV wall mounting into stone, and painting.",
+      canonical: "https://handyeco.co.uk/areas/morningside-handyman",
+      isAreaPage: true,
+      areaName: "Morningside & Bruntsfield",
+      areaPostcodes: ["EH10", "Morningside", "Bruntsfield", "Merchiston", "Greenhill"],
+      breadcrumbs,
+      faqs,
+      siteConfig
+    })
+  });
 
   const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber || '447760696723'}?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20handyman%20in%20Morningside%20EH10.`;
 

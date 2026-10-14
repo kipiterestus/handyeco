@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   CheckCircle2, Star, ShieldCheck, Clock, MapPin, 
   MessageSquare, ArrowRight, Sparkles, Building2, 
@@ -13,43 +13,17 @@ import { BUSINESS_INFO } from '../data/businessData';
 import { usePageSeo } from '../hooks/usePageSeo';
 import { handleInternalLinkClick } from '../utils/navigation';
 import RelatedServicesLinks from '../components/RelatedServicesLinks';
+import { buildPageSchema } from '../utils/seoSchema';
 
 export default function StockbridgeNewTownPage() {
   const { content } = useContent();
   const siteConfig = content.siteConfig || BUSINESS_INFO;
   const [openFaq, setOpenFaq] = useState(null);
 
-  const pageSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "HandymanService",
-    "name": "Handyeco Stockbridge & New Town Handyman Services",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": "Handyeco",
-      "telephone": siteConfig.phone || BUSINESS_INFO.phone,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Stockbridge & New Town, Edinburgh",
-        "postalCode": "EH3",
-        "addressCountry": "GB"
-      }
-    },
-    "areaServed": ["Stockbridge EH4", "New Town EH3", "Comely Bank EH4", "Canonmills EH3"],
-    "description": "5-star handyman service in Stockbridge & New Town (EH3/EH4). Specialist in Georgian townhouse & Victorian tenement repairs, stone wall TV mounting, and period maintenance.",
-    "priceRange": "£65 - £500"
-  }), [siteConfig.phone]);
-
-  usePageSeo({
-    title: "Handyman Stockbridge & New Town (EH3/EH4) | 5-Star | Handyeco",
-    description: "Trusted local handyman for Stockbridge & New Town EH3/EH4. Period property repairs, stone wall TV mounting, IKEA assembly, bath resealing. From £65, no call-out fee!",
-    canonical: "https://handyeco.co.uk/areas/stockbridge-new-town-handyman",
-    schema: pageSchema
-  });
-
   const faqs = [
     {
       q: "Do you have experience with Georgian and Victorian period walls in New Town?",
-      a: "Yes, absolutely. New Town townhouses and Stockbridge tenements feature thick sandstone, lath and plaster, and high ceilings up to 3.5 metres. We use specialized masonry anchors (Fischer DuoPower) and laser levels to ensure secure, damage-free installations."
+      a: "Yes, practical experience with New Town townhouses and Stockbridge tenements featuring thick sandstone, lath and plaster, and high ceilings up to 3.5 metres. We use specialized masonry anchors (Fischer DuoPower) and laser levels to ensure secure, damage-free installations."
     },
     {
       q: "Do you charge extra for parking or congestion in New Town / Stockbridge?",
@@ -60,6 +34,29 @@ export default function StockbridgeNewTownPage() {
       a: "Yes. We carry specialized tall stepladders and laser alignment tools to safely hang heavy antique gilt mirrors, large art canvases, and chandeliers into period lath-and-plaster or stone."
     }
   ];
+
+  const breadcrumbs = [
+    { name: "Home", url: "https://handyeco.co.uk/" },
+    { name: "Areas", url: "https://handyeco.co.uk/#areas" },
+    { name: "Handyman Stockbridge & New Town (EH3/EH4)", url: "https://handyeco.co.uk/areas/stockbridge-new-town-handyman" }
+  ];
+
+  usePageSeo({
+    title: "Handyman Stockbridge & New Town (EH3/EH4) | 5-Star | Handyeco",
+    description: "Trusted local handyman for Stockbridge & New Town EH3/EH4. Period property repairs, stone wall TV mounting, IKEA assembly, bath resealing. From £65, no call-out fee!",
+    canonical: "https://handyeco.co.uk/areas/stockbridge-new-town-handyman",
+    schema: buildPageSchema({
+      title: "Handyman Stockbridge & New Town (EH3/EH4) | 5-Star | Handyeco",
+      description: "5-star handyman service in Stockbridge & New Town (EH3/EH4). Specialist in Georgian townhouse & Victorian tenement repairs, stone wall TV mounting, and period maintenance.",
+      canonical: "https://handyeco.co.uk/areas/stockbridge-new-town-handyman",
+      isAreaPage: true,
+      areaName: "Stockbridge & New Town",
+      areaPostcodes: ["EH3", "EH4", "Stockbridge", "New Town", "Comely Bank", "Canonmills"],
+      breadcrumbs,
+      faqs,
+      siteConfig
+    })
+  });
 
   const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber || '447760696723'}?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20handyman%20in%20Stockbridge%20/%20New%20Town.`;
 

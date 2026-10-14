@@ -23,15 +23,16 @@ export default function Navbar() {
         e.preventDefault();
         window.location.href = '/' + href;
       }
+    } else {
+      handleInternalLinkClick(e, href);
     }
   };
 
   const navLinks = [
     { label: "Where We Work", href: "#areas" },
-    { label: "How It Works", href: "#how-it-works" },
     { label: "Services", href: "#services" },
+    { label: "Pricing Guide", href: "/pricing/handyman-edinburgh-cost-guide" },
     { label: "Google Reviews", href: "#reviews" },
-    { label: "Client Photos", href: "#gallery" },
     { label: "FAQ", href: "#faq" }
   ];
 

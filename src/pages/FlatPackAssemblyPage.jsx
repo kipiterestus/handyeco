@@ -13,42 +13,55 @@ import { BUSINESS_INFO } from '../data/businessData';
 import { usePageSeo } from '../hooks/usePageSeo';
 import { handleInternalLinkClick } from '../utils/navigation';
 import RelatedServicesLinks from '../components/RelatedServicesLinks';
+import { buildPageSchema } from '../utils/seoSchema';
 
 export default function FlatPackAssemblyPage() {
   const { content } = useContent();
   const siteConfig = content.siteConfig || BUSINESS_INFO;
   const [openFaq, setOpenFaq] = useState(null);
 
-  const pageSchema = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Flat-Pack & IKEA Furniture Assembly Edinburgh",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": "Handyeco",
-      "telephone": siteConfig.phone || BUSINESS_INFO.phone,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Edinburgh",
-        "addressRegion": "City of Edinburgh",
-        "addressCountry": "GB"
-      }
+  const faqs = [
+    {
+      q: "How much does flat-pack assembly cost in Edinburgh?",
+      a: "Our jobs start from our standard minimum booking of £65 (which covers small items like bedside tables or a chest of drawers). For larger jobs like multi-door IKEA PAX wardrobes, we provide a guaranteed fixed-price quote upfront when you send us the IKEA item links or pictures via WhatsApp."
     },
-    "areaServed": "Edinburgh and Lothians",
-    "description": "Professional assembly of IKEA PAX wardrobes, sliding doors, bed frames, and flat-pack furniture across Edinburgh. Fixed upfront quotes, £65 minimum.",
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "GBP",
-      "price": "65.00",
-      "priceValidUntil": "2027-12-31"
+    {
+      q: "Do you secure tall wardrobes into Edinburgh tenement stone walls?",
+      a: "Yes! High tenement ceilings and uneven floors are very common in Edinburgh. We carry heavy-duty Fischer DuoPower anchors and specialized masonry drill bits to securely fasten all tall wardrobes and bookcases to the wall, preventing tipping."
+    },
+    {
+      q: "What if screws or parts are missing from my flat-pack box?",
+      a: "Don't worry. We carry a comprehensive mobile inventory of spare metric bolts, wood screws, cam-lock fittings, dowels, and shelf pins. We can almost always solve missing hardware on the spot without delaying the build."
+    },
+    {
+      q: "Do you clear away the cardboard packaging?",
+      a: "We neatly flatten and bundle all cardboard and packaging so you can easily put it into your building's recycling bin or council recycling point."
+    },
+    {
+      q: "Can you dismantle furniture before I move flat?",
+      a: "Yes. We frequently help tenants and home buyers in Edinburgh dismantle large wardrobes and bed frames before a move and re-assemble them properly at their new property."
     }
-  };
+  ];
+
+  const breadcrumbs = [
+    { name: "Home", url: "https://handyeco.co.uk/" },
+    { name: "Services", url: "https://handyeco.co.uk/#services" },
+    { name: "Flat-Pack Furniture Assembly Edinburgh", url: "https://handyeco.co.uk/services/flat-pack-assembly-edinburgh" }
+  ];
 
   usePageSeo({
     title: "IKEA & Flat Pack Furniture Assembly Edinburgh | Handyeco",
     description: "Expert flat pack & IKEA PAX wardrobe assembly in Edinburgh. Stress-free, laser-levelled, fixed pricing from £65 with zero call-out fee. WhatsApp now!",
     canonical: "https://handyeco.co.uk/services/flat-pack-assembly-edinburgh",
-    schema: pageSchema
+    schema: buildPageSchema({
+      title: "IKEA & Flat Pack Furniture Assembly Edinburgh | Handyeco",
+      description: "Professional assembly of IKEA PAX wardrobes, sliding doors, bed frames, and flat-pack furniture across Edinburgh. Fixed upfront quotes, £65 minimum.",
+      canonical: "https://handyeco.co.uk/services/flat-pack-assembly-edinburgh",
+      serviceName: "Flat-Pack & IKEA Furniture Assembly Edinburgh",
+      breadcrumbs,
+      faqs,
+      siteConfig
+    })
   });
 
   const assemblyTypes = [
@@ -78,28 +91,6 @@ export default function FlatPackAssemblyPage() {
     }
   ];
 
-  const faqs = [
-    {
-      q: "How much does flat-pack assembly cost in Edinburgh?",
-      a: "Our jobs start from our standard minimum booking of £65 (which covers small items like bedside tables or a chest of drawers). For larger jobs like multi-door IKEA PAX wardrobes, we provide a guaranteed fixed-price quote upfront when you send us the IKEA item links or pictures via WhatsApp."
-    },
-    {
-      q: "Do you secure tall wardrobes into Edinburgh tenement stone walls?",
-      a: "Yes! High tenement ceilings and uneven floors are very common in Edinburgh. We carry heavy-duty Fischer DuoPower anchors and specialized masonry drill bits to securely fasten all tall wardrobes and bookcases to the wall, preventing tipping."
-    },
-    {
-      q: "What if screws or parts are missing from my flat-pack box?",
-      a: "Don't worry. We carry a comprehensive mobile inventory of spare metric bolts, wood screws, cam-lock fittings, dowels, and shelf pins. We can almost always solve missing hardware on the spot without delaying the build."
-    },
-    {
-      q: "Do you clear away the cardboard packaging?",
-      a: "We neatly flatten and bundle all cardboard and packaging so you can easily put it into your building's recycling bin or council recycling point."
-    },
-    {
-      q: "Can you dismantle furniture before I move flat?",
-      a: "Yes. We frequently help tenants and home buyers in Edinburgh dismantle large wardrobes and bed frames before a move and re-assemble them properly at their new property."
-    }
-  ];
 
   const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber || '447760696723'}?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20quote%20for%20flat%20pack%20furniture%20assembly%20in%20Edinburgh.`;
 

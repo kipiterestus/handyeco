@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   CheckCircle2, Star, ShieldCheck, Clock, MapPin, 
   MessageSquare, ArrowRight, Sparkles, Trees, 
@@ -13,42 +13,51 @@ import { BUSINESS_INFO } from '../data/businessData';
 import { usePageSeo } from '../hooks/usePageSeo';
 import { handleInternalLinkClick } from '../utils/navigation';
 import RelatedServicesLinks from '../components/RelatedServicesLinks';
+import { buildPageSchema } from '../utils/seoSchema';
 
 export default function GardenFencingPage() {
   const { content } = useContent();
   const siteConfig = content.siteConfig || BUSINESS_INFO;
   const [openFaq, setOpenFaq] = useState(null);
 
-  const pageSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Garden Gate & Fence Repairs Edinburgh",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": "Handyeco",
-      "telephone": siteConfig.phone || BUSINESS_INFO.phone,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Edinburgh",
-        "addressRegion": "City of Edinburgh",
-        "addressCountry": "GB"
-      }
+  const faqs = [
+    {
+      q: "Can you repair a leaning fence post without replacing the whole fence?",
+      a: "Yes! In most cases, the fence panels are perfectly fine and only the post has rotted at ground level. We install concrete repair spurs or heavy gauge galvanized steel spurs bolted to the existing post and set in Postcrete. This saves hundreds of pounds compared to installing an entire new boundary."
     },
-    "areaServed": "Edinburgh and Lothians",
-    "description": "Professional timber garden gate and fence repairs in Edinburgh. Storm damage repair, rotten post replacement, spur installation, and new gate fitting.",
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "GBP",
-      "price": "65.00",
-      "priceValidUntil": "2027-12-31"
+    {
+      q: "How quickly can you attend after storm damage in Edinburgh?",
+      a: "Following high winds in Edinburgh, we prioritize emergency fence stabilization to keep pets secure and prevent panels blowing into roads or neighboring gardens. We often attend within 24 to 48 hours."
+    },
+    {
+      q: "What types of garden gates do you install?",
+      a: "We fit standard pressure-treated timber tongue & groove gates, featheredge gates, and framed ledged & braced gates. We supply all heavy-duty galvanized outdoor ironmongery (hinges, drop bolts, and hasps)."
+    },
+    {
+      q: "How much do fence and gate repairs cost?",
+      a: "Our outdoor repairs start from our standard £65 minimum booking (covering small latch replacements or individual board re-securing). For post replacements or storm damage, send us 2 or 3 photos on WhatsApp for a clear fixed-price quote."
     }
-  }), [siteConfig.phone]);
+  ];
+
+  const breadcrumbs = [
+    { name: "Home", url: "https://handyeco.co.uk/" },
+    { name: "Services", url: "https://handyeco.co.uk/#services" },
+    { name: "Garden Gate & Fence Repairs Edinburgh", url: "https://handyeco.co.uk/services/garden-gate-fencing-edinburgh" }
+  ];
 
   usePageSeo({
     title: "Garden Gate & Fence Repairs Edinburgh | Storm Damage | Handyeco",
     description: "Expert timber garden fence & gate repairs in Edinburgh. Fix storm damage, leaning fence posts with concrete spurs, new latches & gates. Fixed quote from £65!",
     canonical: "https://handyeco.co.uk/services/garden-gate-fencing-edinburgh",
-    schema: pageSchema
+    schema: buildPageSchema({
+      title: "Garden Gate & Fence Repairs Edinburgh | Storm Damage | Handyeco",
+      description: "Professional timber garden gate and fence repairs in Edinburgh. Storm damage repair, rotten post replacement, spur installation, and new gate fitting.",
+      canonical: "https://handyeco.co.uk/services/garden-gate-fencing-edinburgh",
+      serviceName: "Garden Gate & Fence Repairs Edinburgh",
+      breadcrumbs,
+      faqs,
+      siteConfig
+    })
   });
 
   const fencingServices = [
@@ -78,24 +87,6 @@ export default function GardenFencingPage() {
     }
   ];
 
-  const faqs = [
-    {
-      q: "Can you repair a leaning fence post without replacing the whole fence?",
-      a: "Yes! In most cases, the fence panels are perfectly fine and only the post has rotted at ground level. We install concrete repair spurs or heavy gauge galvanized steel spurs bolted to the existing post and set in Postcrete. This saves hundreds of pounds compared to installing an entire new boundary."
-    },
-    {
-      q: "How quickly can you attend after storm damage in Edinburgh?",
-      a: "Following high winds in Edinburgh, we prioritize emergency fence stabilization to keep pets secure and prevent panels blowing into roads or neighboring gardens. We often attend within 24 to 48 hours."
-    },
-    {
-      q: "What types of garden gates do you install?",
-      a: "We fit standard pressure-treated timber tongue & groove gates, featheredge gates, and framed ledged & braced gates. We supply all heavy-duty galvanized outdoor ironmongery (hinges, drop bolts, and hasps)."
-    },
-    {
-      q: "How much do fence and gate repairs cost?",
-      a: "Our outdoor repairs start from our standard £65 minimum booking (covering small latch replacements or individual board re-securing). For post replacements or storm damage, send us 2 or 3 photos on WhatsApp for a clear fixed-price quote."
-    }
-  ];
 
   const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber || '447760696723'}?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20quote%20for%20garden%20fence%20or%20gate%20repairs%20in%20Edinburgh.`;
 

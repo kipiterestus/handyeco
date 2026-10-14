@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   CheckCircle2, Star, ShieldCheck, Clock, MapPin, 
   MessageSquare, ArrowRight, Sparkles, Paintbrush, 
@@ -13,42 +13,51 @@ import { BUSINESS_INFO } from '../data/businessData';
 import { usePageSeo } from '../hooks/usePageSeo';
 import { handleInternalLinkClick } from '../utils/navigation';
 import RelatedServicesLinks from '../components/RelatedServicesLinks';
+import { buildPageSchema } from '../utils/seoSchema';
 
 export default function PaintingDecoratingPage() {
   const { content } = useContent();
   const siteConfig = content.siteConfig || BUSINESS_INFO;
   const [openFaq, setOpenFaq] = useState(null);
 
-  const pageSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Interior Painting & Decorating Edinburgh",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": "Handyeco",
-      "telephone": siteConfig.phone || BUSINESS_INFO.phone,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Edinburgh",
-        "addressRegion": "City of Edinburgh",
-        "addressCountry": "GB"
-      }
+  const faqs = [
+    {
+      q: "Do I need to buy the paint, or do you supply it?",
+      a: "Either way works! If you have a specific colour or brand already purchased (e.g. Dulux, Farrow & Ball), we can supply the labour and all prep materials (dust sheets, tape, rollers, brushes, fillers). Alternatively, we can supply trade-quality paint in your chosen colour code."
     },
-    "areaServed": "Edinburgh and Lothians",
-    "description": "Clean, high-quality interior painting, touch-ups, end-of-tenancy repaints, and plaster patch repairs across Edinburgh. Fixed quotes, £65 minimum.",
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "GBP",
-      "price": "65.00",
-      "priceValidUntil": "2027-12-31"
+    {
+      q: "How do you protect my furniture and floors?",
+      a: "Zero mess is our golden rule. We cover all flooring with heavy-duty cotton canvas drop sheets and mask all edges, sockets, switches, and woodwork with premium low-tack precision masking tape."
+    },
+    {
+      q: "Can you touch up minor scuffs without painting the entire room?",
+      a: "Yes, if you have the original leftover paint. For tenancies where wall paint has faded, we can paint just the affected wall corner-to-corner for a seamless finish without visible patches."
+    },
+    {
+      q: "How much does painting cost in Edinburgh?",
+      a: "Our painting services start from our £65 minimum booking (covering small touch-up jobs, patches, or a single door/frame). For bedrooms, living rooms, or full flats, simply send us photos or dimensions on WhatsApp for an exact fixed price quote."
     }
-  }), [siteConfig.phone]);
+  ];
+
+  const breadcrumbs = [
+    { name: "Home", url: "https://handyeco.co.uk/" },
+    { name: "Services", url: "https://handyeco.co.uk/#services" },
+    { name: "Interior Painting & Decorating Edinburgh", url: "https://handyeco.co.uk/services/painting-decorating-edinburgh" }
+  ];
 
   usePageSeo({
     title: "Interior Painting & Decorating Edinburgh | Handyeco",
     description: "Professional interior painting, end-of-tenancy touch-ups & plaster patch repairs in Edinburgh. Sharp lines, zero mess, fixed pricing from £65. WhatsApp now!",
     canonical: "https://handyeco.co.uk/services/painting-decorating-edinburgh",
-    schema: pageSchema
+    schema: buildPageSchema({
+      title: "Interior Painting & Decorating Edinburgh | Handyeco",
+      description: "Clean, high-quality interior painting, touch-ups, end-of-tenancy repaints, and plaster patch repairs across Edinburgh. Fixed quotes, £65 minimum.",
+      canonical: "https://handyeco.co.uk/services/painting-decorating-edinburgh",
+      serviceName: "Interior Painting & Decorating Edinburgh",
+      breadcrumbs,
+      faqs,
+      siteConfig
+    })
   });
 
   const paintingServices = [
@@ -78,24 +87,6 @@ export default function PaintingDecoratingPage() {
     }
   ];
 
-  const faqs = [
-    {
-      q: "Do I need to buy the paint, or do you supply it?",
-      a: "Either way works! If you have a specific colour or brand already purchased (e.g. Dulux, Farrow & Ball), we can supply the labour and all prep materials (dust sheets, tape, rollers, brushes, fillers). Alternatively, we can supply trade-quality paint in your chosen colour code."
-    },
-    {
-      q: "How do you protect my furniture and floors?",
-      a: "Zero mess is our golden rule. We cover all flooring with heavy-duty cotton canvas drop sheets and mask all edges, sockets, switches, and woodwork with premium low-tack precision masking tape."
-    },
-    {
-      q: "Can you touch up minor scuffs without painting the entire room?",
-      a: "Yes, if you have the original leftover paint. For tenancies where wall paint has faded, we can paint just the affected wall corner-to-corner for a seamless finish without visible patches."
-    },
-    {
-      q: "How much does painting cost in Edinburgh?",
-      a: "Our painting services start from our £65 minimum booking (covering small touch-up jobs, patches, or a single door/frame). For bedrooms, living rooms, or full flats, simply send us photos or dimensions on WhatsApp for an exact fixed price quote."
-    }
-  ];
 
   const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber || '447760696723'}?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20quote%20for%20interior%20painting%20in%20Edinburgh.`;
 

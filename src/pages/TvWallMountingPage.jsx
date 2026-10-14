@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { 
   CheckCircle2, Star, ShieldCheck, Clock, MapPin, 
   MessageSquare, ArrowRight, Sparkles, Tv, 
@@ -13,42 +13,55 @@ import { BUSINESS_INFO } from '../data/businessData';
 import { usePageSeo } from '../hooks/usePageSeo';
 import { handleInternalLinkClick } from '../utils/navigation';
 import RelatedServicesLinks from '../components/RelatedServicesLinks';
+import { buildPageSchema } from '../utils/seoSchema';
 
 export default function TvWallMountingPage() {
   const { content } = useContent();
   const siteConfig = content.siteConfig || BUSINESS_INFO;
   const [openFaq, setOpenFaq] = useState(null);
 
-  const pageSchema = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "TV Wall Mounting into Stone & Plasterboard Walls Edinburgh",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": "Handyeco",
-      "telephone": siteConfig.phone || BUSINESS_INFO.phone,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Edinburgh",
-        "addressRegion": "City of Edinburgh",
-        "addressCountry": "GB"
-      }
+  const faqs = [
+    {
+      q: "Can you safely mount a large 75-inch TV into a Victorian sandstone tenement wall?",
+      a: "Yes, this is our everyday specialty. Traditional Edinburgh stone walls crumble if ordinary DIY plastic wall plugs are used. We use SDS rotary hammer masonry drills and heavy-duty Fischer DuoPower / Fischer SX nylon expansion anchors with heavy gauge hex coach screws. Once installed, the bracket will easily support over 80kg."
     },
-    "areaServed": "Edinburgh and Lothians",
-    "description": "Professional TV wall mounting into historic Edinburgh sandstone tenement walls and stud partitions. Screens 32 to 85 inches, heavy mirrors and shelves.",
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "GBP",
-      "price": "65.00",
-      "priceValidUntil": "2027-12-31"
+    {
+      q: "Do I need to supply the bracket, or can you provide one?",
+      a: "You can supply your own bracket (bought from Amazon, Currys, or Richer Sounds), or we can supply a premium heavy-duty tilt or full-motion bracket if you let us know your TV size in advance via WhatsApp."
+    },
+    {
+      q: "What about stud partition walls and plasterboard?",
+      a: "For modern apartments or stud partitions, we use professional digital wall scanners to locate timber studs. Where studs are not conveniently located, we use industrial heavy-duty hollow-wall toggle anchors (GripIt or Fischer Duotec) that grip behind the plasterboard without damaging the wall."
+    },
+    {
+      q: "Can you hide or tidy the dangling cables?",
+      a: "Yes! We provide clean white or colour-matched D-Line cable trunking to neatly enclose power and HDMI cables straight down the wall or skirting board."
+    },
+    {
+      q: "How much does TV mounting cost in Edinburgh?",
+      a: "Our jobs start from our standard minimum booking of £65 (for standard size TVs with customer-supplied bracket). Simply WhatsApp us your TV model/size, wall type (stone, brick, or stud), and preferred bracket style for an instant fixed quote."
     }
-  };
+  ];
+
+  const breadcrumbs = [
+    { name: "Home", url: "https://handyeco.co.uk/" },
+    { name: "Services", url: "https://handyeco.co.uk/#services" },
+    { name: "TV Wall Mounting Edinburgh", url: "https://handyeco.co.uk/services/tv-wall-mounting-edinburgh" }
+  ];
 
   usePageSeo({
     title: "TV Wall Mounting Edinburgh into Stone Walls | Handyeco",
     description: "Professional TV wall mounting into Edinburgh tenement stone walls & stud partitions. Up to 85\" OLED/QLED, heavy mirrors. Fischer anchors included, from £65!",
     canonical: "https://handyeco.co.uk/services/tv-wall-mounting-edinburgh",
-    schema: pageSchema
+    schema: buildPageSchema({
+      title: "TV Wall Mounting Edinburgh into Stone Walls | Handyeco",
+      description: "Professional TV wall mounting into historic Edinburgh sandstone tenement walls and stud partitions. Screens 32 to 85 inches, heavy mirrors and shelves.",
+      canonical: "https://handyeco.co.uk/services/tv-wall-mounting-edinburgh",
+      serviceName: "TV Wall Mounting into Stone & Plasterboard Walls Edinburgh",
+      breadcrumbs,
+      faqs,
+      siteConfig
+    })
   });
 
   const mountTypes = [
@@ -78,28 +91,6 @@ export default function TvWallMountingPage() {
     }
   ];
 
-  const faqs = [
-    {
-      q: "Can you safely mount a large 75-inch TV into a Victorian sandstone tenement wall?",
-      a: "Yes, this is our everyday specialty. Traditional Edinburgh stone walls crumble if ordinary DIY plastic wall plugs are used. We use SDS rotary hammer masonry drills and heavy-duty Fischer DuoPower / Fischer SX nylon expansion anchors with heavy gauge hex coach screws. Once installed, the bracket will easily support over 80kg."
-    },
-    {
-      q: "Do I need to supply the bracket, or can you provide one?",
-      a: "You can supply your own bracket (bought from Amazon, Currys, or Richer Sounds), or we can supply a premium heavy-duty tilt or full-motion bracket if you let us know your TV size in advance via WhatsApp."
-    },
-    {
-      q: "What about stud partition walls and plasterboard?",
-      a: "For modern apartments or stud partitions, we use professional digital wall scanners to locate timber studs. Where studs are not conveniently located, we use industrial heavy-duty hollow-wall toggle anchors (GripIt or Fischer Duotec) that grip behind the plasterboard without damaging the wall."
-    },
-    {
-      q: "Can you hide or tidy the dangling cables?",
-      a: "Yes! We provide clean white or colour-matched D-Line cable trunking to neatly enclose power and HDMI cables straight down the wall or skirting board."
-    },
-    {
-      q: "How much does TV mounting cost in Edinburgh?",
-      a: "Our jobs start from our standard minimum booking of £65 (for standard size TVs with customer-supplied bracket). Simply WhatsApp us your TV model/size, wall type (stone, brick, or stud), and preferred bracket style for an instant fixed quote."
-    }
-  ];
 
   const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber || '447760696723'}?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20quote%20for%20TV%20wall%20mounting%20into%20a%20wall%20in%20Edinburgh.`;
 

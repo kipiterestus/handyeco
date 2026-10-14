@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   CheckCircle2, Star, ShieldCheck, Clock, MapPin, 
   MessageSquare, ArrowRight, Sparkles, Anchor, 
@@ -13,38 +13,12 @@ import { BUSINESS_INFO } from '../data/businessData';
 import { usePageSeo } from '../hooks/usePageSeo';
 import { handleInternalLinkClick } from '../utils/navigation';
 import RelatedServicesLinks from '../components/RelatedServicesLinks';
+import { buildPageSchema } from '../utils/seoSchema';
 
 export default function LeithHandymanPage() {
   const { content } = useContent();
   const siteConfig = content.siteConfig || BUSINESS_INFO;
   const [openFaq, setOpenFaq] = useState(null);
-
-  const pageSchema = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "HandymanService",
-    "name": "Handyeco Leith & Newhaven Handyman Services",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": "Handyeco",
-      "telephone": siteConfig.phone || BUSINESS_INFO.phone,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Leith, Edinburgh",
-        "postalCode": "EH6",
-        "addressCountry": "GB"
-      }
-    },
-    "areaServed": ["Leith EH6", "The Shore EH6", "Newhaven EH6", "Bonnington EH6"],
-    "description": "5-star handyman service in Leith, The Shore & Newhaven (EH6). Tenement maintenance, modern apartment fittings, IKEA assembly, and TV wall mounting.",
-    "priceRange": "£65 - £500"
-  }), [siteConfig.phone]);
-
-  usePageSeo({
-    title: "Handyman Leith & The Shore (EH6) | 5-Star | Handyeco",
-    description: "Trusted local handyman for Leith, The Shore & Newhaven EH6. Tenement & new-build repairs, TV wall mounting, IKEA flat pack, silicone reseals. From £65!",
-    canonical: "https://handyeco.co.uk/areas/leith-handyman",
-    schema: pageSchema
-  });
 
   const faqs = [
     {
@@ -60,6 +34,29 @@ export default function LeithHandymanPage() {
       a: "Yes, we regularly handle pre-tenancy repairs, deposit return punch-lists, lock replacements, and bath silicone resealing between leases across Leith."
     }
   ];
+
+  const breadcrumbs = [
+    { name: "Home", url: "https://handyeco.co.uk/" },
+    { name: "Areas", url: "https://handyeco.co.uk/#areas" },
+    { name: "Handyman Leith & The Shore (EH6)", url: "https://handyeco.co.uk/areas/leith-handyman" }
+  ];
+
+  usePageSeo({
+    title: "Handyman Leith & The Shore (EH6) | 5-Star | Handyeco",
+    description: "Trusted local handyman for Leith, The Shore & Newhaven EH6. Tenement & new-build repairs, TV wall mounting, IKEA flat pack, silicone reseals. From £65!",
+    canonical: "https://handyeco.co.uk/areas/leith-handyman",
+    schema: buildPageSchema({
+      title: "Handyman Leith & The Shore (EH6) | 5-Star | Handyeco",
+      description: "5-star handyman service in Leith, The Shore & Newhaven (EH6). Tenement maintenance, modern apartment fittings, IKEA assembly, and TV wall mounting.",
+      canonical: "https://handyeco.co.uk/areas/leith-handyman",
+      isAreaPage: true,
+      areaName: "Leith & The Shore",
+      areaPostcodes: ["EH6", "Leith", "The Shore", "Newhaven", "Bonnington"],
+      breadcrumbs,
+      faqs,
+      siteConfig
+    })
+  });
 
   const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber || '447760696723'}?text=Hi%20Ekrem,%20I'm%20looking%20for%20a%20handyman%20in%20Leith%20EH6.`;
 
