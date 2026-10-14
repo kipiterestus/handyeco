@@ -24,73 +24,73 @@ export default function HandymanCostGuidePage() {
   const pricingEstimates = [
     {
       category: "Furniture & Flat-Pack Assembly",
-      item: "Standard IKEA Chest of Drawers (Malm/Kullen)",
-      typicalRange: "£65 – £75",
-      timeEstimate: "1 – 1.5 hours",
-      notes: "Includes levelling, wall tethering & cardboard bundling"
-    },
-    {
-      category: "Furniture & Flat-Pack Assembly",
-      item: "2-Door IKEA PAX Wardrobe with Hinged Doors",
-      typicalRange: "£85 – £120",
-      timeEstimate: "2 – 3 hours",
-      notes: "Internal drawers, rails & masonry wall anchors included"
-    },
-    {
-      category: "Furniture & Flat-Pack Assembly",
-      item: "3-Door IKEA PAX with Sliding Mirrored Doors",
-      typicalRange: "£140 – £190",
-      timeEstimate: "3.5 – 5 hours",
-      notes: "Precision runner alignment & heavy-duty wall anchors"
-    },
-    {
-      category: "Furniture & Flat-Pack Assembly",
-      item: "Ottoman Gas-Lift Storage Bed Frame",
-      typicalRange: "£85 – £110",
-      timeEstimate: "2 – 2.5 hours",
-      notes: "Piston tension testing & bed frame squaring"
-    },
-    {
-      category: "TV Wall Mounting & Hanging",
-      item: "TV Wall Mounting (32\" to 65\" into Plasterboard/Studs)",
-      typicalRange: "£65 – £85",
-      timeEstimate: "1 – 1.5 hours",
-      notes: "Digital stud finding & Fischer Duotec heavy anchors"
-    },
-    {
-      category: "TV Wall Mounting & Hanging",
-      item: "TV Wall Mounting (55\" to 85\" into Tenement Sandstone)",
-      typicalRange: "£75 – £95",
+      item: "Chest of Drawers Assembly",
+      typicalRange: "£65 – £95",
       timeEstimate: "1 – 2 hours",
-      notes: "SDS masonry drilling, Fischer DuoPower & hex coach bolts"
+      notes: "Depends on complexity & number of drawers; includes wall safety anchor"
+    },
+    {
+      category: "Furniture & Flat-Pack Assembly",
+      item: "2-Door Wardrobe Assembly",
+      typicalRange: "£120 – £150",
+      timeEstimate: "2 – 3 hours",
+      notes: "Hinged or sliding doors, shelving & secure wall anchoring"
+    },
+    {
+      category: "Furniture & Flat-Pack Assembly",
+      item: "3-Door Wardrobe Assembly",
+      typicalRange: "£150 – £190",
+      timeEstimate: "3.5 – 5 hours",
+      notes: "Large multi-section wardrobe, drawers, hanging rails & wall anchor"
+    },
+    {
+      category: "Furniture & Flat-Pack Assembly",
+      item: "Ottoman Gas-Lift Storage Bed",
+      typicalRange: "Single: £80 | Double: £100 | King: £130",
+      timeEstimate: "1.5 – 2.5 hours",
+      notes: "Hydraulic gas-lift piston alignment, frame squaring & safety check"
+    },
+    {
+      category: "TV Wall Mounting & Hanging",
+      item: "TV Wall Mounting (40\" to 55\")",
+      typicalRange: "£65 fixed",
+      timeEstimate: "1 – 1.5 hours",
+      notes: "Same fixed rate for stone masonry or plasterboard; heavy-duty trade fixings included"
+    },
+    {
+      category: "TV Wall Mounting & Hanging",
+      item: "TV Wall Mounting (55\"+ / Large Screen)",
+      typicalRange: "£80 fixed",
+      timeEstimate: "1 – 2 hours",
+      notes: "Large screen mounting into stone or hollow walls with heavy-duty anchors"
     },
     {
       category: "Bathroom & Kitchen Resealing",
-      item: "Bath or Shower Enclosure Full Reseal",
-      typicalRange: "£65 – £85",
-      timeEstimate: "1 – 1.5 hours",
-      notes: "100% old silicone strip, anti-mould sanitisation & BT1 seal"
+      item: "Bath or Shower Silicone Reseal",
+      typicalRange: "£70 – £120",
+      timeEstimate: "1 – 2 hours",
+      notes: "Depends on complexity & size; complete old silicone removal & sanitary seal"
     },
     {
       category: "Tenement Odd Jobs & Maintenance",
-      item: "Internal Timber Door Trimming (after thick carpet)",
-      typicalRange: "£65 for 1st door, £35/additional",
+      item: "Internal Door Handle Fitting / Replacement",
+      typicalRange: "£65 (1st door), £30/additional",
       timeEstimate: "45 mins/door",
-      notes: "Plunge rail saw, zero-splinter edge & bottom bevel"
+      notes: "Old handle/latch removal, precision alignment & smooth latching mechanism"
     },
     {
       category: "Tenement Odd Jobs & Maintenance",
-      item: "Curtain Pole or Blind Fitting into Stone Lintels",
-      typicalRange: "£65 (up to 2 poles/blinds)",
-      timeEstimate: "1 hour",
-      notes: "Laser-aligned with deep masonry fixings into sandstone"
+      item: "Internal Timber Door Trimming (after flooring/carpet)",
+      typicalRange: "£65 (1st door), £30/additional",
+      timeEstimate: "45 mins/door",
+      notes: "Plunge rail saw cut, zero-splinter edge & clean bottom bevel"
     },
     {
       category: "Tenement Odd Jobs & Maintenance",
-      item: "Multi-Job 'Punch List' Half-Day (3 Hours)",
-      typicalRange: "£140 – £175 fixed",
-      timeEstimate: "3 hours",
-      notes: "Combine 4-7 small tasks in one convenient booking"
+      item: "Curtains & Blinds Installation",
+      typicalRange: "£65 (1st item), £30/additional",
+      timeEstimate: "45 mins each",
+      notes: "Laser-levelled with trade fixings; high ceiling flats excepted (subject to quote)"
     }
   ];
 
@@ -113,7 +113,7 @@ export default function HandymanCostGuidePage() {
     },
     {
       q: "Are materials and fixings included in the price?",
-      a: "All standard trade-quality wall fixings (heavy-duty Fischer DuoPower wall plugs, concrete screws, masonry anchors, hollow-wall toggles) and professional tools are included in our price. For specialized items like replacement curtain poles, specific paint colours, or replacement door locks, you can either supply them or we can provide them at trade cost."
+      a: "All standard trade-quality wall fixings (heavy-duty masonry expansion plugs, concrete screws, masonry anchors, hollow-wall toggles) and professional tools are included in our price. For specialized items like replacement curtain poles, specific paint colours, or replacement door locks, you can either supply them or we can provide them at trade cost."
     },
     {
       q: "How can I save money when hiring an Edinburgh handyman?",
@@ -133,7 +133,7 @@ export default function HandymanCostGuidePage() {
     canonical: "https://handyeco.co.uk/pricing/handyman-edinburgh-cost-guide",
     schema: buildPageSchema({
       title: "Handyman Edinburgh Cost & Pricing Guide 2026 | Handyeco",
-      description: "Comprehensive Edinburgh handyman pricing guide. Transparent prices for IKEA assembly, TV mounting into stone, silicone sealing, and tenement repairs. From £65 minimum booking.",
+      description: "Comprehensive Edinburgh handyman pricing guide. Transparent prices for flat-pack assembly, TV mounting into stone, silicone sealing, and tenement repairs. From £65 minimum booking.",
       canonical: "https://handyeco.co.uk/pricing/handyman-edinburgh-cost-guide",
       serviceName: "Handyman Edinburgh Pricing & Cost Guide",
       breadcrumbs,
@@ -258,7 +258,7 @@ export default function HandymanCostGuidePage() {
         {/* Pricing Comparison Table Section */}
         <section id="pricing-table" className="py-16 bg-slate-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-left max-w-3xl mb-10">
+            <div className="text-left max-w-3xl mb-8">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold mb-3">
                 <Calculator className="w-3.5 h-3.5 text-blue-600" />
                 <span>Edinburgh 2026 Price Index</span>
@@ -267,8 +267,39 @@ export default function HandymanCostGuidePage() {
                 Typical Handyman Job Prices in Edinburgh
               </h2>
               <p className="mt-2 text-slate-600 text-sm sm:text-base">
-                All prices include professional cordless tools, heavy-duty Fischer masonry fixings, and tidy cleanup.
+                All prices include professional cordless tools, heavy-duty trade-grade fixings, and tidy cleanup.
               </p>
+            </div>
+
+            {/* Price Variation Notice Badge */}
+            <div className="mb-8 rounded-2xl bg-amber-500/10 border-2 border-amber-500/30 p-5 sm:p-6 text-left shadow-sm">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <AlertCircle className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold uppercase tracking-wider mb-1.5">
+                      Average Estimated Rates
+                    </div>
+                    <h3 className="text-base font-bold text-slate-900 leading-snug">
+                      Prices May Vary Based on Job Scope &amp; Complexity
+                    </h3>
+                    <p className="mt-1 text-slate-700 text-xs sm:text-sm leading-relaxed max-w-2xl">
+                      The figures listed below are average guide prices. Costs can vary depending on furniture design complexity, room dimensions, and tenement wall construction (solid stone vs plasterboard). For an exact, guaranteed fixed-price quote, please get in touch with photos and project details.
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all shrink-0 whitespace-nowrap"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Get Exact Fixed Quote</span>
+                </a>
+              </div>
             </div>
 
             {/* Table Container */}
@@ -327,21 +358,21 @@ export default function HandymanCostGuidePage() {
               <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
                 <h3 className="font-bold text-slate-900 text-base mb-2">Thick Sandstone & Masonry</h3>
                 <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                  Edinburgh tenement walls are made of centuries-old rubble sandstone behind horsehair plaster. Standard DIY cordless drills simply spin without penetrating, and cheap plastic wall plugs crumble loose. We use SDS hammer drills and heavy-duty Fischer DuoPower masonry sleeves.
+                  Edinburgh tenement walls are made of centuries-old rubble sandstone behind horsehair plaster. Standard DIY cordless drills simply spin without penetrating, and cheap plastic wall plugs crumble loose. We use SDS hammer drills and heavy-duty trade masonry expansion sleeves.
                 </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
                 <h3 className="font-bold text-slate-900 text-base mb-2">High Ceilings & Uneven Floors</h3>
                 <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                  Tenement ceilings often measure 3.2m to 3.6m tall. Fitting high curtain poles, ceiling laundry pulleys, or anchoring tall IKEA PAX wardrobes requires specialized step platforms and precision laser levels to compensate for century-old floor settlement.
+                  Tenement ceilings often measure 3.2m to 3.6m tall. Fitting high curtain poles, ceiling laundry pulleys, or anchoring tall wardrobes requires specialized step platforms and precision laser levels to compensate for century-old floor settlement.
                 </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
                 <h3 className="font-bold text-slate-900 text-base mb-2">Deep Lath and Plaster Voids</h3>
                 <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                  Internal tenement partitions have hollow timber laths that crack if drilled incorrectly. We use electronic stud and wire scanners combined with heavy-duty Fischer Duotec gravity toggle anchors that grip securely behind the timber laths.
+                  Internal tenement partitions have hollow timber laths that crack if drilled incorrectly. We use electronic stud and wire scanners combined with heavy-duty hollow-wall toggle anchors that grip securely behind the timber laths.
                 </p>
               </div>
             </div>
