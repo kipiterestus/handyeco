@@ -1,0 +1,27 @@
+[
+  {
+    "id": "b2b_job_sample_1",
+    "partnerId": "partner_sample_1",
+    "partnerCompanyName": "Apex Property Management",
+    "partnerContact": "David Ross (+447700900123)",
+    "propertyAddress": "14 Rose Street, Flat 2F1, Edinburgh EH2 2PR",
+    "tenantName": "Sarah MacLeod",
+    "tenantPhone": "07712345678",
+    "accessMethod": "Keys in keybox or direct tenant appointment",
+    "jobTitle": "Bathroom Silicone Reseal & Cupboard Hinge Repair",
+    "jobDescription": "Full silicone removal and reseal around shower tray and bath. Plane 1 sticking bathroom door.",
+    "urgency": "this-week",
+    "status": "completed",
+    "scheduledDate": "2026-10-14",
+    "scheduledTime": "10:00 AM",
+    "myNetPrice": 120,
+    "partnerGrossPrice": 170,
+    "partnerProfit": 50,
+    "paymentTerms": "weekly",
+    "paymentStatus": "unpaid",
+    "paidAt": null,
+    "syncedToAccounting": false,
+    "adminNotes": "Completed cleanly. Tenant signed off on work.",
+    "createdAt": "2026-10-12T09:30:00.000Z"
+  }
+]

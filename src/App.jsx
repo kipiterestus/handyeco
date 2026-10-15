@@ -27,6 +27,7 @@ import OldTownSouthsidePage from './pages/OldTownSouthsidePage';
 import PortobelloHandymanPage from './pages/PortobelloHandymanPage';
 import MusselburghHandymanPage from './pages/MusselburghHandymanPage';
 import LivingstonHandymanPage from './pages/LivingstonHandymanPage';
+import LandlordAgentPartnerPage from './pages/LandlordAgentPartnerPage';
 
 export default function App() {
   const [selectedService, setSelectedService] = useState(null);
@@ -97,6 +98,9 @@ export default function App() {
     }
     if (currentPath === '/pricing/handyman-edinburgh-cost-guide') {
       return <HandymanCostGuidePage />;
+    }
+    if (currentPath === '/landlords-agents' || currentPath === '/trade-partner') {
+      return <LandlordAgentPartnerPage />;
     }
 
     return (

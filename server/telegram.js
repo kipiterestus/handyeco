@@ -295,3 +295,115 @@ export async function sendTelegramUpcomingJobReminder({
   return { success: true, delivered: true, messageId: result.result?.message_id };
 }
 
+/**
+ * Sends instant Telegram notification when a new B2B partner applies for an account
+ */
+export async function sendTelegramB2BPartnerRegistration(partner, token, chatId) {
+  if (!token || !chatId) {
+    console.warn('[Telegram] Telegram token/chatId not configured for B2B registration notification.');
+    return { success: true, delivered: false };
+  }
+
+  const cleanPhone = (partner.phone || '').replace(/[^0-9+]/g, '');
+  const waDirectLink = cleanPhone ? `https://wa.me/${cleanPhone.replace(/^0/, '44')}` : null;
+  const timestamp = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' });
+
+  const tradeLabels = {
+    letting_agent: 'Emlak & Kiralama Acentesi',
+    main_contractor: 'Ana Yüklenici / Müteahhit',
+    property_investor: 'Mülk Yatırımcısı / Portfolio Sahibi',
+    landlord: 'Bireysel Ev Sahibi (Çoklu Daire)',
+    other: 'Diğer Ticari İşletme'
+  };
+
+  const message = [
+    `🏢 <b>YENİ B2B / TAŞERON BAŞVURUSU GELDİ!</b>`,
+    `━━━━━━━━━━━━━━━━━━━━`,
+    `🏢 <b>Firma:</b> <b>${escapeHtml(partner.companyName)}</b>`,
+    `👤 <b>Yetkili:</b> ${escapeHtml(partner.contactPerson)}`,
+    `📞 <b>Telefon:</b> <code>${escapeHtml(partner.phone)}</code>`,
+    `📧 <b>E-posta:</b> <code>${escapeHtml(partner.email)}</code>`,
+    `🏷️ <b>İşletme Türü:</b> ${escapeHtml(tradeLabels[partner.tradeType] || partner.tradeType || 'Belirtilmedi')}`,
+    `📦 <b>Tahmini Aylık İş:</b> ${escapeHtml(partner.jobVolumeEstimate || 'Belirtilmedi')}`,
+    partner.notes ? `📝 <b>Başvuru Notu:</b> <i>${escapeHtml(partner.notes)}</i>` : '',
+    `⏰ <b>Kayıt Saati:</b> ${timestamp}`,
+    `━━━━━━━━━━━━━━━━━━━━`,
+    `⚠️ <b>DURUM: ONAY BEKLİYOR</b>`,
+    `<i>Bu taşeron siz görüşüp onaylamadan panele giriş yapamaz.</i>`,
+    `━━━━━━━━━━━━━━━━━━━━`,
+    waDirectLink ? `💬 <a href="${waDirectLink}"><b>Yetkiliye WhatsApp'tan Yaz ➡️</b></a>` : '',
+    `🔐 <a href="https://handyeco.co.uk/admin"><b>Yönetici Paneline Gir &amp; Onayla ➡️</b></a>`
+  ].filter(Boolean).join('\n');
+
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+      })
+    });
+    const result = await response.json();
+    return { success: result.ok, delivered: result.ok };
+  } catch (err) {
+    console.error('[Telegram] B2B registration notification error:', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Sends instant Telegram notification when an approved B2B partner submits a job request
+ */
+export async function sendTelegramB2BJobSubmission(job, token, chatId) {
+  if (!token || !chatId) {
+    console.warn('[Telegram] Telegram token/chatId not configured for B2B job submission notification.');
+    return { success: true, delivered: false };
+  }
+
+  const cleanTenantPhone = (job.tenantPhone || '').replace(/[^0-9+]/g, '');
+  const waTenantLink = cleanTenantPhone ? `https://wa.me/${cleanTenantPhone.replace(/^0/, '44')}` : null;
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(job.propertyAddress + ', Edinburgh')}`;
+  const timestamp = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' });
+
+  const message = [
+    `📋 <b>YENİ B2B İŞ TALEBİ GELDİ!</b>`,
+    `━━━━━━━━━━━━━━━━━━━━`,
+    `🏢 <b>Taşeron / Acente:</b> <b>${escapeHtml(job.partnerCompanyName)}</b>`,
+    `📍 <b>Mülk Adresi:</b> ${escapeHtml(job.propertyAddress)}`,
+    `👤 <b>Kiracı:</b> ${escapeHtml(job.tenantName)} (${escapeHtml(job.tenantPhone || 'Tel Yok')})`,
+    `🔑 <b>Erişim:</b> ${escapeHtml(job.accessMethod || 'Doğrudan kiracı')}`,
+    `🛠️ <b>İş Başlığı:</b> <b>${escapeHtml(job.jobTitle)}</b>`,
+    job.jobDescription ? `📋 <b>Açıklama:</b> <i>${escapeHtml(job.jobDescription)}</i>` : '',
+    `⚡ <b>Aciliyet:</b> ${escapeHtml((job.urgency || 'flexible').toUpperCase())}`,
+    `⏰ <b>Talep Zamanı:</b> ${timestamp}`,
+    `━━━━━━━━━━━━━━━━━━━━`,
+    `🎭 <b>ÖNEMLİ: Müşteriye giderken "${escapeHtml(job.partnerCompanyName)}" adına gidilecek!</b>`,
+    `━━━━━━━━━━━━━━━━━━━━`,
+    `🗺️ <a href="${mapsUrl}"><b>Google Haritalar Konumu ➡️</b></a>`,
+    waTenantLink ? `💬 <a href="${waTenantLink}"><b>Kiracıya WhatsApp'tan Yaz ➡️</b></a>` : '',
+    `🔐 <a href="https://handyeco.co.uk/admin"><b>Panele Gir &amp; Fiyatlandır / Planla ➡️</b></a>`
+  ].filter(Boolean).join('\n');
+
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+      })
+    });
+    const result = await response.json();
+    return { success: result.ok, delivered: result.ok };
+  } catch (err) {
+    console.error('[Telegram] B2B job submission notification error:', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
+

@@ -33,9 +33,30 @@ import {
   getTotpStatus,
   toggleTotp,
   readJson,
-  writeJson
+  writeJson,
+  getB2BPartners,
+  getB2BPartnerById,
+  registerB2BPartner,
+  loginB2BPartner,
+  verifyB2BPartnerToken,
+  revokeB2BPartnerToken,
+  updateB2BPartner,
+  deleteB2BPartner,
+  getB2BJobs,
+  createB2BJob,
+  updateB2BJob,
+  deleteB2BJob,
+  syncB2BJobToAccounting,
+  partnerAuthRateLimiter,
+  partnerJobRateLimiter
 } from './store.js';
-import { sendTelegramNotification, sendTelegramDailyAppointmentReminder, sendTelegramUpcomingJobReminder } from './telegram.js';
+import { 
+  sendTelegramNotification, 
+  sendTelegramDailyAppointmentReminder, 
+  sendTelegramUpcomingJobReminder,
+  sendTelegramB2BPartnerRegistration,
+  sendTelegramB2BJobSubmission
+} from './telegram.js';
 import { syncReviews } from './reviewsSync.js';
 import { SECURITY_HEADERS, loginRateLimiter, quoteRateLimiter, corsMiddleware } from './security.js';
 
@@ -96,6 +117,18 @@ function requireAuth(req, res, next) {
   if (!isValidToken(token)) {
     return res.status(401).json({ success: false, error: 'Unauthorized. Please log in.' });
   }
+  next();
+}
+
+// Partner middleware guard for protected B2B partner portal routes
+function requirePartnerAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
+  const partner = verifyB2BPartnerToken(token);
+  if (!partner) {
+    return res.status(401).json({ success: false, error: 'Session expired or invalid. Please log in to your partner portal.' });
+  }
+  req.partner = partner;
   next();
 }
 
@@ -620,6 +653,234 @@ app.delete('/api/schedule/:id', requireAuth, (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
+// =============================================================
+// B2B PARTNER PORTAL & SUBCONTRACTOR ROUTES
+// =============================================================
+
+// Public: Register new trade partner (Account starts in 'pending' status)
+app.post('/api/b2b/register', async (req, res) => {
+  const clientIp = getClientIp(req);
+  const rateLimit = partnerAuthRateLimiter.check(clientIp);
+  if (!rateLimit.allowed) {
+    return res.status(429).json({ success: false, error: 'Too many registration requests. Please wait a few minutes.' });
+  }
+
+  try {
+    const partner = registerB2BPartner(req.body);
+
+    // Send instant Telegram alert to Ekrem
+    const siteConfig = getSection('siteConfig') || {};
+    const botToken = siteConfig.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = siteConfig.telegramChatId || process.env.TELEGRAM_CHAT_ID;
+    if (botToken && chatId) {
+      sendTelegramB2BPartnerRegistration(partner, botToken, chatId).catch(err => {
+        console.error('[B2B Telegram Notification Error]:', err.message);
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Application received! Ekrem will review your details and contact you via phone or WhatsApp before activating your trade portal.',
+      partner
+    });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// Public: Partner login (Checks pending/approved status)
+app.post('/api/b2b/login', async (req, res) => {
+  const clientIp = getClientIp(req);
+  const rateLimit = partnerAuthRateLimiter.check(clientIp);
+  if (!rateLimit.allowed) {
+    return res.status(429).json({ success: false, error: 'Too many login attempts. Please wait a few minutes.' });
+  }
+
+  try {
+    const { email, password } = req.body || {};
+    const result = loginB2BPartner(email, password);
+    res.json({ success: true, ...result });
+  } catch (err) {
+    if (err.code === 'PENDING_APPROVAL') {
+      return res.status(403).json({ 
+        success: false, 
+        pending: true, 
+        error: 'Your trade account is pending verification. Ekrem reviews all trade applications personally and will contact you before portal activation.' 
+      });
+    }
+    if (err.code === 'APPLICATION_REJECTED') {
+      return res.status(403).json({ 
+        success: false, 
+        rejected: true, 
+        error: 'Trade application was not approved. Please contact us directly if you have questions.' 
+      });
+    }
+    res.status(400).json({ success: false, error: err.message || 'Login failed' });
+  }
+});
+
+// Protected Partner: Get current partner profile
+app.get('/api/b2b/me', requirePartnerAuth, (req, res) => {
+  res.json({ success: true, partner: req.partner });
+});
+
+// Protected Partner: Logout
+app.post('/api/b2b/logout', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
+  if (token) revokeB2BPartnerToken(token);
+  res.json({ success: true });
+});
+
+// Protected Partner: List their own submitted jobs
+app.get('/api/b2b/portal/jobs', requirePartnerAuth, (req, res) => {
+  try {
+    const jobs = getB2BJobs(req.partner.id);
+    res.json({ success: true, jobs });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Protected Partner: Submit a new job request
+app.post('/api/b2b/portal/jobs', requirePartnerAuth, async (req, res) => {
+  const clientIp = getClientIp(req);
+  const rateLimit = partnerJobRateLimiter.check(clientIp);
+  if (!rateLimit.allowed) {
+    return res.status(429).json({ success: false, error: 'Too many job requests. Please wait a few minutes.' });
+  }
+
+  try {
+    const payload = req.body || {};
+    const job = createB2BJob({
+      ...payload,
+      partnerId: req.partner.id,
+      partnerCompanyName: req.partner.companyName,
+      partnerContact: `${req.partner.contactPerson} (${req.partner.phone})`,
+      paymentTerms: req.partner.paymentTerms || 'weekly',
+      status: 'new'
+    });
+
+    // Notify Ekrem instantly via Telegram
+    const siteConfig = getSection('siteConfig') || {};
+    const botToken = siteConfig.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = siteConfig.telegramChatId || process.env.TELEGRAM_CHAT_ID;
+    if (botToken && chatId) {
+      sendTelegramB2BJobSubmission(job, botToken, chatId).catch(err => {
+        console.error('[B2B Job Telegram Notification Error]:', err.message);
+      });
+    }
+
+    res.json({ success: true, job });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// -------------------------------------------------------------
+// Admin B2B Management Endpoints (Protected by requireAuth)
+// -------------------------------------------------------------
+
+// Admin: Get all B2B partners
+app.get('/api/admin/b2b/partners', requireAuth, (req, res) => {
+  try {
+    const partners = getB2BPartners();
+    res.json({ success: true, partners });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Admin: Manually add a partner
+app.post('/api/admin/b2b/partners', requireAuth, (req, res) => {
+  try {
+    const partner = registerB2BPartner(req.body);
+    // If admin explicitly marked approved, update it
+    if (req.body.status === 'approved') {
+      const approved = updateB2BPartner(partner.id, { 
+        status: 'approved', 
+        paymentTerms: req.body.paymentTerms || 'weekly' 
+      });
+      return res.json({ success: true, partner: approved });
+    }
+    res.json({ success: true, partner });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// Admin: Update partner (Approve, Reject, Change paymentTerms daily/weekly, notes)
+app.patch('/api/admin/b2b/partners/:id', requireAuth, (req, res) => {
+  try {
+    const updated = updateB2BPartner(req.params.id, req.body);
+    res.json({ success: true, partner: updated });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// Admin: Delete partner
+app.delete('/api/admin/b2b/partners/:id', requireAuth, (req, res) => {
+  try {
+    deleteB2BPartner(req.params.id);
+    res.json({ success: true, id: req.params.id });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Admin: Get all B2B jobs
+app.get('/api/admin/b2b/jobs', requireAuth, (req, res) => {
+  try {
+    const partnerId = req.query.partnerId || null;
+    const jobs = getB2BJobs(partnerId);
+    res.json({ success: true, jobs });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Admin: Create B2B job
+app.post('/api/admin/b2b/jobs', requireAuth, (req, res) => {
+  try {
+    const job = createB2BJob(req.body);
+    res.json({ success: true, job });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Admin: Update B2B job (status, pricing, paymentStatus, schedule)
+app.patch('/api/admin/b2b/jobs/:id', requireAuth, (req, res) => {
+  try {
+    const updated = updateB2BJob(req.params.id, req.body);
+    res.json({ success: true, job: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Admin: Delete B2B job
+app.delete('/api/admin/b2b/jobs/:id', requireAuth, (req, res) => {
+  try {
+    deleteB2BJob(req.params.id);
+    res.json({ success: true, id: req.params.id });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Admin: One-click sync B2B job to accounting / ledger
+app.post('/api/admin/b2b/jobs/:id/sync-accounting', requireAuth, (req, res) => {
+  try {
+    const result = syncB2BJobToAccounting(req.params.id);
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 
 
 // Hourly background review synchronization

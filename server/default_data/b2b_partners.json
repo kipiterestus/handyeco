@@ -1,0 +1,17 @@
+[
+  {
+    "id": "partner_sample_1",
+    "companyName": "Apex Property Management",
+    "contactPerson": "David Ross",
+    "phone": "+447700900123",
+    "email": "david@apexproperty.co.uk",
+    "passwordHash": "5a2d67a147e45661b17d5982:2c815219ae0bb4fb166d333068e4cb310cf6e35bbdd5518b2611a221f7c2443a6d36e2fba6c8d76dbbe85f7a297eaebae348b4f2cfa2354f3ef1faad875709ee",
+    "tradeType": "letting_agent",
+    "jobVolumeEstimate": "5-10 jobs/month",
+    "paymentTerms": "weekly",
+    "notes": "Introduce as Apex Property Maintenance Team. Key collection at George St office.",
+    "status": "approved",
+    "createdAt": "2026-10-10T10:00:00.000Z",
+    "approvedAt": "2026-10-10T12:00:00.000Z"
+  }
+]

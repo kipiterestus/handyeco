@@ -342,3 +342,123 @@ export const SECURITY_HEADERS = {
     "form-action 'self'"
   ].join("; ")
 };
+
+// -------------------------------------------------------------
+// B2B Partner Security & Authentication
+// -------------------------------------------------------------
+export function hashPartnerPassword(plainPassword) {
+  if (!plainPassword || typeof plainPassword !== 'string' || plainPassword.length < 6) {
+    throw new Error('Password must be at least 6 characters long');
+  }
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.scryptSync(plainPassword, salt, 64).toString('hex');
+  return `${salt}:${hash}`;
+}
+
+export function verifyPartnerPassword(plainPassword, storedHash) {
+  if (!plainPassword || !storedHash || typeof storedHash !== 'string') return false;
+  const parts = storedHash.split(':');
+  if (parts.length !== 2) return false;
+  const [salt, originalHash] = parts;
+  try {
+    const newHash = crypto.scryptSync(plainPassword, salt, 64).toString('hex');
+    return timingSafeCompare(newHash, originalHash);
+  } catch (err) {
+    return false;
+  }
+}
+
+const partnerSessionsFile = path.join(dataDir, "partner_sessions.json");
+
+function readStoredPartnerSessions() {
+  try {
+    if (fs.existsSync(partnerSessionsFile)) {
+      return JSON.parse(fs.readFileSync(partnerSessionsFile, "utf-8"));
+    }
+  } catch (e) {}
+  return {};
+}
+
+function writeStoredPartnerSessions(sessions) {
+  try {
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    fs.writeFileSync(partnerSessionsFile, JSON.stringify(sessions, null, 2), "utf-8");
+  } catch (e) {}
+}
+
+export class PartnerTokenManager {
+  // 7 days TTL for trade partners
+  constructor(ttlMs = 7 * 24 * 60 * 60 * 1000) {
+    this.ttlMs = ttlMs;
+    this.tokens = new Map();
+    const stored = readStoredPartnerSessions();
+    const now = Date.now();
+    for (const [token, record] of Object.entries(stored)) {
+      if (record && typeof record.expiresAt === 'number' && record.expiresAt > now) {
+        this.tokens.set(token, record);
+      }
+    }
+    const timer = setInterval(() => this.cleanup(), 60 * 60 * 1000);
+    if (timer.unref) timer.unref();
+  }
+
+  saveToDisk() {
+    const obj = {};
+    for (const [token, record] of this.tokens.entries()) {
+      obj[token] = record;
+    }
+    writeStoredPartnerSessions(obj);
+  }
+
+  create(partnerId) {
+    const token = 'b2b_' + crypto.randomBytes(32).toString('hex');
+    const record = { partnerId, expiresAt: Date.now() + this.ttlMs };
+    this.tokens.set(token, record);
+    this.saveToDisk();
+    return token;
+  }
+
+  validate(token) {
+    if (!token || typeof token !== 'string') return null;
+    let record = this.tokens.get(token);
+    if (!record) {
+      const stored = readStoredPartnerSessions();
+      if (stored[token]) {
+        record = stored[token];
+        this.tokens.set(token, record);
+      }
+    }
+    if (!record) return null;
+    if (Date.now() > record.expiresAt) {
+      this.tokens.delete(token);
+      this.saveToDisk();
+      return null;
+    }
+    // Refresh expiry
+    record.expiresAt = Date.now() + this.ttlMs;
+    this.tokens.set(token, record);
+    return record.partnerId;
+  }
+
+  revoke(token) {
+    if (token) {
+      this.tokens.delete(token);
+      this.saveToDisk();
+    }
+  }
+
+  cleanup() {
+    const now = Date.now();
+    let changed = false;
+    for (const [token, record] of this.tokens.entries()) {
+      if (now > record.expiresAt) {
+        this.tokens.delete(token);
+        changed = true;
+      }
+    }
+    if (changed) this.saveToDisk();
+  }
+}
+
+export const partnerAuthRateLimiter = new RateLimiter({ windowMs: 15 * 60 * 1000, maxRequests: 25 });
+export const partnerJobRateLimiter = new RateLimiter({ windowMs: 10 * 60 * 1000, maxRequests: 20 });

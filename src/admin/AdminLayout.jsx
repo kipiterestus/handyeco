@@ -18,11 +18,13 @@ import {
   PoundSterling,
   Briefcase,
   SlidersHorizontal,
-  Calendar
+  Calendar,
+  Handshake
 } from 'lucide-react';
 import AdminLogin from './AdminLogin';
 import LeadsManager from './LeadsManager';
 import ScheduleManager from './ScheduleManager';
+import B2BManager from './B2BManager';
 import AccountingManager from './AccountingManager';
 import BusinessEditor from './BusinessEditor';
 import TelegramEditor from './TelegramEditor';
@@ -48,6 +50,7 @@ export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [unreadLeadsCount, setUnreadLeadsCount] = useState(0);
+  const [pendingB2BCount, setPendingB2BCount] = useState(0);
   
   // State for passing lead data to schedule and accounting
   const [initialLeadForSchedule, setInitialLeadForSchedule] = useState(null);
@@ -55,15 +58,17 @@ export default function AdminLayout() {
 
   const { content, refreshContent, updateSectionLocally } = useContent();
 
-  // Check for new unread leads
+  // Check for new unread leads & pending B2B partner applications
   const checkUnreadLeads = async () => {
     if (!token) return;
     try {
-      const res = await fetch('/api/quotes', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
+      const [quotesRes, b2bRes] = await Promise.all([
+        fetch('/api/quotes', { headers: { Authorization: `Bearer ${token}` } }),
+        fetch('/api/admin/b2b/partners', { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+
+      if (quotesRes.ok) {
+        const data = await quotesRes.json();
         if (data.success && Array.isArray(data.quotes)) {
           const lastSeen = Number(localStorage.getItem('handyeco_last_seen_quote_time') || 0);
           
@@ -80,8 +85,16 @@ export default function AdminLayout() {
           }
         }
       }
+
+      if (b2bRes.ok) {
+        const b2bData = await b2bRes.json();
+        if (b2bData.success && Array.isArray(b2bData.partners)) {
+          const pending = b2bData.partners.filter(p => p.status === 'pending');
+          setPendingB2BCount(pending.length);
+        }
+      }
     } catch (e) {
-      console.error('Error checking unread leads:', e);
+      console.error('Error checking unread leads / B2B:', e);
     }
   };
 
@@ -230,6 +243,12 @@ export default function AdminLayout() {
       unreadCount: unreadLeadsCount
     },
     { id: 'schedule', label: 'Randevular', icon: Calendar },
+    { 
+      id: 'b2b', 
+      label: 'B2B & Taşeron', 
+      icon: Handshake,
+      unreadCount: pendingB2BCount
+    },
     { id: 'accounting', label: 'Muhasebe', icon: PoundSterling },
   ];
 
@@ -437,6 +456,12 @@ export default function AdminLayout() {
                 initialLeadData={initialLeadForSchedule}
                 onClearInitialLead={() => setInitialLeadForSchedule(null)}
                 onLogJobToAccounting={handleLogLeadToAccounting}
+                onNavigateTab={handleSelectTab}
+              />
+            )}
+            {activeTab === 'b2b' && (
+              <B2BManager 
+                token={token} 
                 onNavigateTab={handleSelectTab}
               />
             )}

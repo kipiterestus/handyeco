@@ -36,4 +36,8 @@ server/data/admin_sessions.json
 server/data/quotes.json
 server/data/reviews.json
 server/quotes.json
+server/data/b2b_jobs.json
+server/data/b2b_partners.json
+server/data/partner_sessions.json
+
 

@@ -2,10 +2,36 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import sharp from 'sharp';
-import { timingSafeCompare, TokenManager, sanitizeQuotePayload, isTotpConfigured, verifyTotpCode, generateTotpSetup, saveTotpSecret, resetTotp, getTotpStatus, toggleTotp } from './security.js';
+import { 
+  timingSafeCompare, 
+  TokenManager, 
+  sanitizeQuotePayload, 
+  isTotpConfigured, 
+  verifyTotpCode, 
+  generateTotpSetup, 
+  saveTotpSecret, 
+  resetTotp, 
+  getTotpStatus, 
+  toggleTotp,
+  hashPartnerPassword,
+  verifyPartnerPassword,
+  PartnerTokenManager,
+  partnerAuthRateLimiter,
+  partnerJobRateLimiter
+} from './security.js';
 
-// Re-export TOTP helpers so server/index.js can import them from one place
-export { isTotpConfigured, verifyTotpCode, generateTotpSetup, saveTotpSecret, resetTotp, getTotpStatus, toggleTotp };
+// Re-export TOTP and B2B security helpers
+export { 
+  isTotpConfigured, 
+  verifyTotpCode, 
+  generateTotpSetup, 
+  saveTotpSecret, 
+  resetTotp, 
+  getTotpStatus, 
+  toggleTotp,
+  partnerAuthRateLimiter,
+  partnerJobRateLimiter
+};
 
 const dataDir = path.join(process.cwd(), 'server', 'data');
 const defaultDataDir = path.join(process.cwd(), 'server', 'default_data');
@@ -472,5 +498,310 @@ export function deleteScheduleJob(id) {
   writeJson('schedule.json', filtered);
   return true;
 }
+
+// -------------------------------------------------------------
+// B2B Partner Portal & Subcontractor Management
+// -------------------------------------------------------------
+const partnerTokenManager = new PartnerTokenManager();
+
+export function getB2BPartners(includeSecrets = false) {
+  const partners = readJson('b2b_partners.json', []);
+  if (includeSecrets) return partners;
+  return partners.map(p => {
+    const { passwordHash, ...safe } = p;
+    return safe;
+  });
+}
+
+export function getB2BPartnerById(id, includeSecrets = false) {
+  const partners = readJson('b2b_partners.json', []);
+  const partner = partners.find(p => p.id === id);
+  if (!partner) return null;
+  if (includeSecrets) return partner;
+  const { passwordHash, ...safe } = partner;
+  return safe;
+}
+
+export function getB2BPartnerByEmail(email) {
+  if (!email) return null;
+  const partners = readJson('b2b_partners.json', []);
+  const cleanEmail = email.trim().toLowerCase();
+  return partners.find(p => p.email && p.email.trim().toLowerCase() === cleanEmail) || null;
+}
+
+export function registerB2BPartner(payload) {
+  const {
+    companyName,
+    contactPerson,
+    phone,
+    email,
+    password,
+    tradeType = 'letting_agent',
+    jobVolumeEstimate = '1-5 jobs/month',
+    notes = ''
+  } = payload || {};
+
+  if (!companyName || companyName.trim().length < 2) {
+    throw new Error('Valid company or trade name is required');
+  }
+  if (!contactPerson || contactPerson.trim().length < 2) {
+    throw new Error('Valid contact person name is required');
+  }
+  if (!phone || phone.trim().length < 6) {
+    throw new Error('Valid contact phone or WhatsApp number is required');
+  }
+  if (!email || !email.includes('@')) {
+    throw new Error('Valid contact email is required');
+  }
+  if (!password || password.length < 6) {
+    throw new Error('Password must be at least 6 characters');
+  }
+
+  const existing = getB2BPartnerByEmail(email);
+  if (existing) {
+    throw new Error('An account with this email address is already registered');
+  }
+
+  const partners = readJson('b2b_partners.json', []);
+  const newPartner = {
+    id: 'partner_' + crypto.randomUUID().replace(/-/g, '').slice(0, 10),
+    companyName: companyName.trim(),
+    contactPerson: contactPerson.trim(),
+    phone: phone.trim(),
+    email: email.trim().toLowerCase(),
+    passwordHash: hashPartnerPassword(password),
+    tradeType, // letting_agent | main_contractor | property_investor | landlord | other
+    jobVolumeEstimate,
+    paymentTerms: 'weekly', // Default to weekly; can be switched to daily upon review. Strictly no monthly.
+    notes: notes.trim(),
+    status: 'pending', // Pending manual review & call by Ekrem
+    createdAt: new Date().toISOString(),
+    approvedAt: null
+  };
+
+  partners.unshift(newPartner);
+  writeJson('b2b_partners.json', partners);
+
+  const { passwordHash, ...safePartner } = newPartner;
+  return safePartner;
+}
+
+export function loginB2BPartner(email, password) {
+  if (!email || !password) {
+    throw new Error('Email and password are required');
+  }
+  const partner = getB2BPartnerByEmail(email);
+  if (!partner) {
+    throw new Error('Invalid email or password');
+  }
+
+  const isPasswordValid = verifyPartnerPassword(password, partner.passwordHash);
+  if (!isPasswordValid) {
+    throw new Error('Invalid email or password');
+  }
+
+  // Gatekeeping: partner cannot access portal until Ekrem reviews & approves
+  if (partner.status === 'pending') {
+    const err = new Error('Your trade account application is currently pending verification. Ekrem will contact you before portal activation.');
+    err.code = 'PENDING_APPROVAL';
+    throw err;
+  }
+
+  if (partner.status === 'rejected') {
+    const err = new Error('Your trade partner application was not approved. Please contact us directly.');
+    err.code = 'APPLICATION_REJECTED';
+    throw err;
+  }
+
+  // Generate session token
+  const token = partnerTokenManager.create(partner.id);
+  const { passwordHash, ...safePartner } = partner;
+  return { token, partner: safePartner };
+}
+
+export function verifyB2BPartnerToken(token) {
+  if (!token) return null;
+  const partnerId = partnerTokenManager.validate(token);
+  if (!partnerId) return null;
+  const partner = getB2BPartnerById(partnerId);
+  if (!partner || partner.status !== 'approved') return null;
+  return partner;
+}
+
+export function revokeB2BPartnerToken(token) {
+  partnerTokenManager.revoke(token);
+  return true;
+}
+
+export function updateB2BPartner(id, updates) {
+  const partners = readJson('b2b_partners.json', []);
+  const index = partners.findIndex(p => p.id === id);
+  if (index === -1) throw new Error('Partner not found');
+
+  const existing = partners[index];
+  const allowedUpdates = [
+    'companyName',
+    'contactPerson',
+    'phone',
+    'email',
+    'tradeType',
+    'jobVolumeEstimate',
+    'paymentTerms', // 'daily' | 'weekly'
+    'notes',
+    'status' // 'pending' | 'approved' | 'rejected'
+  ];
+
+  const merged = { ...existing };
+  for (const field of allowedUpdates) {
+    if (updates[field] !== undefined) {
+      merged[field] = updates[field];
+    }
+  }
+
+  // If status is transitioning to approved
+  if (updates.status === 'approved' && existing.status !== 'approved') {
+    merged.approvedAt = new Date().toISOString();
+  }
+
+  // Enforce strictly daily or weekly payment terms
+  if (merged.paymentTerms !== 'daily' && merged.paymentTerms !== 'weekly') {
+    merged.paymentTerms = 'weekly';
+  }
+
+  merged.updatedAt = new Date().toISOString();
+  partners[index] = merged;
+  writeJson('b2b_partners.json', partners);
+
+  const { passwordHash, ...safe } = merged;
+  return safe;
+}
+
+export function deleteB2BPartner(id) {
+  const partners = readJson('b2b_partners.json', []);
+  const filtered = partners.filter(p => p.id !== id);
+  writeJson('b2b_partners.json', filtered);
+  return true;
+}
+
+// -------------------------------------------------------------
+// B2B Jobs Pipeline Management
+// -------------------------------------------------------------
+export function getB2BJobs(partnerId = null) {
+  const jobs = readJson('b2b_jobs.json', []);
+  if (partnerId) {
+    return jobs.filter(j => j.partnerId === partnerId);
+  }
+  return jobs;
+}
+
+export function createB2BJob(jobData) {
+  const jobs = readJson('b2b_jobs.json', []);
+  const partner = getB2BPartnerById(jobData.partnerId);
+
+  const myNetPrice = Number(jobData.myNetPrice) || 0;
+  const partnerGrossPrice = Number(jobData.partnerGrossPrice) || 0;
+  const partnerProfit = Math.max(0, Math.round((partnerGrossPrice - myNetPrice) * 100) / 100);
+
+  const newJob = {
+    id: jobData.id || 'b2b_job_' + crypto.randomUUID().replace(/-/g, '').slice(0, 10),
+    partnerId: jobData.partnerId,
+    partnerCompanyName: partner ? partner.companyName : (jobData.partnerCompanyName || 'Direct Partner'),
+    partnerContact: partner ? `${partner.contactPerson} (${partner.phone})` : (jobData.partnerContact || ''),
+    propertyAddress: jobData.propertyAddress || 'Address not specified',
+    tenantName: jobData.tenantName || 'Tenant',
+    tenantPhone: jobData.tenantPhone || '',
+    accessMethod: jobData.accessMethod || 'Direct tenant contact',
+    jobTitle: jobData.jobTitle || 'Property Maintenance Job',
+    jobDescription: jobData.jobDescription || '',
+    urgency: jobData.urgency || 'flexible', // urgent | this-week | flexible
+    status: jobData.status || 'new', // new | quote_sent | approved | scheduled | in_progress | completed | cancelled
+    scheduledDate: jobData.scheduledDate || null,
+    scheduledTime: jobData.scheduledTime || null,
+    myNetPrice,
+    partnerGrossPrice,
+    partnerProfit,
+    paymentTerms: jobData.paymentTerms || (partner ? partner.paymentTerms : 'weekly'),
+    paymentStatus: jobData.paymentStatus || 'unpaid', // unpaid | paid
+    paidAt: jobData.paymentStatus === 'paid' ? new Date().toISOString() : null,
+    syncedToAccounting: false,
+    adminNotes: jobData.adminNotes || '',
+    createdAt: new Date().toISOString()
+  };
+
+  jobs.unshift(newJob);
+  writeJson('b2b_jobs.json', jobs);
+  return newJob;
+}
+
+export function updateB2BJob(id, updates) {
+  const jobs = readJson('b2b_jobs.json', []);
+  const index = jobs.findIndex(j => j.id === id);
+  if (index === -1) throw new Error('B2B Job not found');
+
+  const existing = jobs[index];
+  const merged = { ...existing, ...updates };
+
+  // Recalculate profit if prices were updated
+  if (updates.myNetPrice !== undefined || updates.partnerGrossPrice !== undefined) {
+    const net = Number(merged.myNetPrice) || 0;
+    const gross = Number(merged.partnerGrossPrice) || 0;
+    merged.myNetPrice = net;
+    merged.partnerGrossPrice = gross;
+    merged.partnerProfit = Math.max(0, Math.round((gross - net) * 100) / 100);
+  }
+
+  // Handle paid status timestamp
+  if (updates.paymentStatus === 'paid' && existing.paymentStatus !== 'paid') {
+    merged.paidAt = new Date().toISOString();
+  } else if (updates.paymentStatus === 'unpaid') {
+    merged.paidAt = null;
+  }
+
+  merged.updatedAt = new Date().toISOString();
+  jobs[index] = merged;
+  writeJson('b2b_jobs.json', jobs);
+  return merged;
+}
+
+export function deleteB2BJob(id) {
+  const jobs = readJson('b2b_jobs.json', []);
+  const filtered = jobs.filter(j => j.id !== id);
+  writeJson('b2b_jobs.json', filtered);
+  return true;
+}
+
+export function syncB2BJobToAccounting(jobId) {
+  const jobs = readJson('b2b_jobs.json', []);
+  const index = jobs.findIndex(j => j.id === jobId);
+  if (index === -1) throw new Error('B2B Job not found');
+
+  const job = jobs[index];
+  if (job.syncedToAccounting) {
+    return { alreadySynced: true, job };
+  }
+
+  const financeRecord = saveFinanceRecord({
+    type: 'job',
+    customerName: `${job.partnerCompanyName} (${job.propertyAddress})`,
+    customerPhone: job.tenantPhone || '',
+    postcode: 'Edinburgh',
+    service: `B2B: ${job.jobTitle || 'Maintenance'}`,
+    revenue: job.myNetPrice,
+    materialCost: 0,
+    otherExpenses: 0,
+    paymentStatus: job.paymentStatus === 'paid' ? 'paid_bank' : 'pending',
+    date: job.scheduledDate || new Date().toISOString().split('T')[0],
+    notes: `[B2B Subcontract Job #${job.id}]\nPartner: ${job.partnerCompanyName}\nTenant: ${job.tenantName} (${job.tenantPhone})\nEkrem Net: £${job.myNetPrice} | Partner Gross: £${job.partnerGrossPrice} (Kâr: £${job.partnerProfit})\nAccess: ${job.accessMethod}`
+  });
+
+  job.syncedToAccounting = true;
+  job.accountingRecordId = financeRecord.id;
+  job.updatedAt = new Date().toISOString();
+  jobs[index] = job;
+  writeJson('b2b_jobs.json', jobs);
+
+  return { success: true, financeRecord, job };
+}
+
 
 

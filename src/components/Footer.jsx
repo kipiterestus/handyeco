@@ -234,6 +234,15 @@ export default function Footer() {
                 <span>Google Profile & Reviews (5.0 ★)</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
+
+              <a 
+                href="/landlords-agents" 
+                onClick={(e) => handleInternalLinkClick(e, '/landlords-agents')} 
+                className="text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 pt-1 text-xs"
+              >
+                <span>For Landlords &amp; Letting Agents</span>
+                <span className="text-[10px] text-blue-400 font-bold px-1.5 py-0.2 rounded bg-blue-500/10 border border-blue-500/20">Partner Trade</span>
+              </a>
             </div>
           </div>
 
@@ -243,6 +252,13 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-[11px]">
           <p>&copy; {new Date().getFullYear()} Handyeco - Edinburgh Handyman Services. All rights reserved.</p>
           <div className="flex items-center space-x-6">
+            <a 
+              href="/landlords-agents" 
+              onClick={(e) => handleInternalLinkClick(e, '/landlords-agents')} 
+              className="hover:text-slate-300 transition-colors"
+            >
+              For Landlords &amp; Letting Agents
+            </a>
             <span>Edinburgh, Scotland</span>
             <a href="#quote" className="hover:text-slate-300">Request Quote</a>
           </div>
