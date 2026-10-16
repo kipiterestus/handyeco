@@ -274,11 +274,11 @@ export default function AdminLayout() {
     { id: 'accounting', label: 'Muhasebe', icon: PoundSterling },
   ];
 
-  // 2. KATEGORİ: B2B & İŞ ORTAKLARI (Operasyondan Ayrı Özel Kategori)
+  // 2. KATEGORİ: B2B
   const b2bNav = [
     { 
       id: 'b2b', 
-      label: 'B2B & Taşeron', 
+      label: 'B2B', 
       icon: Handshake,
       unreadCount: pendingB2BCount
     }
@@ -431,11 +431,11 @@ export default function AdminLayout() {
 
           <div className="border-t border-zinc-800/80 my-2" />
 
-          {/* 2. KATEGORİ: B2B & İŞ ORTAKLARI (Operasyondan Ayrı Özel Kategori) */}
+          {/* 2. KATEGORİ: B2B */}
           <div className="space-y-1 text-left">
             <div className="px-3 py-1 text-[10px] font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
               <Handshake className="w-3.5 h-3.5 text-amber-400" />
-              <span>B2B &amp; İş Ortakları</span>
+              <span>B2B</span>
             </div>
 
             {b2bNav.map((item) => {

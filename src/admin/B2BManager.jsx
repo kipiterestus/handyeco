@@ -168,7 +168,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        showToast('Taşeron başarıyla onaylandı! Artık portala giriş yapabilir.');
+        showToast('B2B ortak başarıyla onaylandı! Artık portala giriş yapabilir.');
         fetchData();
       } else {
         alert(data.error || 'Onaylama başarısız');
@@ -202,14 +202,14 @@ export default function B2BManager({ token, onNavigateTab = null }) {
   };
 
   const handleDeletePartner = async (partnerId) => {
-    if (!window.confirm('Bu taşeronu silmek istediğinize emin misiniz? Tüm geçmişi silinecektir.')) return;
+    if (!window.confirm('Bu B2B firmayı silmek istediğinize emin misiniz? Tüm geçmişi silinecektir.')) return;
     try {
       const res = await fetch(`/api/admin/b2b/partners/${partnerId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
-        showToast('Taşeron silindi.');
+        showToast('B2B firma silindi.');
         fetchData();
       }
     } catch (err) {
@@ -377,7 +377,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
             </div>
             <div>
               <h1 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
-                B2B &amp; Taşeron Yönetim Portalı
+                B2B Yönetim Portalı
                 {pendingPartners.length > 0 && (
                   <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-500 text-black animate-pulse">
                     {pendingPartners.length} Onay Bekliyor
@@ -385,7 +385,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                 )}
               </h1>
               <p className="text-xs text-zinc-400">
-                Emlak acenteleri, aracı taşeronlar ve ana yükleniciler için white-label iş ve hakediş kontrol merkezi.
+                Emlak acenteleri, kurumsal ortaklar ve ana yükleniciler için B2B iş ve hakediş kontrol merkezi.
               </p>
             </div>
           </div>
@@ -394,7 +394,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => openNewJobModal()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-blue-600/20 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:from-indigo-500 text-white text-xs font-bold shadow-lg shadow-blue-600/20 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Yeni B2B İş Ekle</span>
@@ -421,7 +421,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
             <span className={`text-2xl font-black ${pendingPartners.length > 0 ? 'text-amber-400' : 'text-white'}`}>
               {pendingPartners.length}
             </span>
-            <span className="text-[10px] text-zinc-500">taşeron</span>
+            <span className="text-[10px] text-zinc-500">B2B</span>
           </div>
           <p className="text-[10px] text-zinc-500 mt-1">
             {pendingPartners.length > 0 ? '⚠️ Görüşüp onaylamanız bekleniyor' : 'Tüm başvurular güncel'}
@@ -497,7 +497,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
           }`}
         >
           <Building2 className="w-4 h-4" />
-          <span>Taşeron Rehberi &amp; Başvurular ({partners.length})</span>
+          <span>B2B Ortakları &amp; Başvurular ({partners.length})</span>
           {pendingPartners.length > 0 && (
             <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
           )}
@@ -527,7 +527,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
               <input
                 type="text"
-                placeholder="İş, adres, kiracı veya taşeron ara..."
+                placeholder="İş, adres, kiracı veya firma ara..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
@@ -540,7 +540,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                 onChange={(e) => setPartnerFilter(e.target.value)}
                 className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-300 focus:outline-none focus:border-blue-500"
               >
-                <option value="all">Tüm Taşeronlar &amp; Acenteler</option>
+                <option value="all">Tüm B2B Firmaları &amp; Acenteler</option>
                 {partners.map(p => (
                   <option key={p.id} value={p.id}>{p.companyName}</option>
                 ))}
@@ -720,7 +720,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                         )}
 
                         <div className="pt-2 border-t border-zinc-800/80 text-[11px] text-zinc-400">
-                          <span>Taşeron: </span>
+                          <span>Firma: </span>
                           <span className="font-bold text-zinc-200">{job.partnerCompanyName}</span>
                         </div>
                       </div>
@@ -736,12 +736,12 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                         </div>
                         <span className="text-zinc-600 font-bold">|</span>
                         <div>
-                          <span className="text-[10px] text-zinc-500 block uppercase font-bold">Taşeronun Kestiği</span>
+                          <span className="text-[10px] text-zinc-500 block uppercase font-bold">Firma Satış Fiyatı</span>
                           <span className="text-sm font-bold text-zinc-300">£{Number(job.partnerGrossPrice || 0).toFixed(2)}</span>
                         </div>
                         <span className="text-zinc-600 font-bold">|</span>
                         <div>
-                          <span className="text-[10px] text-zinc-500 block uppercase font-bold">Taşeron Kârı</span>
+                          <span className="text-[10px] text-zinc-500 block uppercase font-bold">B2B Kârı</span>
                           <span className="text-sm font-black text-blue-400">
                             £{Math.max(0, (Number(job.partnerGrossPrice || 0) - Number(job.myNetPrice || 0))).toFixed(2)}
                           </span>
@@ -778,10 +778,10 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 text-xs font-bold transition-all"
-                            title="Taşerona WhatsApp'tan İş Tamamlandı Raporu Gönder"
+                            title="Firmaya WhatsApp'tan İş Tamamlandı Raporu Gönder"
                           >
                             <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
-                            <span>Taşerona Rapor Yaz</span>
+                            <span>Firmaya Rapor Yaz</span>
                           </a>
                         )}
 
@@ -833,11 +833,11 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-amber-400 animate-ping" />
                   <h2 className="font-extrabold text-base text-amber-400">
-                    Onay Bekleyen Taşeron Başvuruları ({pendingPartners.length})
+                    Onay Bekleyen B2B Başvuruları ({pendingPartners.length})
                   </h2>
                 </div>
                 <span className="text-xs text-amber-300 font-semibold">
-                  ⚠️ Bu taşeronlar siz onaylamadan panele giriş yapamaz!
+                  ⚠️ Bu firmalar siz onaylamadan panele giriş yapamaz!
                 </span>
               </div>
 
@@ -928,7 +928,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
           {/* Section: Approved Partners Directory */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="font-extrabold text-base text-white">Kayıtlı Taşeronlar &amp; Acenteler</h2>
+              <h2 className="font-extrabold text-base text-white">Kayıtlı B2B Ortakları &amp; Acenteler</h2>
               <button
                 onClick={() => {
                   setEditingPartner(null);
@@ -948,7 +948,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold transition-all cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Manuel Taşeron Ekle</span>
+                <span>Manuel B2B Firma Ekle</span>
               </button>
             </div>
 
@@ -1020,14 +1020,14 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                         <button
                           onClick={() => openNewJobModal(partner.id)}
                           className="px-2.5 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold transition-all cursor-pointer"
-                          title="Bu Taşerona Yeni İş Aç"
+                          title="Bu Firmaya Yeni İş Aç"
                         >
                           + İş Aç
                         </button>
                         <button
                           onClick={() => handleDeletePartner(partner.id)}
                           className="p-1.5 rounded-xl text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-all cursor-pointer"
-                          title="Taşeronu Sil"
+                          title="Firmayı Sil"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -1053,19 +1053,19 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                 Cuma Haftalık Mutabakat Tablosu &amp; WhatsApp Mesajı
               </h2>
               <p className="text-xs text-zinc-400 mt-1">
-                Haftalık çalışan taşeronların Cuma günü toplu hakediş özetini tek tıkla WhatsApp veya e-posta için hazırlar.
+                Haftalık çalışan firmaların Cuma günü toplu hakediş özetini tek tıkla WhatsApp veya e-posta için hazırlar.
               </p>
             </div>
 
             {/* Select Partner */}
             <div>
-              <label className="text-xs font-bold text-zinc-400 block mb-1.5">Mutabakat Yapılacak Taşeron:</label>
+              <label className="text-xs font-bold text-zinc-400 block mb-1.5">Mutabakat Yapılacak B2B Firma:</label>
               <select
                 value={settlementPartnerId}
                 onChange={(e) => setSettlementPartnerId(e.target.value)}
                 className="w-full sm:w-80 px-4 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
               >
-                <option value="">Taşeron Seçin...</option>
+                <option value="">Firma Seçin...</option>
                 {partners.filter(p => p.status === 'approved').map(p => {
                   const unpCount = jobs.filter(j => j.partnerId === p.id && j.paymentStatus === 'unpaid').length;
                   return (
@@ -1090,7 +1090,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                 <div className="space-y-5 pt-4 border-t border-zinc-800">
                   <div className="flex flex-wrap items-center justify-between gap-3 bg-zinc-950 p-4 rounded-xl border border-zinc-800">
                     <div>
-                      <span className="text-xs text-zinc-500 block uppercase font-bold">Taşeron Firma</span>
+                      <span className="text-xs text-zinc-500 block uppercase font-bold">B2B Firma</span>
                       <span className="text-base font-extrabold text-white">{partner.companyName}</span>
                     </div>
                     <div>
@@ -1188,14 +1188,14 @@ export default function B2BManager({ token, onNavigateTab = null }) {
             <form onSubmit={handleSaveJob} className="p-5 sm:p-6 space-y-4 text-xs">
               {/* Partner Select */}
               <div>
-                <label className="font-bold text-zinc-300 block mb-1">Taşeron / Acente Firma *</label>
+                <label className="font-bold text-zinc-300 block mb-1">B2B Firma / Acente *</label>
                 <select
                   required
                   value={jobForm.partnerId}
                   onChange={(e) => setJobForm({ ...jobForm, partnerId: e.target.value })}
                   className="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white focus:outline-none focus:border-blue-500"
                 >
-                  <option value="">Taşeron Seçin...</option>
+                  <option value="">Firma Seçin...</option>
                   {partners.map(p => (
                     <option key={p.id} value={p.id}>{p.companyName} ({p.contactPerson})</option>
                   ))}
@@ -1204,7 +1204,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
 
               {/* White Label Reminder Notice */}
               <div className="p-3 rounded-xl bg-purple-950/30 border border-purple-500/30 text-purple-200">
-                <span className="font-extrabold text-white">🎭 Hatırlatma:</span> Bu işe giderken seçilen taşeron firma adına gideceksiniz. Handyeco markası kullanılmayacak.
+                <span className="font-extrabold text-white">🎭 Hatırlatma:</span> Bu işe giderken seçilen B2B firma adına gideceksiniz. Handyeco markası kullanılmayacak.
               </div>
 
               {/* Job Title & Urgency */}
@@ -1341,7 +1341,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                   </div>
 
                   <div>
-                    <label className="font-bold text-zinc-300 block mb-1">Taşeronun Kestiği Fiyat (£)</label>
+                    <label className="font-bold text-zinc-300 block mb-1">Firma Satış Fiyatı (£)</label>
                     <input
                       type="number"
                       step="any"
@@ -1350,11 +1350,11 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                       onChange={(e) => setJobForm({ ...jobForm, partnerGrossPrice: e.target.value })}
                       className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 font-bold focus:outline-none focus:border-blue-500"
                     />
-                    <span className="text-[10px] text-zinc-500 mt-0.5 block">Taşeronun ev sahibine kestiği</span>
+                    <span className="text-[10px] text-zinc-500 mt-0.5 block">Firmanın ev sahibine kestiği</span>
                   </div>
 
                   <div>
-                    <label className="font-bold text-blue-400 block mb-1">Taşeron Kârı (£)</label>
+                    <label className="font-bold text-blue-400 block mb-1">B2B Kârı (£)</label>
                     <div className="px-3 py-2 bg-zinc-900 border border-blue-500/30 rounded-xl text-blue-400 font-black text-sm">
                       £{Math.max(0, (Number(jobForm.partnerGrossPrice || 0) - Number(jobForm.myNetPrice || 0))).toFixed(2)}
                     </div>
@@ -1448,7 +1448,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
             <div className="p-5 border-b border-zinc-800 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Building2 className="w-5 h-5 text-blue-400" />
-                <h3 className="font-extrabold text-base text-white">Manuel Taşeron Ekle</h3>
+                <h3 className="font-extrabold text-base text-white">Manuel B2B Firma Ekle</h3>
               </div>
               <button
                 onClick={() => setIsPartnerModalOpen(false)}
@@ -1475,7 +1475,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                   });
                   const data = await res.json();
                   if (res.ok && data.success) {
-                    showToast('Taşeron eklendi!');
+                    showToast('B2B Firma eklendi!');
                     setIsPartnerModalOpen(false);
                     fetchData();
                   } else {
@@ -1587,7 +1587,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                   type="submit"
                   className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold shadow-lg shadow-blue-600/25 cursor-pointer"
                 >
-                  Taşeronu Kaydet
+                  B2B Firmayı Kaydet
                 </button>
               </div>
             </form>
