@@ -31,7 +31,7 @@ import { useContent } from '../context/ContentContext';
 const TRADE_TYPES = [
   { id: 'letting_agent', label: 'Letting & Rental Agency' },
   { id: 'property_investor', label: 'Property Management / Portfolio Landlord' },
-  { id: 'main_contractor', label: 'Main Contractor / Builder (Subcontractor)' },
+  { id: 'main_contractor', label: 'Main Contractor / Builder' },
   { id: 'landlord', label: 'Private Landlord (Multiple Properties)' },
   { id: 'other', label: 'Commercial Business / Other' }
 ];
@@ -92,7 +92,7 @@ export default function LandlordAgentPartnerPage() {
 
   usePageSeo({
     title: 'Landlords & Letting Agents Trade Partnership Edinburgh | Handyeco',
-    description: 'Trusted property maintenance partner for Edinburgh letting agencies and landlords. Rapid turnarounds, key collection, itemised trade invoicing & fully insured service.',
+    description: 'Trusted property maintenance partner for Edinburgh letting agencies and landlords. Rapid turnarounds, key collection, itemised trade invoicing & professional property maintenance.',
     canonical: 'https://handyeco.co.uk/landlords-agents'
   });
 
@@ -257,7 +257,7 @@ export default function LandlordAgentPartnerPage() {
             </h1>
 
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              Fast tenancy turnarounds, city-centre office key collection, itemised trade invoicing, and fully insured, vetted trade craftsmanship for your rental properties.
+              Fast tenancy turnarounds, city-centre office key collection, itemised trade invoicing, and reliable, vetted trade craftsmanship for your rental properties.
             </p>
           </div>
 
@@ -285,11 +285,11 @@ export default function LandlordAgentPartnerPage() {
 
             <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2.5">
               <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold">
-                <ShieldCheck className="w-5 h-5" />
+                <CheckCircle2 className="w-5 h-5" />
               </div>
-              <h3 className="font-bold text-white text-sm">Fully Insured &amp; Vetted</h3>
+              <h3 className="font-bold text-white text-sm">Professional &amp; Vetted</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                &pound;2,000,000 public liability insurance. Polite, uniformed, and respectful workmanship in occupied tenement flats.
+                Punctual, polite, and respectful workmanship in occupied tenement flats and rental properties.
               </p>
             </div>
 
