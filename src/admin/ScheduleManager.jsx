@@ -33,6 +33,7 @@ export default function ScheduleManager({
   const [schedule, setSchedule] = useState([]);
   const [quotes, setQuotes] = useState([]);
   const [finances, setFinances] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState('agenda'); // 'agenda' | 'free_slots' | 'past'
   const [dateFilter, setDateFilter] = useState('all'); // default to 'all' as requested
   const [search, setSearch] = useState('');
