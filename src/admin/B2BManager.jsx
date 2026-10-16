@@ -475,10 +475,10 @@ export default function B2BManager({ token, onNavigateTab = null }) {
       </div>
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+      <div className="flex items-center gap-2 border-b border-zinc-800 pb-2 overflow-x-auto no-scrollbar scroll-smooth">
         <button
           onClick={() => setActiveSubTab('jobs')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 whitespace-nowrap ${
             activeSubTab === 'jobs'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
@@ -490,7 +490,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
 
         <button
           onClick={() => setActiveSubTab('partners')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer relative ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer relative shrink-0 whitespace-nowrap ${
             activeSubTab === 'partners'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
@@ -505,7 +505,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
 
         <button
           onClick={() => setActiveSubTab('settlement')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 whitespace-nowrap ${
             activeSubTab === 'settlement'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
@@ -729,7 +729,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                     {/* Pricing Matrix & Actions */}
                     <div className="pt-3 border-t border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
                       {/* Dual Pricing Breakdown */}
-                      <div className="flex items-center gap-2 sm:gap-4 bg-zinc-950/90 px-3 py-2 rounded-xl border border-zinc-800">
+                      <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4 bg-zinc-950/90 px-3 py-2 rounded-xl border border-zinc-800">
                         <div>
                           <span className="text-[10px] text-zinc-500 block uppercase font-bold">Ekrem Net Kazanç</span>
                           <span className="text-sm font-black text-emerald-400">£{Number(job.myNetPrice || 0).toFixed(2)}</span>
@@ -861,7 +861,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2 text-xs text-zinc-400">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-400">
                         <div>
                           <span className="text-[10px] text-zinc-500 block">İşletme Türü:</span>
                           <span className="font-semibold text-zinc-200">{TRADE_TYPE_LABELS[partner.tradeType] || partner.tradeType}</span>
@@ -1129,7 +1129,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
 
                   {/* WhatsApp Statement Preview */}
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="text-xs font-bold text-zinc-300">Hazır WhatsApp Mutabakat Metni:</span>
                       <div className="flex items-center gap-2">
                         {copiedText && <span className="text-xs text-emerald-400 font-bold">{copiedText}</span>}
@@ -1499,7 +1499,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="font-bold text-zinc-300 block mb-1">Yetkili Kişi *</label>
                   <input
@@ -1536,7 +1536,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="font-bold text-zinc-300 block mb-1">İşletme Türü</label>
                   <select

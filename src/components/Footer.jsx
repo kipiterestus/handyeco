@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, Mail, MapPin, Star, ShieldCheck, Clock, ExternalLink, MessageSquare } from 'lucide-react';
+import { Phone, Mail, MapPin, Star, ShieldCheck, Clock, ExternalLink, MessageSquare, Building2 } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/businessData';
 import { useContent } from '../context/ContentContext';
 import { handleInternalLinkClick } from '../utils/navigation';
@@ -238,10 +238,15 @@ export default function Footer() {
               <a 
                 href="/landlords-agents" 
                 onClick={(e) => handleInternalLinkClick(e, '/landlords-agents')} 
-                className="text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 pt-1 text-xs"
+                className="inline-flex items-center justify-between w-full max-w-[280px] gap-2 px-3 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700 transition-all text-xs font-semibold group mt-1"
               >
-                <span>For Landlords &amp; Letting Agents</span>
-                <span className="text-[10px] text-blue-400 font-bold px-1.5 py-0.2 rounded bg-blue-500/10 border border-blue-500/20">Partner Trade</span>
+                <span className="flex items-center gap-2 min-w-0">
+                  <Building2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                  <span className="truncate">Landlords &amp; Letting Agents</span>
+                </span>
+                <span className="text-[10px] font-bold text-blue-400 px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 group-hover:bg-blue-500/20 transition-colors shrink-0">
+                  Trade
+                </span>
               </a>
             </div>
           </div>
@@ -250,14 +255,14 @@ export default function Footer() {
 
         {/* Bottom copyright */}
         <div className="mt-12 pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-[11px]">
-          <p>&copy; {new Date().getFullYear()} Handyeco - Edinburgh Handyman Services. All rights reserved.</p>
-          <div className="flex items-center space-x-6">
+          <p className="text-center sm:text-left">&copy; {new Date().getFullYear()} Handyeco - Edinburgh Handyman Services. All rights reserved.</p>
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             <a 
               href="/landlords-agents" 
               onClick={(e) => handleInternalLinkClick(e, '/landlords-agents')} 
               className="hover:text-slate-300 transition-colors"
             >
-              For Landlords &amp; Letting Agents
+              For Landlords &amp; Agents
             </a>
             <span>Edinburgh, Scotland</span>
             <a href="#quote" className="hover:text-slate-300">Request Quote</a>

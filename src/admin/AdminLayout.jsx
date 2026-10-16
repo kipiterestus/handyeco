@@ -19,7 +19,9 @@ import {
   Briefcase,
   SlidersHorizontal,
   Calendar,
-  Handshake
+  Handshake,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import AdminLogin from './AdminLogin';
 import LeadsManager from './LeadsManager';
@@ -243,16 +245,20 @@ export default function AdminLayout() {
       unreadCount: unreadLeadsCount
     },
     { id: 'schedule', label: 'Randevular', icon: Calendar },
+    { id: 'accounting', label: 'Muhasebe', icon: PoundSterling },
+  ];
+
+  // 2. KATEGORİ: B2B & İŞ ORTAKLARI (Operasyondan Ayrı Özel Kategori)
+  const b2bNav = [
     { 
       id: 'b2b', 
       label: 'B2B & Taşeron', 
       icon: Handshake,
       unreadCount: pendingB2BCount
-    },
-    { id: 'accounting', label: 'Muhasebe', icon: PoundSterling },
+    }
   ];
 
-  // 2. KATEGORİ: SİTE AYARLARI
+  // 3. KATEGORİ: SİTE AYARLARI
   const siteSettingsNav = [
     { id: 'telegram', label: 'Telegram Bot', icon: Send },
     { id: 'business', label: 'İşletme Bilgileri', icon: Building2 },
@@ -264,6 +270,27 @@ export default function AdminLayout() {
     { id: 'faq_areas', label: 'Bölgeler & SSS', icon: MapPin },
     { id: 'seo', label: 'SEO', icon: Search },
   ];
+
+  const isSiteSettingActive = siteSettingsNav.some(item => item.id === activeTab);
+  const [siteSettingsOpen, setSiteSettingsOpen] = useState(() => {
+    const saved = localStorage.getItem('handyeco_admin_site_settings_open');
+    if (saved !== null) return saved === 'true';
+    return isSiteSettingActive;
+  });
+
+  useEffect(() => {
+    if (isSiteSettingActive && !siteSettingsOpen) {
+      setSiteSettingsOpen(true);
+    }
+  }, [activeTab]);
+
+  const toggleSiteSettings = () => {
+    setSiteSettingsOpen(prev => {
+      const next = !prev;
+      localStorage.setItem('handyeco_admin_site_settings_open', String(next));
+      return next;
+    });
+  };
 
   return (
     <div className="min-h-screen bg-[#07090e] text-zinc-100 flex flex-col antialiased">
@@ -340,13 +367,13 @@ export default function AdminLayout() {
         )}
 
         {/* Sol Menü (OLED Siyah) */}
-        <aside className={`print:hidden fixed inset-y-16 left-0 z-50 w-64 sm:w-72 max-w-[85vw] bg-[#0b0e14] border-r border-zinc-800/90 p-3 space-y-4 overflow-y-auto transform transition-transform duration-200 md:relative md:inset-auto md:translate-x-0 shadow-2xl md:shadow-lg ${
+        <aside className={`print:hidden fixed inset-y-16 left-0 z-50 w-64 sm:w-72 max-w-[85vw] bg-[#0b0e14] border-r border-zinc-800/90 p-3 space-y-3.5 overflow-y-auto transform transition-transform duration-200 md:relative md:inset-auto md:translate-x-0 shadow-2xl md:shadow-lg ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
           
           {/* 1. KATEGORİ: OPERASYON */}
           <div className="space-y-1 text-left">
-            <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
+            <div className="px-3 py-1 text-[10px] font-black uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
               <Briefcase className="w-3 h-3" />
               <span>Operasyon</span>
             </div>
@@ -359,7 +386,7 @@ export default function AdminLayout() {
                 <button
                   key={item.id}
                   onClick={() => handleSelectTab(item.id)}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive
                       ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
                       : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
@@ -389,14 +416,14 @@ export default function AdminLayout() {
 
           <div className="border-t border-zinc-800/80 my-2" />
 
-          {/* 2. KATEGORİ: SİTE AYARLARI */}
+          {/* 2. KATEGORİ: B2B & İŞ ORTAKLARI (Operasyondan Ayrı Özel Kategori) */}
           <div className="space-y-1 text-left">
-            <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
-              <SlidersHorizontal className="w-3 h-3" />
-              <span>Site Ayarları</span>
+            <div className="px-3 py-1 text-[10px] font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+              <Handshake className="w-3.5 h-3.5 text-amber-400" />
+              <span>B2B &amp; İş Ortakları</span>
             </div>
 
-            {siteSettingsNav.map((item) => {
+            {b2bNav.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
 
@@ -404,27 +431,89 @@ export default function AdminLayout() {
                 <button
                   key={item.id}
                   onClick={() => handleSelectTab(item.id)}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                      ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-md shadow-amber-600/25'
                       : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
                   }`}
                 >
                   <div className="flex items-center gap-2.5 min-w-0 pr-1 text-left">
-                    <Icon className="w-4 h-4 shrink-0" />
+                    <Icon className="w-4 h-4 shrink-0 text-amber-400" />
                     <span className="truncate whitespace-nowrap">{item.label}</span>
                   </div>
 
-                  {item.badge && (
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
-                      isActive ? 'bg-white/20 text-white' : 'bg-zinc-900 text-zinc-300 border border-zinc-800'
-                    }`}>
-                      {item.badge}
+                  {item.unreadCount > 0 ? (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-black animate-pulse shadow-sm shadow-amber-500/40 shrink-0">
+                      <span>{item.unreadCount} ONAY</span>
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-bold text-zinc-500 px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800/80 shrink-0">
+                      Portföy
                     </span>
                   )}
                 </button>
               );
             })}
+          </div>
+
+          <div className="border-t border-zinc-800/80 my-2" />
+
+          {/* 3. KATEGORİ: SİTE AYARLARI (Akordiyon / Daraltılabilir) */}
+          <div className="space-y-1 text-left">
+            <button
+              type="button"
+              onClick={toggleSiteSettings}
+              className="w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60 transition-colors cursor-pointer group"
+            >
+              <div className="text-[10px] font-black uppercase tracking-wider text-zinc-500 group-hover:text-zinc-400 flex items-center gap-1.5">
+                <SlidersHorizontal className="w-3 h-3" />
+                <span>Site Ayarları ({siteSettingsNav.length})</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                {isSiteSettingActive && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" title="Aktif ayar seçili" />
+                )}
+                {siteSettingsOpen ? (
+                  <ChevronUp className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300 shrink-0" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300 shrink-0" />
+                )}
+              </div>
+            </button>
+
+            {siteSettingsOpen && (
+              <div className="space-y-0.5 pt-1 animate-in slide-in-from-top-1 duration-150">
+                {siteSettingsNav.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeTab === item.id;
+
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => handleSelectTab(item.id)}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        isActive
+                          ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0 pr-1 text-left">
+                        <Icon className="w-4 h-4 shrink-0" />
+                        <span className="truncate whitespace-nowrap">{item.label}</span>
+                      </div>
+
+                      {item.badge && (
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                          isActive ? 'bg-white/20 text-white' : 'bg-zinc-900 text-zinc-300 border border-zinc-800'
+                        }`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Alt Bilgi */}

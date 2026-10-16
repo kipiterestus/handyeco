@@ -317,22 +317,22 @@ export async function sendTelegramB2BPartnerRegistration(partner, token, chatId)
   };
 
   const message = [
-    `🏢 <b>YENİ B2B / TAŞERON BAŞVURUSU GELDİ!</b>`,
+    `🚨 <b>B2B Kayıt Başvurusu Geldi</b>`,
     `━━━━━━━━━━━━━━━━━━━━`,
-    `🏢 <b>Firma:</b> <b>${escapeHtml(partner.companyName)}</b>`,
-    `👤 <b>Yetkili:</b> ${escapeHtml(partner.contactPerson)}`,
-    `📞 <b>Telefon:</b> <code>${escapeHtml(partner.phone)}</code>`,
+    `🏢 <b>Firma Adı:</b> <b>${escapeHtml(partner.companyName)}</b>`,
+    `👤 <b>Yetkili Kişi:</b> ${escapeHtml(partner.contactPerson)}`,
+    `📞 <b>Telefon / WhatsApp:</b> <code>${escapeHtml(partner.phone)}</code>`,
     `📧 <b>E-posta:</b> <code>${escapeHtml(partner.email)}</code>`,
     `🏷️ <b>İşletme Türü:</b> ${escapeHtml(tradeLabels[partner.tradeType] || partner.tradeType || 'Belirtilmedi')}`,
-    `📦 <b>Tahmini Aylık İş:</b> ${escapeHtml(partner.jobVolumeEstimate || 'Belirtilmedi')}`,
+    `📦 <b>Tahmini Aylık Hacim:</b> ${escapeHtml(partner.jobVolumeEstimate || 'Belirtilmedi')}`,
     partner.notes ? `📝 <b>Başvuru Notu:</b> <i>${escapeHtml(partner.notes)}</i>` : '',
-    `⏰ <b>Kayıt Saati:</b> ${timestamp}`,
+    `⏰ <b>Başvuru Zamanı:</b> ${timestamp} (UK Time)`,
     `━━━━━━━━━━━━━━━━━━━━`,
     `⚠️ <b>DURUM: ONAY BEKLİYOR</b>`,
-    `<i>Bu taşeron siz görüşüp onaylamadan panele giriş yapamaz.</i>`,
+    `<i>Bu iş ortağı siz görüşüp onaylamadan portala giriş yapamaz.</i>`,
     `━━━━━━━━━━━━━━━━━━━━`,
     waDirectLink ? `💬 <a href="${waDirectLink}"><b>Yetkiliye WhatsApp'tan Yaz ➡️</b></a>` : '',
-    `🔐 <a href="https://handyeco.co.uk/admin"><b>Yönetici Paneline Gir &amp; Onayla ➡️</b></a>`
+    `🔐 <a href="https://handyeco.co.uk/admin"><b>Handyeco Paneline Gir &amp; Başvuruyu Onayla ➡️</b></a>`
   ].filter(Boolean).join('\n');
 
   try {

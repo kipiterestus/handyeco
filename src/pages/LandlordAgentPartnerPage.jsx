@@ -92,7 +92,7 @@ export default function LandlordAgentPartnerPage() {
 
   usePageSeo({
     title: 'Landlords & Letting Agents Trade Partnership Edinburgh | Handyeco',
-    description: 'Trusted property maintenance partner for Edinburgh letting agencies and landlords. Rapid turnarounds, key collection, itemised trade invoicing & white-label service.',
+    description: 'Trusted property maintenance partner for Edinburgh letting agencies and landlords. Rapid turnarounds, key collection, itemised trade invoicing & fully insured service.',
     canonical: 'https://handyeco.co.uk/landlords-agents'
   });
 
@@ -257,7 +257,7 @@ export default function LandlordAgentPartnerPage() {
             </h1>
 
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              Fast tenancy turnarounds, city-centre office key collection, itemised trade invoicing, and guaranteed white-label representation for your tenants.
+              Fast tenancy turnarounds, city-centre office key collection, itemised trade invoicing, and fully insured, vetted trade craftsmanship for your rental properties.
             </p>
           </div>
 
@@ -287,9 +287,9 @@ export default function LandlordAgentPartnerPage() {
               <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold">
                 <ShieldCheck className="w-5 h-5" />
               </div>
-              <h3 className="font-bold text-white text-sm">White-Label Service</h3>
+              <h3 className="font-bold text-white text-sm">Fully Insured &amp; Vetted</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                We represent your company name seamlessly when attending tenants. Zero middleman confusion.
+                &pound;2,000,000 public liability insurance. Polite, uniformed, and respectful workmanship in occupied tenement flats.
               </p>
             </div>
 
@@ -323,7 +323,7 @@ export default function LandlordAgentPartnerPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <span className={`px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider ${
                     currentPartner.paymentTerms === 'daily'
                       ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
@@ -490,7 +490,7 @@ export default function LandlordAgentPartnerPage() {
                   ) : (
                     <form onSubmit={handleRegisterSubmit} className="space-y-4 text-xs">
                       <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs leading-relaxed">
-                        <span className="font-bold text-white">⚠️ Verification Gatekeeping Notice:</span> All trade applications undergo personal telephone/WhatsApp verification by Ekrem. Submitting this form does not grant instant access until approved.
+                        <span className="font-bold text-white">⚠️ Trade Account Verification:</span> All letting agency and landlord trade applications undergo personal telephone or WhatsApp verification by Ekrem before activation to ensure priority turnaround capacity and scheduling.
                       </div>
 
                       {regError && (
@@ -730,7 +730,7 @@ export default function LandlordAgentPartnerPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="font-bold text-slate-300 block mb-1">Tenant Name</label>
                   <input
