@@ -48,6 +48,7 @@ export default function AccountingManager({
 }) {
   const [finances, setFinances] = useState([]);
   const [quotes, setQuotes] = useState([]);
+  const [schedule, setSchedule] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all'); // 'all' | 'paid_card' | 'paid_cash' | 'paid_bank' | 'pending'
@@ -86,12 +87,13 @@ export default function AccountingManager({
     notes: ''
   });
 
-  // Fetch finances & quotes
+  // Fetch finances, quotes & schedule
   const fetchData = async () => {
     try {
-      const [resFin, resQuotes] = await Promise.all([
+      const [resFin, resQuotes, resSched] = await Promise.all([
         fetch('/api/finances', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/quotes', { headers: { Authorization: `Bearer ${token}` } })
+        fetch('/api/quotes', { headers: { Authorization: `Bearer ${token}` } }),
+        fetch('/api/schedule', { headers: { Authorization: `Bearer ${token}` } })
       ]);
       
       if (resFin.ok) {
@@ -102,6 +104,11 @@ export default function AccountingManager({
       if (resQuotes.ok) {
         const dataQ = await resQuotes.json();
         if (dataQ.success) setQuotes(dataQ.quotes || []);
+      }
+
+      if (resSched.ok) {
+        const dataS = await resSched.json();
+        if (dataS.success) setSchedule(dataS.schedule || []);
       }
     } catch (err) {
       console.error('Muhasebe verileri alınırken hata:', err);
@@ -1001,17 +1008,45 @@ export default function AccountingManager({
                         <span>{item.customerPhone}</span>
                       </a>
                     )}
-                    {item.leadId && onNavigateTab && (
-                      <button
-                        type="button"
-                        onClick={() => onNavigateTab('leads')}
-                        className="text-[11px] text-indigo-400 hover:text-indigo-200 flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-950/40 border border-indigo-900/60 hover:bg-indigo-950/80 transition-colors cursor-pointer"
-                        title="İlgili müşteri teklifine git"
-                      >
-                        <Inbox className="w-3 h-3" />
-                        <span>Talebe Git &rarr;</span>
-                      </button>
-                    )}
+                    {item.leadId && onNavigateTab && (() => {
+                      const cleanJobId = String(item.leadId).replace(/^manual-/, '');
+                      const matchingQuote = quotes.find(q => q.id === item.leadId || q.id === cleanJobId);
+                      const matchingSchedule = schedule.find(s => s.id === item.leadId || s.id === cleanJobId || s.leadId === item.leadId);
+
+                      // If it's a schedule appointment (or was created from schedule without quote)
+                      if (matchingSchedule && (!matchingQuote || String(item.leadId).startsWith('manual-'))) {
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => onNavigateTab('schedule', { 
+                              jobId: matchingSchedule.id, 
+                              search: item.customerName || matchingSchedule.customerName || ''
+                            })}
+                            className="text-[11px] text-blue-400 hover:text-blue-200 flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-950/40 border border-blue-800 hover:bg-blue-950/80 transition-colors cursor-pointer font-bold"
+                            title="İlgili randevu takvim kaydına git"
+                          >
+                            <Calendar className="w-3 h-3 text-blue-400" />
+                            <span>Randevuya Git &rarr;</span>
+                          </button>
+                        );
+                      }
+
+                      // Otherwise, navigate to leads with matching filter and search
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => onNavigateTab('leads', { 
+                            leadId: item.leadId, 
+                            search: item.customerName || (matchingQuote && matchingQuote.name) || '' 
+                          })}
+                          className="text-[11px] text-indigo-400 hover:text-indigo-200 flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-950/40 border border-indigo-900/60 hover:bg-indigo-950/80 transition-colors cursor-pointer font-bold"
+                          title="İlgili müşteri teklifine git"
+                        >
+                          <Inbox className="w-3 h-3 text-indigo-400" />
+                          <span>Talebe Git &rarr;</span>
+                        </button>
+                      );
+                    })()}
                   </div>
                 </div>
 

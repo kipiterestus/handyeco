@@ -238,15 +238,10 @@ export default function Footer() {
               <a 
                 href="/landlords-agents" 
                 onClick={(e) => handleInternalLinkClick(e, '/landlords-agents')} 
-                className="inline-flex items-center justify-between w-full max-w-[280px] gap-2 px-3 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700 transition-all text-xs font-semibold group mt-1"
+                className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors group mt-1 text-xs"
               >
-                <span className="flex items-center gap-2 min-w-0">
-                  <Building2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                  <span className="truncate">Landlords &amp; Letting Agents</span>
-                </span>
-                <span className="text-[10px] font-bold text-blue-400 px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 group-hover:bg-blue-500/20 transition-colors shrink-0">
-                  Trade
-                </span>
+                <Building2 className="w-4 h-4 text-blue-400 shrink-0" />
+                <span className="font-semibold text-slate-200 group-hover:text-blue-400 transition-colors">Landlords &amp; Letting Agents</span>
               </a>
             </div>
           </div>
@@ -260,9 +255,9 @@ export default function Footer() {
             <a 
               href="/landlords-agents" 
               onClick={(e) => handleInternalLinkClick(e, '/landlords-agents')} 
-              className="hover:text-slate-300 transition-colors"
+              className="hover:text-slate-300 transition-colors font-medium"
             >
-              For Landlords &amp; Agents
+              For Landlords &amp; Letting Agents
             </a>
             <span>Edinburgh, Scotland</span>
             <a href="#quote" className="hover:text-slate-300">Request Quote</a>

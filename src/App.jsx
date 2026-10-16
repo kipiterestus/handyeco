@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import MobileStickyBar from './components/MobileStickyBar';
 import LightboxModal from './components/LightboxModal';
 import AdminLayout from './admin/AdminLayout';
+import ErrorBoundary from './components/ErrorBoundary';
 import { ContentProvider } from './context/ContentContext';
 import FlatPackAssemblyPage from './pages/FlatPackAssemblyPage';
 import TvWallMountingPage from './pages/TvWallMountingPage';
@@ -146,7 +147,9 @@ export default function App() {
 
   return (
     <ContentProvider>
-      {renderContent()}
+      <ErrorBoundary>
+        {renderContent()}
+      </ErrorBoundary>
     </ContentProvider>
   );
 }

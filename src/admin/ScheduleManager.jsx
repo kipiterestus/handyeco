@@ -26,7 +26,9 @@ export default function ScheduleManager({
   initialLeadData = null, 
   onClearInitialLead = null, 
   onLogJobToAccounting = null,
-  onNavigateTab = null 
+  onNavigateTab = null,
+  targetJobFilter = null,
+  onClearTargetJob = null
 }) {
   const [schedule, setSchedule] = useState([]);
   const [quotes, setQuotes] = useState([]);
@@ -35,6 +37,28 @@ export default function ScheduleManager({
   const [activeView, setActiveView] = useState('agenda'); // 'agenda' | 'free_slots'
   const [dateFilter, setDateFilter] = useState('this_week'); // 'all' | 'today' | 'this_week' | 'this_month' | 'next_month' | 'upcoming'
   const [search, setSearch] = useState('');
+  const [highlightedJobId, setHighlightedJobId] = useState(null);
+
+  // Handle incoming navigation from Accounting or other tabs
+  useEffect(() => {
+    if (targetJobFilter) {
+      setActiveView('agenda');
+      setDateFilter('all');
+      if (targetJobFilter.jobId) {
+        setHighlightedJobId(targetJobFilter.jobId);
+      }
+      if (targetJobFilter.search) {
+        setSearch(targetJobFilter.search);
+      }
+      setTimeout(() => {
+        const el = document.getElementById(`schedule-card-${targetJobFilter.jobId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 350);
+      if (onClearTargetJob) onClearTargetJob();
+    }
+  }, [targetJobFilter]);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -216,6 +240,31 @@ export default function ScheduleManager({
       if (res.ok) {
         const data = await res.json();
         setSchedule(prev => prev.map(item => item.id === id ? data.job : item));
+
+        // SYNC WITH QUOTES: If this schedule appointment is linked to a quote lead
+        const targetJob = schedule.find(item => item.id === id);
+        if (targetJob && targetJob.leadId) {
+          let targetQuoteStatus = null;
+          if (newStatus === 'completed') targetQuoteStatus = 'booked';
+          else if (newStatus === 'cancelled') targetQuoteStatus = 'archived';
+          else if (newStatus === 'scheduled' || newStatus === 'in_progress') targetQuoteStatus = 'contacted';
+
+          if (targetQuoteStatus) {
+            try {
+              await fetch(`/api/quotes/${targetJob.leadId}`, {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ status: targetQuoteStatus })
+              });
+              setQuotes(prev => prev.map(q => q.id === targetJob.leadId ? { ...q, status: targetQuoteStatus } : q));
+            } catch (qErr) {
+              console.warn('[ScheduleManager] Could not sync quote status:', qErr);
+            }
+          }
+        }
       }
     } catch (err) {
       console.error('Status update failed:', err);
@@ -266,6 +315,23 @@ export default function ScheduleManager({
         } else {
           setSchedule(prev => [resData.job, ...prev]);
         }
+
+        // SYNC WITH QUOTES: If this job was linked to a quote lead, update quote status
+        if (formData.leadId) {
+          const targetStatus = formData.status === 'completed' ? 'booked' : 'contacted';
+          try {
+            await fetch(`/api/quotes/${formData.leadId}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+              },
+              body: JSON.stringify({ status: targetStatus })
+            });
+            setQuotes(prev => prev.map(q => q.id === formData.leadId ? { ...q, status: targetStatus } : q));
+          } catch (_) {}
+        }
+
         setIsModalOpen(false);
       } else {
         alert(resData.error || 'Kaydetme başarısız oldu');
@@ -942,8 +1008,11 @@ export default function ScheduleManager({
                       return (
                         <div 
                           key={job.id}
+                          id={`schedule-card-${job.id}`}
                           className={`rounded-2xl p-3 sm:p-4 space-y-2.5 sm:space-y-3 transition-all relative group print:bg-white print:border-black print:text-black print:p-2 ${
-                            isPassed
+                            highlightedJobId === job.id
+                              ? 'ring-4 ring-blue-500/40 border-blue-500 scale-[1.01] bg-[#0b0e14]'
+                              : isPassed
                               ? 'bg-[#080a0f]/90 border border-zinc-800/60 opacity-85 hover:opacity-100'
                               : 'bg-[#0b0e14] border border-zinc-800/90 hover:border-zinc-700 shadow-md'
                           }`}

@@ -27,7 +27,14 @@ import {
 
 const ITEMS_PER_PAGE = 6;
 
-export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccounting, onNavigateTab = null }) {
+export default function LeadsManager({ 
+  token, 
+  onScheduleLead, 
+  onLogLeadToAccounting, 
+  onNavigateTab = null,
+  targetLeadFilter = null,
+  onClearTargetLead = null
+}) {
   const [quotes, setQuotes] = useState([]);
   const [finances, setFinances] = useState([]);
   const [schedule, setSchedule] = useState([]);
@@ -36,6 +43,7 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
   const [statusFilter, setStatusFilter] = useState('new'); // Varsayılan olarak 'new' veya 'all'
   const [currentPage, setCurrentPage] = useState(1);
   const [savingId, setSavingId] = useState(null);
+  const [highlightedLeadId, setHighlightedLeadId] = useState(null);
 
   // In-page Modal States (Avoid jumping between tabs)
   const [schedulingLead, setSchedulingLead] = useState(null);
@@ -43,6 +51,27 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
   const [selectedImageModal, setSelectedImageModal] = useState(null);
   const [savingModal, setSavingModal] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
+
+  // Handle incoming navigation from Accounting or other tabs
+  useEffect(() => {
+    if (targetLeadFilter) {
+      setStatusFilter('all');
+      setCurrentPage(1);
+      if (targetLeadFilter.leadId) {
+        setHighlightedLeadId(targetLeadFilter.leadId);
+      }
+      if (targetLeadFilter.search) {
+        setSearch(targetLeadFilter.search);
+      }
+      setTimeout(() => {
+        const el = document.getElementById(`quote-card-${targetLeadFilter.leadId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 350);
+      if (onClearTargetLead) onClearTargetLead();
+    }
+  }, [targetLeadFilter]);
 
   // Schedule modal form state
   const [scheduleForm, setScheduleForm] = useState({
@@ -110,6 +139,31 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
       });
       if (res.ok) {
         setQuotes(prev => prev.map(q => q.id === id ? { ...q, status: newStatus } : q));
+
+        // SYNC WITH SCHEDULE: If this quote has a linked appointment in Randevular
+        const linkedSched = schedule.find(s => s.leadId === id);
+        if (linkedSched) {
+          let targetSchedStatus = null;
+          if (newStatus === 'booked') targetSchedStatus = 'completed';
+          else if (newStatus === 'archived') targetSchedStatus = 'cancelled';
+          else if (newStatus === 'contacted' && linkedSched.status === 'completed') targetSchedStatus = 'scheduled';
+
+          if (targetSchedStatus && targetSchedStatus !== linkedSched.status) {
+            try {
+              await fetch(`/api/schedule/${linkedSched.id}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ status: targetSchedStatus })
+              });
+              setSchedule(prev => prev.map(s => s.id === linkedSched.id ? { ...s, status: targetSchedStatus } : s));
+            } catch (syncErr) {
+              console.warn('[LeadsManager] Schedule sync error:', syncErr);
+            }
+          }
+        }
       }
     } catch (err) {
       console.error('Error updating status:', err);
@@ -519,7 +573,12 @@ export default function LeadsManager({ token, onScheduleLead, onLogLeadToAccount
             return (
               <div 
                 key={quote.id}
-                className="bg-[#0b0e14] border border-zinc-800/90 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3 hover:border-zinc-700 transition-all shadow-md group relative"
+                id={`quote-card-${quote.id}`}
+                className={`bg-[#0b0e14] border rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3 transition-all shadow-md group relative ${
+                  highlightedLeadId === quote.id
+                    ? 'border-indigo-500 ring-4 ring-indigo-500/30 shadow-indigo-500/20 scale-[1.01]'
+                    : 'border-zinc-800/90 hover:border-zinc-700'
+                }`}
               >
                 {/* Top Card Row */}
                 <div className="space-y-2">

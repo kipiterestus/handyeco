@@ -58,6 +58,17 @@ export default function AdminLayout() {
   const [initialLeadForSchedule, setInitialLeadForSchedule] = useState(null);
   const [initialLeadForAccounting, setInitialLeadForAccounting] = useState(null);
 
+  // Target item navigation when jumping from Accounting or other tabs
+  const [targetLeadFilter, setTargetLeadFilter] = useState(null);
+  const [targetJobFilter, setTargetJobFilter] = useState(null);
+
+  // Accordion state for site settings (MUST be declared unconditionally at top level)
+  const [siteSettingsOpen, setSiteSettingsOpen] = useState(() => {
+    const saved = localStorage.getItem('handyeco_admin_site_settings_open');
+    if (saved !== null) return saved === 'true';
+    return false;
+  });
+
   const { content, refreshContent, updateSectionLocally } = useContent();
 
   // Check for new unread leads & pending B2B partner applications
@@ -108,7 +119,15 @@ export default function AdminLayout() {
     }
   }, [isAuth, token, activeTab]);
 
-  const handleSelectTab = (tabId) => {
+  // Automatically expand site settings accordion if navigating to a site setting
+  useEffect(() => {
+    const siteSettingKeys = ['telegram', 'business', 'security', 'hero', 'services', 'gallery', 'reviews', 'faq_areas', 'seo'];
+    if (siteSettingKeys.includes(activeTab) && !siteSettingsOpen) {
+      setSiteSettingsOpen(true);
+    }
+  }, [activeTab, siteSettingsOpen]);
+
+  const handleSelectTab = (tabId, extraParams = null) => {
     setActiveTab(tabId);
     localStorage.setItem('handyeco_admin_active_tab', tabId);
     setSidebarOpen(false);
@@ -117,6 +136,13 @@ export default function AdminLayout() {
     if (tabId === 'leads') {
       localStorage.setItem('handyeco_last_seen_quote_time', String(Date.now()));
       setUnreadLeadsCount(0);
+      if (extraParams) {
+        setTargetLeadFilter(extraParams);
+      }
+    } else if (tabId === 'schedule') {
+      if (extraParams) {
+        setTargetJobFilter(extraParams);
+      }
     }
   };
 
@@ -272,17 +298,6 @@ export default function AdminLayout() {
   ];
 
   const isSiteSettingActive = siteSettingsNav.some(item => item.id === activeTab);
-  const [siteSettingsOpen, setSiteSettingsOpen] = useState(() => {
-    const saved = localStorage.getItem('handyeco_admin_site_settings_open');
-    if (saved !== null) return saved === 'true';
-    return isSiteSettingActive;
-  });
-
-  useEffect(() => {
-    if (isSiteSettingActive && !siteSettingsOpen) {
-      setSiteSettingsOpen(true);
-    }
-  }, [activeTab]);
 
   const toggleSiteSettings = () => {
     setSiteSettingsOpen(prev => {
@@ -537,6 +552,8 @@ export default function AdminLayout() {
                 onScheduleLead={handleScheduleLead}
                 onLogLeadToAccounting={handleLogLeadToAccounting} 
                 onNavigateTab={handleSelectTab}
+                targetLeadFilter={targetLeadFilter}
+                onClearTargetLead={() => setTargetLeadFilter(null)}
               />
             )}
             {activeTab === 'schedule' && (
@@ -546,6 +563,8 @@ export default function AdminLayout() {
                 onClearInitialLead={() => setInitialLeadForSchedule(null)}
                 onLogJobToAccounting={handleLogLeadToAccounting}
                 onNavigateTab={handleSelectTab}
+                targetJobFilter={targetJobFilter}
+                onClearTargetJob={() => setTargetJobFilter(null)}
               />
             )}
             {activeTab === 'b2b' && (
