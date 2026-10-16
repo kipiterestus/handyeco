@@ -33,7 +33,7 @@ import {
 const TRADE_TYPE_LABELS = {
   letting_agent: 'Emlak & Kiralama Acentesi',
   main_contractor: 'Ana Yüklenici / Müteahhit',
-  property_investor: 'Mülk Yatırımcısı / Portfolio',
+  property_investor: 'Mülk Yatırımcısı',
   landlord: 'Ev Sahibi (Çoklu Daire)',
   other: 'Diğer Ticari İşletme'
 };
@@ -48,8 +48,14 @@ const JOB_STATUS_CONFIG = {
   cancelled: { label: 'İptal', bg: 'bg-zinc-800 text-zinc-500 border-zinc-700' }
 };
 
-export default function B2BManager({ token, onNavigateTab = null }) {
-  const [activeSubTab, setActiveSubTab] = useState('jobs'); // 'jobs' | 'partners' | 'settlement'
+export default function B2BManager({ token, onNavigateTab = null, initialSubTab = 'jobs' }) {
+  const [activeSubTab, setActiveSubTab] = useState(initialSubTab); // 'jobs' | 'partners' | 'settlement'
+
+  useEffect(() => {
+    if (initialSubTab) {
+      setActiveSubTab(initialSubTab);
+    }
+  }, [initialSubTab]);
   const [partners, setPartners] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -497,9 +503,11 @@ export default function B2BManager({ token, onNavigateTab = null }) {
           }`}
         >
           <Building2 className="w-4 h-4" />
-          <span>B2B Ortakları &amp; Başvurular ({partners.length})</span>
+          <span>Kayıtlı Firmalar ({partners.filter(p => p.status === 'approved').length})</span>
           {pendingPartners.length > 0 && (
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-black animate-pulse">
+              {pendingPartners.length} Onay Bekliyor
+            </span>
           )}
         </button>
 
@@ -827,6 +835,18 @@ export default function B2BManager({ token, onNavigateTab = null }) {
       {activeSubTab === 'partners' && (
         <div className="space-y-6">
           {/* Section: Pending Approvals (Gatekeeping) */}
+          {pendingPartners.length === 0 && (
+            <div className="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800 text-xs text-zinc-400 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Onay bekleyen yeni B2B başvurusu bulunmuyor. Tüm başvurular güncel.</span>
+              </div>
+              <span className="text-[10px] font-bold text-zinc-500 bg-zinc-800/80 px-2 py-0.5 rounded border border-zinc-750">
+                0 Bekleyen
+              </span>
+            </div>
+          )}
+
           {pendingPartners.length > 0 && (
             <div className="p-5 rounded-2xl bg-amber-950/20 border-2 border-amber-500/40 space-y-4">
               <div className="flex items-center justify-between">
@@ -1546,7 +1566,7 @@ export default function B2BManager({ token, onNavigateTab = null }) {
                   >
                     <option value="letting_agent">Emlak &amp; Kiralama Acentesi</option>
                     <option value="main_contractor">Ana Yüklenici / Müteahhit</option>
-                    <option value="property_investor">Mülk Yatırımcısı / Portfolio</option>
+                    <option value="property_investor">Mülk Yatırımcısı</option>
                     <option value="landlord">Ev Sahibi (Çoklu Daire)</option>
                     <option value="other">Diğer</option>
                   </select>

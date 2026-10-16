@@ -311,7 +311,7 @@ export async function sendTelegramB2BPartnerRegistration(partner, token, chatId)
   const tradeLabels = {
     letting_agent: 'Emlak & Kiralama Acentesi',
     main_contractor: 'Ana Yüklenici / Müteahhit',
-    property_investor: 'Mülk Yatırımcısı / Portfolio Sahibi',
+    property_investor: 'Mülk Yatırımcısı',
     landlord: 'Bireysel Ev Sahibi (Çoklu Daire)',
     other: 'Diğer Ticari İşletme'
   };

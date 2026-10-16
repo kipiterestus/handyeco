@@ -33,9 +33,8 @@ export default function ScheduleManager({
   const [schedule, setSchedule] = useState([]);
   const [quotes, setQuotes] = useState([]);
   const [finances, setFinances] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeView, setActiveView] = useState('agenda'); // 'agenda' | 'free_slots'
-  const [dateFilter, setDateFilter] = useState('this_week'); // 'all' | 'today' | 'this_week' | 'this_month' | 'next_month' | 'upcoming'
+  const [activeView, setActiveView] = useState('agenda'); // 'agenda' | 'free_slots' | 'past'
+  const [dateFilter, setDateFilter] = useState('all'); // default to 'all' as requested
   const [search, setSearch] = useState('');
   const [highlightedJobId, setHighlightedJobId] = useState(null);
 
@@ -372,6 +371,22 @@ export default function ScheduleManager({
   const weekStartIso = weekDays[0].toISOString().split('T')[0];
   const weekEndIso = weekDays[6].toISOString().split('T')[0];
 
+  // 14-day calendar for Free Slots view (strictly from today onwards, NO past dates)
+  const getUpcomingTwoWeeksDays = () => {
+    const days = [];
+    const now = new Date();
+    // Build 14 days starting from today (day 0 = today, day 13 = 13 days later)
+    for (let i = 0; i < 14; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+      days.push(d);
+    }
+    return days;
+  };
+
+  const freeSlotsDays = getUpcomingTwoWeeksDays();
+  const freeSlotsStartIso = todayIso;
+  const freeSlotsEndIso = freeSlotsDays[13] ? freeSlotsDays[13].toISOString().split('T')[0] : todayIso;
+
   // Helper to check if a job is already in finances
   const getLinkedFinanceForJob = (job) => {
     return finances.find(f => 
@@ -538,35 +553,6 @@ export default function ScheduleManager({
     }
   };
 
-  // Send 30-Minute Upcoming Job Reminder Test
-  const handleTestUpcomingReminder = async () => {
-    setSendingReminder(true);
-    setReminderStatus(null);
-    try {
-      const res = await fetch('/api/telegram/test-upcoming-reminder', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setReminderStatus({ 
-          type: 'success', 
-          message: `✅ 30 Dk Telegram Hatırlatması Test Edildi! Telefonunuza bildirim iletildi.` 
-        });
-      } else {
-        setReminderStatus({ type: 'error', message: `❌ ${data.error || 'Test hatırlatması gönderilemedi.'}` });
-      }
-    } catch (err) {
-      setReminderStatus({ type: 'error', message: `❌ Hata: ${err.message}` });
-    } finally {
-      setSendingReminder(false);
-      setTimeout(() => setReminderStatus(null), 6000);
-    }
-  };
-
   // Print PDF function
   const handlePrintPDF = () => {
     window.print();
@@ -604,17 +590,17 @@ export default function ScheduleManager({
             <h2 className="text-xl font-black text-white tracking-tight">Randevular</h2>
           </div>
           <p className="text-xs text-zinc-400 mt-1">
-            Müşteri randevuları, otomatik 30 dk hatırlatması ve boş saat yönetimi.
+            Müşteri randevuları, iş takvimi ve 14 günlük boş saat yönetimi.
           </p>
         </div>
 
-        <div className="grid grid-cols-4 gap-1.5 sm:flex sm:items-center sm:gap-2 w-full sm:w-auto">
+        <div className="grid grid-cols-3 gap-2 sm:flex sm:items-center sm:gap-2 w-full sm:w-auto">
           {/* Telegram Tomorrow Reminder Button */}
           <button
             type="button"
             onClick={handleSendTomorrowReminder}
             disabled={sendingReminder}
-            className="flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-sky-950/60 hover:bg-sky-900/60 text-sky-300 hover:text-white border border-sky-800/60 text-[10px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50 whitespace-nowrap"
+            className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-sky-950/60 hover:bg-sky-900/60 text-sky-300 hover:text-white border border-sky-800/60 text-[10px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50 whitespace-nowrap"
             title="Yarınki işleri Telegram'a bildirim olarak gönder"
           >
             <Bell className={`w-3.5 h-3.5 text-sky-400 shrink-0 ${sendingReminder ? 'animate-bounce' : ''}`} />
@@ -622,24 +608,11 @@ export default function ScheduleManager({
             <span className="sm:hidden">{sendingReminder ? '...' : 'Yarın'}</span>
           </button>
 
-          {/* Telegram 30-Min Test Button */}
-          <button
-            type="button"
-            onClick={handleTestUpcomingReminder}
-            disabled={sendingReminder}
-            className="flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-indigo-950/60 hover:bg-indigo-900/60 text-indigo-300 hover:text-white border border-indigo-800/60 text-[10px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50 whitespace-nowrap"
-            title="30 dakika kala hatırlatmasını Telegram'a test gönder"
-          >
-            <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-            <span className="hidden sm:inline">30 Dk Test</span>
-            <span className="sm:hidden">30 Dk</span>
-          </button>
-
           {/* PDF Download Button */}
           <button
             type="button"
             onClick={handlePrintPDF}
-            className="flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-800 text-[10px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm whitespace-nowrap"
+            className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-800 text-[10px] sm:text-xs font-bold transition-all cursor-pointer shadow-sm whitespace-nowrap"
             title="PDF İndir / Yazdır"
           >
             <Printer className="w-3.5 h-3.5 text-blue-400 shrink-0" />
@@ -651,7 +624,7 @@ export default function ScheduleManager({
           <button
             type="button"
             onClick={() => handleOpenAddModal()}
-            className="flex items-center justify-center gap-1 sm:gap-2 px-1.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-[10px] sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer whitespace-nowrap"
+            className="flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-[10px] sm:text-sm font-bold shadow-lg shadow-blue-600/25 transition-all cursor-pointer whitespace-nowrap"
           >
             <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
             <span className="hidden sm:inline">Yeni Randevu</span>
@@ -763,42 +736,51 @@ export default function ScheduleManager({
       {/* View Switcher & Filters (Screen Only) */}
       <div className="print:hidden flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-[#0b0e14] p-3 rounded-2xl border border-zinc-800">
         
-        {/* View Toggle Tabs */}
+        {/* View Toggle Tabs (Randevular -> Boş Saatler -> Geçmiş) */}
         <div className="flex items-center gap-1.5 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800 overflow-x-auto">
+          {/* 1. Randevular */}
           <button
             type="button"
-            onClick={() => setActiveView('agenda')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            onClick={() => {
+              setActiveView('agenda');
+              setDateFilter('all');
+            }}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               activeView === 'agenda'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'text-zinc-400 hover:text-white'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
             }`}
           >
-            📅 Randevular ({activeUpcomingCount})
+            <CalendarIcon className="w-3.5 h-3.5" />
+            <span>Randevular ({activeUpcomingCount})</span>
           </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveView('past')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-              activeView === 'past'
-                ? 'bg-purple-600 text-white shadow-md'
-                : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            ⏳ Geçmiş ({pastCount})
-          </button>
-
+          {/* 2. Boş Saatler */}
           <button
             type="button"
             onClick={() => setActiveView('free_slots')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               activeView === 'free_slots'
-                ? 'bg-emerald-600 text-white shadow-md'
-                : 'text-zinc-400 hover:text-white'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
             }`}
           >
-            ⏰ Boş Saatler
+            <Clock className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Boş Saatler</span>
+          </button>
+
+          {/* 3. Geçmiş */}
+          <button
+            type="button"
+            onClick={() => setActiveView('past')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+              activeView === 'past'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
+            }`}
+          >
+            <CalendarDays className="w-3.5 h-3.5 text-purple-400" />
+            <span>Geçmiş ({pastCount})</span>
           </button>
         </div>
 
@@ -815,51 +797,70 @@ export default function ScheduleManager({
             />
           </div>
 
-          <div className="flex items-center gap-1 overflow-x-auto">
-            <button
-              type="button"
-              onClick={() => setDateFilter('today')}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
-                dateFilter === 'today' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              Bugün
-            </button>
-            <button
-              type="button"
-              onClick={() => setDateFilter('this_week')}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
-                dateFilter === 'this_week' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              Bu Hafta
-            </button>
-            <button
-              type="button"
-              onClick={() => setDateFilter('this_month')}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
-                dateFilter === 'this_month' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              Bu Ay
-            </button>
-            <button
-              type="button"
-              onClick={() => setDateFilter('next_month')}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
-                dateFilter === 'next_month' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              Gelecek Ay
-            </button>
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+            {/* Tümü (Varsayılan) */}
             <button
               type="button"
               onClick={() => setDateFilter('all')}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
-                dateFilter === 'all' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-sm ${
+                dateFilter === 'all'
+                  ? 'bg-blue-600 text-white border border-blue-400 shadow-blue-600/30 ring-1 ring-blue-400'
+                  : 'bg-zinc-900/90 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800'
               }`}
             >
-              Tümü
+              Tümü ({schedule.filter(j => (j.date || '') >= todayIso).length})
+            </button>
+
+            {/* Bugün - Amber / Turuncu Banner */}
+            <button
+              type="button"
+              onClick={() => setDateFilter('today')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-sm ${
+                dateFilter === 'today'
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-black font-extrabold border border-amber-300 shadow-amber-500/30 ring-1 ring-amber-300'
+                  : 'bg-amber-950/25 text-amber-300 hover:bg-amber-950/50 hover:text-white border border-amber-800/50'
+              }`}
+            >
+              ⚡ Bugün ({schedule.filter(j => j.date === todayIso).length})
+            </button>
+
+            {/* Bu Hafta - Yeşil / Emerald Banner */}
+            <button
+              type="button"
+              onClick={() => setDateFilter('this_week')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-sm ${
+                dateFilter === 'this_week'
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold border border-emerald-300 shadow-emerald-500/30 ring-1 ring-emerald-300'
+                  : 'bg-emerald-950/25 text-emerald-300 hover:bg-emerald-950/50 hover:text-white border border-emerald-800/50'
+              }`}
+            >
+              📅 Bu Hafta ({schedule.filter(j => j.date >= weekStartIso && j.date <= weekEndIso).length})
+            </button>
+
+            {/* Bu Ay - Indigo / Mavi Banner */}
+            <button
+              type="button"
+              onClick={() => setDateFilter('this_month')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-sm ${
+                dateFilter === 'this_month'
+                  ? 'bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-extrabold border border-indigo-300 shadow-indigo-500/30 ring-1 ring-indigo-300'
+                  : 'bg-indigo-950/25 text-indigo-300 hover:bg-indigo-950/50 hover:text-white border border-indigo-800/50'
+              }`}
+            >
+              📆 Bu Ay ({schedule.filter(j => (j.date || '').startsWith(currentYearMonth) && (j.date || '') >= todayIso).length})
+            </button>
+
+            {/* Gelecek Ay - Mor / Purple Banner */}
+            <button
+              type="button"
+              onClick={() => setDateFilter('next_month')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-sm ${
+                dateFilter === 'next_month'
+                  ? 'bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white font-extrabold border border-purple-300 shadow-purple-500/30 ring-1 ring-purple-300'
+                  : 'bg-purple-950/25 text-purple-300 hover:bg-purple-950/50 hover:text-white border border-purple-800/50'
+              }`}
+            >
+              🚀 Gelecek Ay ({schedule.filter(j => (j.date || '').startsWith(nextYearMonth)).length})
             </button>
           </div>
         </div>
@@ -1259,22 +1260,23 @@ export default function ScheduleManager({
               <div>
                 <h3 className="text-base font-bold text-white flex items-center gap-2">
                   <Clock className="w-4 h-4 text-emerald-400" />
-                  <span>Haftalık Boş Saatler (08:00 - 18:00)</span>
+                  <span>14 Günlük Boş Saatler (08:00 - 18:00)</span>
                 </h3>
                 <p className="text-xs text-zinc-400 mt-0.5">
-                  Yeşil kutular randevu alabileceğiniz <strong>boş saat aralıklarını</strong>, kırmızı kutular ise randevulu <strong>dolu saatleri</strong> gösterir. Boş kutuya tıklayarak o saate anında randevu oluşturabilirsiniz.
+                  Yeşil kutular randevu alabileceğiniz <strong>boş saat aralıklarını</strong>, kırmızı kutular ise randevulu <strong>dolu saatleri</strong> gösterir. Bugünden önceki geçmiş tarihler takvimde gösterilmez; geçmiş randevuları sadece manuel olarak ekleyebilirsiniz.
                 </p>
               </div>
 
-              <span className="text-xs font-bold text-zinc-400 bg-zinc-900 px-3 py-1.5 rounded-xl border border-zinc-800">
-                Hafta: {weekStartIso} &bull; {weekEndIso}
+              <span className="text-xs font-bold text-emerald-400 bg-emerald-950/40 px-3 py-1.5 rounded-xl border border-emerald-800/60 shrink-0">
+                14 Günlük Takvim: {freeSlotsStartIso} &bull; {freeSlotsEndIso}
               </span>
             </div>
 
-            {/* Daily Column Grid for Mon - Sat */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
-              {weekDays.slice(0, 6).map((dayObj) => {
+            {/* Daily Column Grid for 14 Days Starting From Today */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-4">
+              {freeSlotsDays.map((dayObj) => {
                 const dayIso = dayObj.toISOString().split('T')[0];
+                const isSunday = dayObj.getDay() === 0;
                 const dayName = dayObj.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'short' });
                 const isToday = dayIso === todayIso;
                 const slots = calculateFreeSlotsForDay(dayIso);
@@ -1285,14 +1287,16 @@ export default function ScheduleManager({
                     className={`rounded-2xl border p-4 space-y-3 ${
                       isToday 
                         ? 'bg-zinc-900/90 border-amber-500/60 shadow-md shadow-amber-500/5' 
+                        : isSunday
+                        ? 'bg-zinc-950/40 border-zinc-800/60 opacity-90'
                         : 'bg-zinc-950/60 border-zinc-800'
                     }`}
                   >
                     {/* Day Card Header */}
                     <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
                       <div>
-                        <span className={`text-xs font-black block ${isToday ? 'text-amber-400' : 'text-white'}`}>
-                          {dayName} {isToday && '(BUGÜN)'}
+                        <span className={`text-xs font-black block ${isToday ? 'text-amber-400' : isSunday ? 'text-zinc-300' : 'text-white'}`}>
+                          {dayName} {isToday ? '(BUGÜN)' : isSunday ? '(Pazar)' : ''}
                         </span>
                       </div>
                       <button

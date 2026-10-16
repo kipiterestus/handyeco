@@ -20,6 +20,7 @@ import {
   SlidersHorizontal,
   Calendar,
   Handshake,
+  Users,
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
@@ -68,6 +69,29 @@ export default function AdminLayout() {
     if (saved !== null) return saved === 'true';
     return false;
   });
+
+  // Accordion state for B2B category
+  const [b2bOpen, setB2bOpen] = useState(() => {
+    const saved = localStorage.getItem('handyeco_admin_b2b_open');
+    if (saved !== null) return saved === 'true';
+    return true; // default open
+  });
+  const [b2bSubTab, setB2bSubTab] = useState('jobs'); // 'jobs' | 'partners'
+
+  const toggleB2BAccordion = () => {
+    setB2bOpen(prev => {
+      const next = !prev;
+      localStorage.setItem('handyeco_admin_b2b_open', String(next));
+      return next;
+    });
+  };
+
+  const handleSelectB2BSubTab = (subTab) => {
+    setActiveTab('b2b');
+    setB2bSubTab(subTab);
+    localStorage.setItem('handyeco_admin_active_tab', 'b2b');
+    setSidebarOpen(false);
+  };
 
   const { content, refreshContent, updateSectionLocally } = useContent();
 
@@ -125,7 +149,10 @@ export default function AdminLayout() {
     if (siteSettingKeys.includes(activeTab) && !siteSettingsOpen) {
       setSiteSettingsOpen(true);
     }
-  }, [activeTab, siteSettingsOpen]);
+    if (activeTab === 'b2b' && !b2bOpen) {
+      setB2bOpen(true);
+    }
+  }, [activeTab, siteSettingsOpen, b2bOpen]);
 
   const handleSelectTab = (tabId, extraParams = null) => {
     setActiveTab(tabId);
@@ -142,6 +169,10 @@ export default function AdminLayout() {
     } else if (tabId === 'schedule') {
       if (extraParams) {
         setTargetJobFilter(extraParams);
+      }
+    } else if (tabId === 'b2b') {
+      if (extraParams?.subTab) {
+        setB2bSubTab(extraParams.subTab);
       }
     }
   };
@@ -272,16 +303,6 @@ export default function AdminLayout() {
     },
     { id: 'schedule', label: 'Randevular', icon: Calendar },
     { id: 'accounting', label: 'Muhasebe', icon: PoundSterling },
-  ];
-
-  // 2. KATEGORİ: B2B
-  const b2bNav = [
-    { 
-      id: 'b2b', 
-      label: 'B2B', 
-      icon: Handshake,
-      unreadCount: pendingB2BCount
-    }
   ];
 
   // 3. KATEGORİ: SİTE AYARLARI
@@ -431,44 +452,71 @@ export default function AdminLayout() {
 
           <div className="border-t border-zinc-800/80 my-2" />
 
-          {/* 2. KATEGORİ: B2B */}
+          {/* 2. KATEGORİ: B2B (Akordiyon / Daraltılabilir) */}
           <div className="space-y-1 text-left">
-            <div className="px-3 py-1 text-[10px] font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-              <Handshake className="w-3.5 h-3.5 text-amber-400" />
-              <span>B2B</span>
-            </div>
+            <button
+              type="button"
+              onClick={toggleB2BAccordion}
+              className="w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-amber-400 hover:text-amber-300 hover:bg-zinc-900/60 transition-colors cursor-pointer group"
+            >
+              <div className="text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5">
+                <Handshake className="w-3.5 h-3.5 text-amber-400" />
+                <span>B2B</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                {pendingB2BCount > 0 && (
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-black bg-amber-500 text-black animate-pulse shadow-sm shadow-amber-500/40">
+                    {pendingB2BCount} ONAY
+                  </span>
+                )}
+                {b2bOpen ? (
+                  <ChevronUp className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300 shrink-0" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300 shrink-0" />
+                )}
+              </div>
+            </button>
 
-            {b2bNav.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-
-              return (
+            {b2bOpen && (
+              <div className="space-y-0.5 pt-0.5 animate-in slide-in-from-top-1 duration-150">
+                {/* 1. Aktif B2B İşler */}
                 <button
-                  key={item.id}
-                  onClick={() => handleSelectTab(item.id)}
+                  type="button"
+                  onClick={() => handleSelectB2BSubTab('jobs')}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    isActive
+                    activeTab === 'b2b' && b2bSubTab === 'jobs'
                       ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-md shadow-amber-600/25'
                       : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
                   }`}
                 >
                   <div className="flex items-center gap-2.5 min-w-0 pr-1 text-left">
-                    <Icon className="w-4 h-4 shrink-0 text-amber-400" />
-                    <span className="truncate whitespace-nowrap">{item.label}</span>
+                    <Briefcase className="w-4 h-4 shrink-0 text-amber-400" />
+                    <span className="truncate whitespace-nowrap">Aktif B2B İşler</span>
                   </div>
+                </button>
 
-                  {item.unreadCount > 0 ? (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-black animate-pulse shadow-sm shadow-amber-500/40 shrink-0">
-                      <span>{item.unreadCount} ONAY</span>
-                    </span>
-                  ) : (
-                    <span className="text-[10px] font-bold text-zinc-500 px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800/80 shrink-0">
-                      Portföy
+                {/* 2. Bekleyen Başvurular */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectB2BSubTab('partners')}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === 'b2b' && b2bSubTab === 'partners'
+                      ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-md shadow-amber-600/25'
+                      : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1 text-left">
+                    <Users className="w-4 h-4 shrink-0 text-amber-400" />
+                    <span className="truncate whitespace-nowrap">Bekleyen Başvurular</span>
+                  </div>
+                  {pendingB2BCount > 0 && (
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-black animate-pulse shadow-sm shadow-amber-500/40 shrink-0">
+                      <span>{pendingB2BCount} ONAY</span>
                     </span>
                   )}
                 </button>
-              );
-            })}
+              </div>
+            )}
           </div>
 
           <div className="border-t border-zinc-800/80 my-2" />
@@ -571,6 +619,7 @@ export default function AdminLayout() {
               <B2BManager 
                 token={token} 
                 onNavigateTab={handleSelectTab}
+                initialSubTab={b2bSubTab}
               />
             )}
             {activeTab === 'accounting' && (
