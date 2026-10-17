@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Star, 
-  ShieldCheck, 
   MessageSquare, 
   CheckCircle2, 
   Sparkles, 
@@ -16,24 +15,94 @@ export default function Hero({ onOpenQuote }) {
   const { content } = useContent();
   const hero = content.hero || {};
   const config = content.siteConfig || {};
+  const [drillActive, setDrillActive] = useState(false);
+
+  const triggerDrill = () => {
+    setDrillActive(true);
+    setTimeout(() => setDrillActive(false), 1400);
+  };
 
   const handymanVisualCard = (
-    <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-2 sm:border-4 border-white aspect-[3/4] sm:aspect-[4/5] bg-slate-900">
-      <img
-        src={hero.heroImage || '/hero-handyman-edinburgh.jpg'}
-        alt="Handyman Edinburgh - Trusted local handyman near me assembling furniture"
-        className="w-full h-full object-cover object-center"
-      />
-      
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/20" />
+    <div className="relative group">
+      {/* Visual Card */}
+      <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white aspect-[3/4] sm:aspect-[4/5] bg-slate-900">
+        <img
+          src={hero.heroImage || '/hero-handyman-edinburgh.jpg'}
+          alt="Handyman Edinburgh - Trusted local handyman near me assembling furniture"
+          className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+        />
+        
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/20" />
 
-      <div className="absolute bottom-3 left-3.5 right-3.5 sm:bottom-5 sm:left-5 sm:right-5 text-white text-left">
-        <h3 className="text-sm sm:text-lg lg:text-xl font-bold leading-snug">
-          {hero.completedCount || 'Over 500+ Edinburgh Homes Maintained'}
-        </h3>
-        <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5">
-          {hero.completedSubtext || 'From Morningside flats to New Town tenements.'}
+        <div className="absolute bottom-3 left-3.5 right-3.5 sm:bottom-5 sm:left-5 sm:right-5 text-white text-left z-10">
+          <h3 className="text-sm sm:text-lg lg:text-xl font-bold leading-snug">
+            {hero.completedCount || 'Over 500+ Edinburgh Homes Maintained'}
+          </h3>
+          <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5">
+            {hero.completedSubtext || 'From Morningside flats to New Town tenements.'}
+          </p>
+        </div>
+      </div>
+
+      {/* Floating Badge 1: Animated Cordless Hammer Drill (Top-Right) */}
+      <div 
+        onClick={triggerDrill}
+        onMouseEnter={() => setDrillActive(true)}
+        onMouseLeave={() => setDrillActive(false)}
+        className="absolute -top-3 -right-2 sm:-top-5 sm:-right-5 z-20 bg-slate-950/90 backdrop-blur-md border border-slate-700/80 rounded-2xl p-2.5 sm:p-3 shadow-2xl text-left max-w-[210px] sm:max-w-[240px] cursor-pointer hover:border-blue-400 transition-all hover:scale-105 select-none animate-float-gentle"
+        title="Click or hover to trigger drill animation"
+      >
+        <div className="flex items-center gap-2 mb-1.5">
+          {/* Animated Drill SVG */}
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center shrink-0">
+            <svg 
+              viewBox="0 0 48 48" 
+              className={`w-5 h-5 sm:w-6 sm:h-6 text-blue-400 transition-transform ${drillActive ? 'animate-drill-thrust' : ''}`}
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2.2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M12 18h16a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H14l-4 13h-6l2-13H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h8z" fill="#0284c7" fillOpacity="0.3" />
+              <rect x="28" y="21" width="8" height="6" rx="1" fill="#38bdf8" />
+              <line x1="36" y1="24" x2="46" y2="24" stroke="#f59e0b" strokeWidth="3" className={drillActive ? "animate-drill-spin origin-left" : ""} />
+              <circle cx="21" cy="24" r="2" fill="#ef4444" />
+            </svg>
+          </div>
+          <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+            {drillActive ? '⚡ Drilling!' : 'Stone Specialist'}
+          </span>
+        </div>
+        <p className="text-xs sm:text-sm font-bold text-white leading-tight">
+          TV &amp; Heavy Shelving
         </p>
+        <p className="text-[10px] sm:text-[11px] text-slate-300 mt-0.5 leading-tight">
+          Solid tenement wall anchor fixings
+        </p>
+      </div>
+
+      {/* Floating Badge 2: Precision Spirit Level & Clean Finish (Bottom-Left) */}
+      <div 
+        className="hidden xs:flex absolute -bottom-3 -left-2 sm:-bottom-5 sm:-left-5 z-20 bg-slate-950/90 backdrop-blur-md border border-slate-700/80 rounded-2xl p-2.5 sm:p-3 shadow-2xl text-left max-w-[210px] sm:max-w-[230px] items-center gap-2.5 hover:border-emerald-400 transition-all hover:scale-105 select-none"
+      >
+        <div className="w-9 h-9 rounded-xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
+          <div className="w-6 h-2.5 bg-emerald-950/80 rounded-full border border-emerald-500/60 p-0.5 relative overflow-hidden flex items-center justify-center">
+            {/* Center guidelines */}
+            <div className="absolute w-1.5 h-full border-x border-emerald-400/80" />
+            {/* Liquid Bubble */}
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/80 animate-level-bubble" />
+          </div>
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-emerald-400">
+            <Sparkles className="w-2.5 h-2.5 text-emerald-400" />
+            <span>Spotless Clean</span>
+          </div>
+          <p className="text-xs sm:text-sm font-bold text-white leading-tight truncate">
+            Precision &amp; 0 Dust
+          </p>
+        </div>
       </div>
     </div>
   );

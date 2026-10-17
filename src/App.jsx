@@ -7,6 +7,7 @@ import Services from './components/Services';
 import GoogleReviews from './components/GoogleReviews';
 import PhotoGallery from './components/PhotoGallery';
 import QuoteForm from './components/QuoteForm';
+import RepairToolSelector from './components/RepairToolSelector';
 import Footer from './components/Footer';
 import MobileStickyBar from './components/MobileStickyBar';
 import LightboxModal from './components/LightboxModal';
@@ -113,6 +114,12 @@ export default function App() {
         <main className="flex-1">
           {/* 1. Hero Section with 5.0 Google Rating & Dual CTAs */}
           <Hero onOpenQuote={() => scrollToQuote()} />
+
+          {/* 1.5 Interactive Tool Selector & Solution Finder */}
+          <RepairToolSelector 
+            onOpenQuote={() => scrollToQuote()} 
+            onSelectService={(srv) => scrollToQuote(srv)} 
+          />
 
           {/* 2. Where We Work in Scotland */}
           <ServiceAreas />
